@@ -1,0 +1,224 @@
+/* Section 1: Components used throughout the dapp */
+
+/*
+~~~ body: self-explanatory ~~~
+Sets:
+- font
+- background colour
+- default input width as 50% of parent div
+*/
+
+body {
+  font-family: arial;
+  background-color: #eee;
+  font-size:110%;
+}
+
+input[type="text"] {
+  width: 200px;
+}
+
+/*
+~~~ Header: A place for logos and links ~~~
+Sets:
+- A fixed position, height, and zero-length-margins
+- ensures 100% width
+- Hides overflow
+- sets background colour
+- styles links, esp. with hovering
+- limits image size (relevant to logo)
+*/
+.header ul {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: #fff;
+  max-height:50px;
+}
+
+.header ul img {
+  height : 43px;
+  margin-top : 2.5px;
+  margin-left: 10px;
+}
+
+.header ul li {
+  float:right;
+}
+
+.header ul li a {
+  display: block;
+  color: #6b98e5;;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+}
+
+.header ul li a:hover {
+  background-color: #6b98e5;
+  color:white;
+}
+
+/*
+~~~ Dashboard: Where the user interacts with the dapp ~~~
+Sets:
+- Position to be below header
+- Slight padding from header to give breathing room
+- link styling
+*/
+
+#dashboard {
+  margin-top:50px;
+  padding-top:2px;
+}
+
+#dashboard a {
+  color:#5b88c5;
+  text-decoration: none;
+}
+
+/*
+~~~ toggle-expand-collapse: a type of button that expands and collapse menus ~~~
+    [used throughout the dapp]
+Sets:
+- float to right (as we want it to be in-line with the menu title)
+- colour, border (no roundness), and size
+*/
+.toggle-expand-collapse {
+  width:18%;
+  padding:1%;
+  float:right;
+  font-size: 80%;
+  /*margin-top: -4.5%;*/
+  margin-right:5%;
+  background-color: #337ab7;
+  border: 1px solid #337ab7;
+  color: #fff;
+  box-shadow: none;
+}
+
+/*
+~~~ popup: for overlaid modals that a user can interact with ~~~
+    [ie: they are generated upon a user interaction]
+Sets:
+- z position as an overlay
+- fixed width, height, maxes, and margins
+- text alignment
+- border
+- overflow to scroll
+- slightly different text colouring, background colouring, and shadows
+TODO also style the tables, texts, buttons
+*/
+.popup {
+  width:75%;
+  margin-left:15%;
+  z-index:99;
+  position:fixed;
+  font-size: 150%;
+  color: #6b98e5;
+  border: 1px solid #6b98e5;
+  background: #eee;
+  box-shadow: none;
+  opacity:1;
+  text-align: center;
+  max-height:85%;
+  overflow-y:scroll;
+  padding-bottom: 2%;
+  padding-right: 3%;
+  margin-bottom: 2%;
+}
+
+/* Section 2: Components used within /supplier/ & /post/ */
+
+/* Extension: Popup for a product's modification and mgmt - same as regular
+   workflow, except for TODO what did i change about this...? */
+
+/* TODO refactor to name this class "bounty overview"
+~~~ Bounties: views of orders suppliers can fulfill ~~~
+Sets:
+- max width as half screen
+- float to right side
+- some breathing room on bottom
+- maximum size for associated images
+- override input width to be 3/4 of the whole div
+- TODO style inputs + buttons
+*/
+.bounty-submission {
+  float:right;
+  width:50%;
+  padding-bottom:1%;
+}
+
+.bounty-submission img {
+  max-height: 200px;
+  max-width:90%;
+}
+
+/*
+TODO bounty lookup forms, posting forms. After doing JS for it, account styling.
+*/
+
+/* Section 3: Components used within /shop/ */
+
+/*
+~~~ store-header: the header information for a customer to view the store ~~~
+Sets:
+- max height of the whole div
+- the max width of the title welcome msg to not overflow into the order checker
+*/
+.store-header {
+  height: 10%;
+}
+
+.store-header h3 {
+  width: 60%;
+}
+
+/*
+~~~ order-checker: users use this to check the status of their order ~~~
+    [lives within the header]
+// TODO style a custom popup and refactor away from alert()
+Sets:
+- float to right
+- margin top to align with the welcome header msg
+*/
+.order-checker {
+  float: right;
+  margin-top: -80px;
+}
+
+/*
+~~~ catalogue-feed-customer: the flow of products a shopper to view ~~~
+Sets:
+- TODO
+*/
+.catalogue-feed-customer {
+  
+}
+
+/*
+~~~ Product cards: for showing the user and biz owner info about a product ~~~
+Sets:
+TODO
+*/
+
+/*
+~~~ catalogue-feed: the flow of products a business owner views ~~~
+Sets:
+- TODO
+*/
+
+/* For the following classes, they take up half the screen width and need to
+   increase input width as a result */
+.bounty-submission input[type="text"], .bounty-lookup-form {
+ width: 99%;
+}
+
+/* Section 4 for /biz/, the organisation view, the new product workflow
+         Section 5 for /shop/, order placement form (prolly need new JS for it)
+*/
