@@ -1,3 +1,11 @@
+THIS README IS OUTDATED AND COPIED FROM THE OLD IMPLEMENTATION
+
+The styling also got mistakenly lost in transfer - this is fine since we were going to convert to bootstrap anyways.
+
+You can try out the old version at: https://sublimity-blockchain.gitlab.io/bountium-product
+
+--------------------------------------------------------------------------------
+
 Bountium is a platform for autonomous commerce, in which one can deploy a smart contract to represent their business, release products from that business, and assign incentiviser markets for each step in the supply chain of that product. When the business receives orders, it will automatically place bounties out to each supply step's incentiviser, allowing orders to automatically get placed through to suppliers. Furthermore, suppliers won't get paid until the incentiviser contract managing that supply step is satisfied, allowing for far more quality-assured production.
 
 Completed Features:
