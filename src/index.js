@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
+import  '../node_modules/bootstrap/dist/css/bootstrap.css';
 import * as serviceWorker from './serviceWorker';
 
 ReactDOM.render(<h1>Bountium Dao Manager lives</h1>, document.getElementById('root'));
