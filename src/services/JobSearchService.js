@@ -25,11 +25,24 @@ export default class JobSearchService {
             }
         }
 
-        return fetch(url)
-            .then(res => res.json())
-            .then(json => console.log(json))
-     */
+        //return fetch(url, {mode: 'cors'})
+        //    .then(res => res.json())
+        //    .then(json => console.log(json))
 
+        $.ajax({
+          url: url,
+          type: "GET",
+          dataType: "jsonp",
+          success: function (data) {
+            console.log(data);
+            // and other stuff i do with the data i get
+          },
+          xhrFields: {
+            withCredentials: false
+          }
+        });
+
+     }*/
 
 
 
@@ -56,6 +69,7 @@ export default class JobSearchService {
 
 
     }
+
 
 
 }
