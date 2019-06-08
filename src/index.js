@@ -1,9 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
+import  '../node_modules/bootstrap/dist/css/bootstrap.css';
 import * as serviceWorker from './serviceWorker';
 
-ReactDOM.render(<h1>Bountium Dao Manager lives</h1>, document.getElementById('root'));
+import HomePage from './components/HomePage'
+
+ReactDOM.render(<HomePage/>, document.getElementById('root'));
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.
