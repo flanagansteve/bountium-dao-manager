@@ -1,16 +1,19 @@
 import React from 'react'
 
+// TODO why are bootstrap classes not working?
+
 const JobDetails = ({jobObj}) =>
-  <div>
-    <h1>{jobObj.id}</h1>
+  <div className="jumbotron">
+    <h1>{jobObj.title} - for: {jobObj.company_url != null && <a href={jobObj.company_url}>{jobObj.company}</a>}
+                              {jobObj.company_url == null && jobObj.company}</h1>
+    <img src={jobObj.company_logo} className="float-right"></img>
     <h1>{jobObj.type}</h1>
-    <h1>{jobObj.url}</h1>
-    <h1>{jobObj.created_at}</h1>
-    <h1>{jobObj.company}</h1>
-    <h1>{jobObj.company_url}</h1>
-    <h1>{jobObj.location}</h1>
-    <h1>{jobObj.title}</h1>
+    <p>Posted at: {jobObj.created_at}</p>
+    <p>Location: {jobObj.location}</p>
     <div dangerouslySetInnerHTML={{__html: jobObj.description}} />
+    <div dangerouslySetInnerHTML={{__html: jobObj.how_to_apply}} />
   </div>
+
+// unused: job.id, job.url
 
 export default JobDetails
