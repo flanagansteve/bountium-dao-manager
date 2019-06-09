@@ -17,6 +17,8 @@ export default class JobSearchList extends React.Component {
     }
 
 
+
+
     renderJobList() {
         // var items;
         if (this.state.jobList) {
