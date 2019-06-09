@@ -1,3 +1,9 @@
+import $ from '../../node_modules/jquery/dist/jquery'
+
+//import googleTrends from '../../node_modules/google-trends-api/lib/google-trends-api.min'
+
+let googleTrends = require('../../node_modules/google-trends-api/lib/google-trends-api.min.js');
+
 export default class JobSearchService {
 
 
@@ -12,10 +18,14 @@ export default class JobSearchService {
         return this.myInstance;
     }
 
-    /*
+
     searchJobApi = (keywords) => {
 
-        let url = "https://jobs.github.com/positions.json?description="
+
+        let url = 'https://api.builtwith.com/trends/v6/api.json?KEY=770b5ccb-49b9-4c7f-a93a-8ce28ed974f9&TECH=Python';
+        //let url = "https://jobs.github.com/positions.json?description="
+
+        /*
         let wordSplit = keywords.split(" ");
         for(let i  = 0 ; i < wordSplit.length; i++) {
             if (i === 0) {
@@ -25,14 +35,34 @@ export default class JobSearchService {
             }
         }
 
+
+
+         */
+
+        /*
+        url += '?app_id=adf56df2';
+        url += "&app_key=3d7a89d3eb759fa1583a2ca890403f79";
+        url+= "&s=Batman";
+
+
+*/
+        return fetch(url)
+            .then(res => res.json)
+            .then(json => console.log(json.Search));
+
         //return fetch(url, {mode: 'cors'})
         //    .then(res => res.json())
         //    .then(json => console.log(json))
 
+
+
+
+        /*
         $.ajax({
           url: url,
           type: "GET",
-          dataType: "jsonp",
+          dataType: "json",
+            data: 'dataStream',
           success: function (data) {
             console.log(data);
             // and other stuff i do with the data i get
@@ -42,9 +72,25 @@ export default class JobSearchService {
           }
         });
 
-     }*/
+         */
+
+        /*
+
+        googleTrends.interestOverTime({keyword: 'Valentines Day'})
+            .then((res) => {
+                console.log('this is res', res);
+            })
+            .catch((err) => {
+                console.log('got the error', err);
+                console.log('error message', err.message);
+                console.log('request body',  err.requestBody);
+        });
 
 
+     };
+
+
+    /*
 
     // http://www.dice.com/external/content/documentation/api.html
 
@@ -67,8 +113,12 @@ export default class JobSearchService {
                 response =>
                     response.json());
 
+*/
+
 
     }
+
+
 
 
 
