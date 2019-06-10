@@ -1,6 +1,6 @@
 import React from 'react'
-import JobSearchList from './JobSearchList'
-import {BrowserRouter as Router, Link, Route, Switch}
+
+import {Link}
     from "react-router-dom";
 
 export default class HomePage extends React.Component {
@@ -10,12 +10,11 @@ export default class HomePage extends React.Component {
     }
 
     updateCategory(value) {
-        this.state = {value: value};
+        this.setState( {value: value});
     }
 
     render() {
         return (
-            <Router>
                 <div className="container text-center">
                     <h1>Welcome to Bountium </h1>
                     <div className="row">
@@ -32,7 +31,8 @@ export default class HomePage extends React.Component {
                                     <option value="SQL">SQL</option>
                                 </select>
                                 <br/>
-                                <Link to="/job-search-list">See jobs in this category</Link>
+                                <Link to={`/job-search-list/${this.state.value}`}>
+                                    See jobs in this category</Link>
                                 <br/>
                                 <h2>Job Title</h2>
                                 <input className="form-control" placeholder="Junior Python Developer Intern">
@@ -45,17 +45,12 @@ export default class HomePage extends React.Component {
                                 <br/>
                                 <button className="btn btn-primary"
                                         onClick={() => console.log(this.state.value)}
-                                        >Post</button>
+                                >Post
+                                </button>
                             </div>
                         </div>
                     </div>
                 </div>
-                <Switch>
-                    <Route path="/job-search-list"
-                           render={() =>
-                               <JobSearchList keywords={this.state.value}/>}/>
-                </Switch>
-            </Router>
         )
     }
 
