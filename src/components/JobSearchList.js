@@ -1,17 +1,19 @@
 import React from 'react';
-import JobSearchService from '../services/JobSearchService'
-import {BrowserRouter as Router, Link, Route, Switch}
+import JobDetails from './JobDetails'
+import {BrowserRouter as Router, Link, Route}
     from "react-router-dom";
 
-let jobService = JobSearchService.getInstance();
 
 export default class JobSearchList extends React.Component {
 
     constructor(props) {
         super(props);
+        const pathSplit = window.location.href.split("/");
+        const jobKeyword = pathSplit[4];
+
         this.state = (
             {
-                keywords: props.keywords,
+                keywords: jobKeyword,
                 jobList: null
             }
         )
@@ -38,31 +40,27 @@ export default class JobSearchList extends React.Component {
     }
 
     renderJobList() {
-        // var items;
-        console.log(this.state.jobList);
-        //{this.getJobs()}
         if (!this.state.jobList) {
             this.getJobs()
         } else {
-
-            let items = this.state.jobList
+            return this.state.jobList
                 .map(function (item, index) {
-
-
-                    return <tr className="d-flex">
-                        <td className="col-2"/>
+                    return <Router key={index}>
+                    <tr className="d-flex" >
                         <td className="col-6">
-                            <Link to={`/course-editor/${item.id}`}
+                            <Link to={`/job-details/${item.id}`}
                                   style={{color: 'black'}}>{item.title}</Link></td>
-                        <td className="col-4">
+                        <td className="col-6">
                             {item.company}
                         </td>
-                    </tr>;
+                    </tr>
+                        <Route path="/job-details/:jobId"
+                               render ={() =>
+                                   <JobDetails jobObj={item}/>
+                               }>
+                        </Route>
+                    </Router>;
                 });
-            return (
-                <ul className="list-group">
-                    {items}</ul>
-            )
         }
     }
 
@@ -70,7 +68,18 @@ export default class JobSearchList extends React.Component {
     render() {
         return (
             <div className="container-fluid">
+                <h1> Job Search List for {this.state.keywords}
+                    <span className="float-right">
+                            <Link to="/home-page"> Back to Homepage </Link>
+                    </span>
+                </h1>
                 <table>
+                    <thead>
+                    <tr className="d-flex">
+                        <th className="col-6">Title</th>
+                        <th className="col-6">Company Name</th>
+                    </tr>
+                    </thead>
                     <tbody>
                         {this.renderJobList()}
                     </tbody>
