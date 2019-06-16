@@ -1,4 +1,5 @@
 import React from 'react'
+import BizMgr from './BizMgr'
 
 export default class NewBusinessWorkflow extends React.Component {
 

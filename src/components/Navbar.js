@@ -21,7 +21,7 @@ export default class Navbar extends React.Component {
                 <Link className="nav-link" to="/widgets">Widgets</Link>
               </li>
             </ul>
-        </div>*/}
+          </div>*/}
       </header>
   }
 
