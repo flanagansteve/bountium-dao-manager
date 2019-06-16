@@ -1,13 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
 import  '../node_modules/bootstrap/dist/css/bootstrap.css';
 import '../node_modules/jquery/dist/jquery'
 import * as serviceWorker from './serviceWorker';
 
-import App from './App'
+import Welcome from './components/Welcome'
 
-ReactDOM.render(<App/>, document.getElementById('root'));
+ReactDOM.render(<Welcome/>, document.getElementById('root'));
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.
