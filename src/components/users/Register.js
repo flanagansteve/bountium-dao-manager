@@ -85,6 +85,11 @@ export default class Register extends React.Component {
 
         this.setState({
             returnedUser: null,
+            UsernameTakenAlert: false,
+            UsernameSpaceAlert: false,
+            PasswordDifAlert: false,
+            PasswordLenAlert: false,
+            FillOutFieldsAlert: false
         });
 
         // Make sure all fields are filled out
