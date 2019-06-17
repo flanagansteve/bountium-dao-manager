@@ -54,7 +54,6 @@ export default class NewBusinessWorkflow extends React.Component {
   }
 
   render() {
-    console.log(web3.eth)
     if (this.state.bizAddress !== "0x0") {
       return <p>Success! Go manage your business <Link to={`/mgr/${this.state.bizAddress}`}>here</Link></p>
     }
