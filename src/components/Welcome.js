@@ -37,7 +37,16 @@ export default class Welcome extends React.Component {
                 */
               }
               console.log(window.location.href.split('/')[4]);
-              return <BizMgr/>
+              return <BizMgr biz={
+                {
+                  shares : 1,
+                  totalShares : 1,
+                  orgFunds : 'hella',
+                  dividend : true,
+                  dilute : true,
+                  owners : ['mega', 'wiener']
+                }
+              }/>
             }}/>
             <Route path="/"
                    render={() => <div>
