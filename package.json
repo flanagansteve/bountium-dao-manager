@@ -18,7 +18,7 @@
     "react-router-dom": "^5.0.1",
     "react-scripts": "3.0.1",
     "react-transition-group": "^4.1.1",
-    "web3": "^1.0.0-beta.55"
+    "web3": "1.0.0-beta.37"
   },
   "scripts": {
     "start": "react-scripts start",

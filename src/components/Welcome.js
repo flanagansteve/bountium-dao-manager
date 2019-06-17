@@ -6,9 +6,9 @@ import Navbar from './Navbar'
 import NewBusinessWorkflow from './NewBusinessWorkflow'
 import MigratingBusinessWorkflow from './MigratingBusinessWorkflow'
 import ReturningBusinessWorkflow from './ReturningBusinessWorkflow'
-
 import Login from './users/Login'
 import Register from './users/Register'
+import BizMgr from './BizMgr'
 
 export default class Welcome extends React.Component {
 
@@ -17,17 +17,14 @@ export default class Welcome extends React.Component {
         <Router>
           <Navbar/>
           <Switch>
-            <Route path="/post/" render={() =>
-                <PostingPage/>}/>
-            <Route path="/job-search-list/:jobWord"
-                   render={() =>
-                       <JobSearchList/>
-                   }/>
+            <Route path="/post/" render={() => <PostingPage/>}/>
+            <Route path="/job-search-list/:jobWord" render={() => <JobSearchList/>}/>
             <Route path="/new" render={() => <NewBusinessWorkflow/>}/>
             <Route path="/migrating" render={() => <MigratingBusinessWorkflow/>}/>
             <Route path="/returning" render={() => <ReturningBusinessWorkflow/>}/>
             <Route path="/login" render={() => <Login/>}/>
             <Route path="/register" render={() => <Register/>}/>
+            <Route path="/mgr/:bizAddr" component={BizMgr}/>
             <Route path="/"
                    render={() => <div>
                      <h3>Welcome - lets work on your business!</h3>
