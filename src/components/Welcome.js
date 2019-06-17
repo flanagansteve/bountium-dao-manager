@@ -7,6 +7,9 @@ import NewBusinessWorkflow from './NewBusinessWorkflow'
 import MigratingBusinessWorkflow from './MigratingBusinessWorkflow'
 import ReturningBusinessWorkflow from './ReturningBusinessWorkflow'
 
+import Login from './users/Login'
+import Register from './users/Register'
+
 export default class Welcome extends React.Component {
 
   render() {
@@ -24,6 +27,8 @@ export default class Welcome extends React.Component {
             <Route path="/new" render={() => <NewBusinessWorkflow/>}/>
             <Route path="/migrating" render={() => <MigratingBusinessWorkflow/>}/>
             <Route path="/returning" render={() => <ReturningBusinessWorkflow/>}/>
+            <Route path="/login" render={() => <Login/>}/>
+            <Route path="/register" render={() => <Register/>}/>
             <Route path="/"
                    render={() => <div>
                      {/* new business starter button */}

@@ -1,9 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import  '../node_modules/bootstrap/dist/css/bootstrap.css';
+import '../node_modules/bootstrap/dist/css/bootstrap.css';
 import '../node_modules/jquery/dist/jquery'
 import * as serviceWorker from './serviceWorker';
-
+import './styling/UserStyling.css'
 import Welcome from './components/Welcome'
 
 ReactDOM.render(<Welcome/>, document.getElementById('root'));
