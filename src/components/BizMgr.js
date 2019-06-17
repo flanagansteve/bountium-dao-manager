@@ -2,8 +2,8 @@ import React from 'react';
 
 export default class BizMgr extends React.Component {
 
-  mapOwners() {
-
+  mapOwners(owner, key) {
+    return <p key={key}>{owner.name}</p>
   }
 
   fundBiz() {
@@ -12,27 +12,15 @@ export default class BizMgr extends React.Component {
 
   render() {
     var br = React.createElement("br", {});
-    /*
-    shares : 0,
-    totalShares : 0,
-    dividend : false,
-    dilute : false,
-    bestow : false,
-    modifyCatalogue : false,
-    board : false,
-    owners : owners_,
-    expanded : false,
-    orgFunds : 0
-    */
     var giveUS, dilute, bestow = null;
     if (this.props.biz.dilute) {
       giveUS = React.createElement("div", {},
         React.createElement("h5", {}, "Give unallocated shares:"),
         React.createElement("div", {className:"org-mgmt-form"},
-          React.createElement("label", {for:"give-shares-amt-input"}, "Amount of shares to give: "),
+          React.createElement("label", {htmlFor:"give-shares-amt-input"}, "Amount of shares to give: "),
           React.createElement("input", {type:"number", id:"give-shares-amt-input"}),
           br, br,
-          React.createElement("label", {for:"give-shares-addr-input"}, "Address of new owner: "),
+          React.createElement("label", {htmlFor:"give-shares-addr-input"}, "Address of new owner: "),
           React.createElement("input", {type:"text", id:"give-shares-addr-input"}),
           br, br,
           React.createElement("button", {onClick:this.giveUnallocated}, "Give shares")
@@ -41,10 +29,10 @@ export default class BizMgr extends React.Component {
       dilute = React.createElement("div", {},
         React.createElement("h5", {}, "Give new shares, diluting current owners' stakes:"),
         React.createElement("div", {className:"org-mgmt-form"},
-          React.createElement("label", {for:"dilute-shares-amt-input"}, "Amount of shares to create and give: "),
+          React.createElement("label", {htmlFor:"dilute-shares-amt-input"}, "Amount of shares to create and give: "),
           React.createElement("input", {type:"number", id:"dilute-shares-amt-input"}),
           br, br,
-          React.createElement("label", {for:"dilute-shares-addr-input"}, "Address of new owner: "),
+          React.createElement("label", {htmlFor:"dilute-shares-addr-input"}, "Address of new owner: "),
           React.createElement("input", {type:"text", id:"dilute-shares-addr-input"}),
           br, br,
           React.createElement("button", {onClick:this.dilute}, "Create and give shares")
@@ -59,10 +47,10 @@ export default class BizMgr extends React.Component {
         React.createElement("ul", {}, "4. can modify the catalogue"),
         React.createElement("ul", {}, "5. is a board member"),
         React.createElement("div", {className:"org-mgmt-form"},
-          React.createElement("label", {for:"give-permission-id-input"}, "Role ID: "),
+          React.createElement("label", {htmlFor:"give-permission-id-input"}, "Role ID: "),
           React.createElement("input", {type:"number", id:"give-permission-id-input"}),
           br, br,
-          React.createElement("label", {for:"give-permission-addr-input"}, "Address of bestowee: "),
+          React.createElement("label", {htmlFor:"give-permission-addr-input"}, "Address of bestowee: "),
           React.createElement("input", {type:"text", id:"give-permission-addr-input"}),
           br, br,
           React.createElement("button", {onClick:this.givePermission}, "Give permission")
@@ -80,10 +68,10 @@ export default class BizMgr extends React.Component {
       this.props.biz.owners.map(this.mapOwners),
       React.createElement("h5", {}, "Transfer your shares:"),
       React.createElement("div", {className:"org-mgmt-form"},
-        React.createElement("label", {for:"transfer-shares-amt-input"}, "Amount of shares to transfer: "),
+        React.createElement("label", {htmlFor:"transfer-shares-amt-input"}, "Amount of shares to transfer: "),
         React.createElement("input", {type:"number", id:"transfer-shares-amt-input"}),
         br, br,
-        React.createElement("label", {for:"transfer-shares-addr-input"}, "Address of new owner: "),
+        React.createElement("label", {htmlFor:"transfer-shares-addr-input"}, "Address of new owner: "),
         React.createElement("input", {type:"text", id:"transfer-shares-addr-input"}),
         br, br,
         React.createElement("button", {onClick:this.transfer}, "Transfer shares")
@@ -97,7 +85,7 @@ export default class BizMgr extends React.Component {
       React.createElement("p", null, "Current organisation balance: " + this.props.biz.orgFunds + " wei"),
       React.createElement("h5", {}, "Send funds to the organisation"),
       React.createElement("div", {className:"org-mgmt-form"},
-        React.createElement("label", {for:"org-funding-amt-input"}, "Amount to send organisation, in wei: "),
+        React.createElement("label", {htmlFor:"org-funding-amt-input"}, "Amount to send organisation, in wei: "),
         React.createElement("input", {type:"number", id:"org-funding-amt-input"}),
         br, br,
         React.createElement("button", {onClick:this.fundBiz}, "Send funds")
@@ -109,7 +97,7 @@ export default class BizMgr extends React.Component {
         React.createElement("h4", null, "Dividends"),
         React.createElement("h5", null, "Call for a new dividend"),
         React.createElement("div", {className:"org-mgmt-form"},
-          React.createElement("label", {for:"dividend-amt-input"}, "Wei per share: "),
+          React.createElement("label", {htmlFor:"dividend-amt-input"}, "Wei per share: "),
           React.createElement("input", {type:"number", id:"dividend-amt-input"}),
           br, br,
           React.createElement("button", {onClick:this.callDividend}, "Call for a dividend")

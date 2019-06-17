@@ -31,7 +31,8 @@ export default class Welcome extends React.Component {
             <Route path="/register" render={() => <Register/>}/>
             <Route path="/mgr/:bizAddr" render={() => {
               {
-                /* TODO give it a business object, either from the contract or backend
+                /* TODO give it a business object, either from the contract or backend,
+                   with all the fields in the below object
                   // TODO this breaks - 'abi.forEach is not a function'
                   bizContract : new web3.eth.Contract(autobizABI, window.location.href.split('/')[4])
                 */
@@ -39,12 +40,18 @@ export default class Welcome extends React.Component {
               console.log(window.location.href.split('/')[4]);
               return <BizMgr biz={
                 {
+                  name : "Steve's Salacious Spaghetti Store",
+                  description : "We sell the finest spaghetti in Essex county. From stringy, to not stringy, spaghetti, and including all varieties known to man. We grow our spaghetti free-range and cruelty free, and let it roam wild in its youth.",
                   shares : 1,
-                  totalShares : 1,
-                  orgFunds : 'hella',
+                  totalShares : 2,
                   dividend : true,
                   dilute : true,
-                  owners : ['mega', 'wiener']
+                  bestow : true,
+                  modifyCatalogue : true,
+                  board : true,
+                  orgFunds : 'hella',
+                  owners : [{name:'you', address:window.location.href.split('/')[4], shares:1}, {name:'john', address:'0x4cA1B904FC9f15Ec050108C0FfB3FB5Ba48c5510', shares:1}],
+                  products : [{name:'weenie', price:1}, {name:'hot dog', price:2}]
                 }
               }/>
             }}/>
