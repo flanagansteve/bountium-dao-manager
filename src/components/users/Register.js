@@ -124,7 +124,7 @@ export default class Register extends React.Component {
     render() {
         return (
             <div>
-                <h5>Sign up to save marketplaces, enable chat with co-owners, and more</h5>
+                <legend className="">Sign up to save marketplaces, enable chat with co-owners, and more</legend>
                 <div className="container">
                     {this.state.UsernameTakenAlert &&
                     <Alert variant='danger' onClose={() => this.handleDismiss("UsernameTakenAlert")} dismissible>

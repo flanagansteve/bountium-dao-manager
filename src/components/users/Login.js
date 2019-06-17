@@ -6,7 +6,7 @@ export default class Login extends React.Component {
     render() {
         return (
             <div>
-                <h5>Welcome back - sign in to continue</h5>
+                <legend>Welcome back - sign in to continue</legend>
                 <div className="container-fluid">
                     <div className="form">
                         <div className="form-group">
