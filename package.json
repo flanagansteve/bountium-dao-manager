@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "boostrap": "^2.0.0",
     "bootstrap": "^4.3.1",
     "google-trends-api": "^4.9.0",
     "https-proxy-agent": "^2.2.1",

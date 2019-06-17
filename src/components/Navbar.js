@@ -5,23 +5,26 @@ export default class Navbar extends React.Component {
 
   render() {
     return <header className="navbar navbar-expand">
-          <a className = "navbar-brand mr-0 mr-md-2" href="/">
-            Bountium Business Manager
-          </a>
-          {/* We don't need these yet but they're here if we want them:
+          <Link className="navbar-brand mr-0 mr-md-2" to="/">Bountium Business Manager</Link>
           <div className="col-8 d-none d-md-inline my-navbar">
             <ul className="nav navbar-collapse">
-              <li className="nav-item ml-auto">
-                <Link className="nav-link" to="/course/table">Table</Link>
+              <li className="nav-item mt-2 ml-auto">
+                <p>
+                  <Link className="" to="/login/">Login </Link>
+                  or
+                  <Link className="" to="/register/"> sign up </Link>
+                  to get even more features
+                </p>
               </li>
+              {/* We don't need these yet but they're here if we want them:
               <li className="nav-item">
                 <Link className="nav-link" to="/course/grid">Grid</Link>
               </li>
               <li className="nav-item">
                 <Link className="nav-link" to="/widgets">Widgets</Link>
-              </li>
+              </li>*/}
             </ul>
-          </div>*/}
+          </div>
       </header>
   }
 

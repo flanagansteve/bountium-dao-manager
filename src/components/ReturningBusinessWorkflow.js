@@ -1,11 +1,12 @@
 import React from 'react'
 import BizMgr from './BizMgr'
+import Login from './users/Login'
 
 export default class ReturningBusinessWorkflow extends React.Component {
 
   render() {
     return <div className="navbar navbar-expand">
-          <h1>you are a returning user</h1>
+          <Login/>
       </div>
   }
 

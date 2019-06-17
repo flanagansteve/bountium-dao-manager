@@ -23,8 +23,6 @@ export default class Register extends React.Component {
         }
     }
 
-    /* =======================================================================*/
-
     handleDismiss = (alert) => {
         switch (alert) {
             case "UsernameTakenAlert" :
@@ -65,8 +63,6 @@ export default class Register extends React.Component {
         }
     };
 
-    /* ======================================================================= */
-
     usernameChanged = (event) => {
         this.setState({
             username: (event.target.value)
@@ -84,8 +80,6 @@ export default class Register extends React.Component {
             verifyPassword: (event.target.value)
         })
     };
-
-    /* ======================================================================= */
 
     signUp = () => {
 
@@ -127,113 +121,64 @@ export default class Register extends React.Component {
         console.log(this.state);
     };
 
-    /* ========================================================================= */
-
-
     render() {
         return (
-
-
             <div>
-                <div className="bg-primary bountium-user-header container">
-                    <header className="container-fluid">Sign Up</header>
-                </div>
-
+                <h5>Sign Up</h5>
                 <div className="container">
-
-                    <p>
-                        <br>
-                        </br>
-                    </p>
-
                     {this.state.UsernameTakenAlert &&
                     <Alert variant='danger' onClose={() => this.handleDismiss("UsernameTakenAlert")} dismissible>
                         Username is already taken </Alert>}
-
                     {this.state.UsernameSpaceAlert &&
                     <Alert variant='danger' onClose={() => this.handleDismiss("UsernameSpaceAlert")} dismissible>
                         Username cannot have any spaces </Alert>}
-
                     {this.state.PasswordDifAlert &&
                     <Alert variant='warning' onClose={() => this.handleDismiss("PasswordDifAlert")} dismissible>
                         Password fields are not the same </Alert>}
-
                     {this.state.PasswordLenAlert &&
                     <Alert variant='warning' onClose={() => this.handleDismiss("PasswordLenAlert")} dismissible>
                         Password needs to be at least 8 characters long </Alert>}
-
                     {this.state.FillOutFieldsAlert &&
                     <Alert variant='warning' onClose={() => this.handleDismiss("FillOutFieldsAlert")} dismissible>
                         Fill out all of the fields before pressing the sign up button </Alert>}
-
-                    {(this.state.PasswordDifAlert || this.state.UsernameTakenAlert || this.state.FillOutFieldsAlert)
-                    || this.state.UsernameSpaceAlert || this.state.PasswordLenAlert &&
-                    <p>
-                        <br>
-                        </br>
-                    </p>}
-
-
-                    <form>
-                        <div className="form-group row container-fluid">
-                            <label htmlFor="username"
-                                   className="col-sm-2 col-lg-1 col-form-label">
-                                Username </label>
-                            <div className="col-sm-10">
-                                <input className="form-control"
-                                       id="username"
-                                       placeholder="Dao Manager Username"
-                                       onChange={(event) => this.usernameChanged(event)}/>
-                            </div>
-                        </div>
-
-                        <div className="form-group row container-fluid">
-                            <label htmlFor="password"
-                                   className="col-sm-2 col-lg-1 col-form-label">
-                                Password </label>
-                            <div className="col-sm-10">
-                                <input type="password"
-                                       className="form-control"
-                                       id="password"
-                                       placeholder="123qwe#$%"
-                                       onChange={(event) => this.passwordChanged(event)}/>
-                            </div>
-                        </div>
-
-                        <div className="form-group row container-fluid">
-                            <label htmlFor="verify-password"
-                                   className="col-sm-2  col-lg-1 col-form-label">
-                                Verify Password </label>
-                            <div className="col-sm-10">
-                                <input type="password"
-                                       className="form-control"
-                                       id="verify-password"
-                                       placeholder="123qwe#$%"
-                                       onChange={(event) => this.verifyChanged(event)}/>
-                            </div>
-                        </div>
-
-
-                        <div className="form-group row container-fluid">
-                            <label className="col-sm-2 col-lg-1 col-form-label"/>
-                            <div className="col-sm-10">
-                                <button
-                                    onClick={() => this.signUp()}
-                                    type="button"
-                                    className="btn btn-block btn-primary">
-                                    Sign Up
-                                </button>
-                            </div>
-                        </div>
-                    </form>
-
-                    <p>
-                        <br>
-                        </br>
-                    </p>
-
+                    <div className = "form">
+                          <div className="form-group">
+                              <label htmlFor="username"
+                                     className="col-form-label">
+                                  Username </label>
+                              <input className="form-control"
+                                     id="username"
+                                     placeholder="Dao Manager Username"
+                                     onChange={(event) => this.usernameChanged(event)}/>
+                          </div>
+                          <div className="form-group">
+                              <label htmlFor="password"
+                                     className="col-form-label">
+                                  Password </label>
+                              <input type="password"
+                                     className="form-control"
+                                     id="password"
+                                     placeholder="123qwe#$%"
+                                     onChange={(event) => this.passwordChanged(event)}/>
+                          </div>
+                          <div className="form-group">
+                              <label htmlFor="verify-password"
+                                     className="col-form-label">
+                                  Verify Password </label>
+                              <input type="password"
+                                     className="form-control"
+                                     id="verify-password"
+                                     placeholder="123qwe#$%"
+                                     onChange={(event) => this.verifyChanged(event)}/>
+                          </div>
+                          <button
+                              onClick={() => this.signUp()}
+                              type="button"
+                              className="btn btn-block btn-primary">
+                              Sign Up
+                          </button>
+                      </div>
                 </div>
-
             </div>
         )
     }

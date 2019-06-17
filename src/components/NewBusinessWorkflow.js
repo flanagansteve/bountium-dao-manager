@@ -1,11 +1,12 @@
 import React from 'react'
 import BizMgr from './BizMgr'
+import Register from './users/Register'
 
 export default class NewBusinessWorkflow extends React.Component {
 
   render() {
     return <div className="navbar navbar-expand">
-          <h1>you are a new business</h1>
+        <h5>You are a new business</h5>
       </div>
   }
 

@@ -16,7 +16,6 @@ export default class Welcome extends React.Component {
     return <div className="container-fluid">
         <Router>
           <Navbar/>
-          <h3>Welcome - lets work on your business!</h3>
           <Switch>
             <Route path="/post/" render={() =>
                 <PostingPage/>}/>
@@ -31,6 +30,7 @@ export default class Welcome extends React.Component {
             <Route path="/register" render={() => <Register/>}/>
             <Route path="/"
                    render={() => <div>
+                     <h3>Welcome - lets work on your business!</h3>
                      {/* new business starter button */}
                      <div className="container-fluid mt-1">
                        <Link to={`/new/`} className="btn btn-primary">
