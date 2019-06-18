@@ -14,6 +14,12 @@ const bizService = BusinessService.getInstance();
 
 export default class Welcome extends React.Component {
 
+  renderBusinesses(bizId, key) {
+    return <tr key={key}>
+      <a href={"/mgr/" + bizId}>Business at {bizId}</a>
+    </tr>
+  }
+
   render() {
     return <div className="container-fluid">
         <Router>
@@ -61,29 +67,36 @@ export default class Welcome extends React.Component {
                 }
               }/>
             }}/>
-            <Route path="/"
-                   render={() => <div>
-                     <h3>Welcome - lets work on your business!</h3>
-                     {/* new business starter button */}
-                     <div className="container-fluid mt-1">
-                       <Link to={`/new/`} className="btn btn-primary">
-                         Start a new business
-                       </Link>
-                     </div>
-                     {/* existing business migrater button */}
-                     <div className="container-fluid mt-1">
-                       <Link to={`/migrating/`} className="btn btn-info">
-                         Convert your existing business to Bountium
-                       </Link>
-                     </div>
-                     {/* returning user login */}
-                     <div className="container-fluid mt-1">
-                       <Link to={`/returning/`} className="btn btn-success">
-                         Log in and manage your Bountium business
-                       </Link>
-                     </div>
-                     </div>
-                   }/>
+            <Route path="/" render={() => {
+              return <div>
+                <h3>Welcome - lets work on your business!</h3>
+                <div className="row">
+                  <div className="col-6">
+                    <div className="container-fluid mt-1">
+                      <Link to={`/new/`} className="btn btn-primary">
+                        Start a new business
+                      </Link>
+                    </div>
+                    <div className="container-fluid mt-1">
+                      <Link to={`/migrating/`} className="btn btn-info">
+                        Convert your existing business to Bountium
+                      </Link>
+                    </div>
+                    <div className="container-fluid mt-1">
+                      <Link to={`/returning/`} className="btn btn-success">
+                        Log in and manage your Bountium business
+                      </Link>
+                    </div>
+                  </div>
+                  <div className="col-6 float-right">
+                    <h4>Browse business</h4>
+                    {/*TODO show business a non-logged-in user can see*/}
+                    <table>
+                      {['1234', '5678'].map(this.renderBusinesses)}
+                    </table>
+                  </div>
+                </div>
+              </div>}}/>
           </Switch>
         </Router>
       </div>
