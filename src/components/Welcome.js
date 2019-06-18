@@ -23,7 +23,7 @@ export default class Welcome extends React.Component {
             <Route path="/job-search-list/:jobWord" render={() => <JobSearchList/>}/>
             <Route path="/new" render={() => <NewBusinessWorkflow/>}/>
             <Route path="/migrating" render={() => <MigratingBusinessWorkflow/>}/>
-            <Route path="/returning" render={() => <ReturningBusinessWorkflow/>}/>
+            <Route path="/returning" render={() => <Login/>}/>
             <Route path="/login" render={() => <Login/>}/>
             <Route path="/register" render={() => <Register/>}/>
             <Route path="/mgr/:bizAddr" render={() => {
