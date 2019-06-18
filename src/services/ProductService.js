@@ -34,7 +34,6 @@ export default class ProductService {
     }
 
     updateProduct = (id, product) => {
-        console.log("update product | id:" + id + ", json" + product)
         fetch(`${ProductService.getUrl()}/${id}`, {
             method: 'PUT',
             body: JSON.stringify(product),
