@@ -10,17 +10,12 @@ export default class BizMgr extends React.Component {
     super(props);
     // TODO how do we get this from session
     var currentUsername = "Steve"
-    var currentOwner = this.props.biz.owners.filter((owner => owner.username == currentUsername))[0];
     this.state = {
       viewingOrg : true,
       viewingProducts : false,
       viewingOps : false,
       // The permissions of the current user
-      dividend : currentOwner.dividend,
-      dilute : currentOwner.dilute,
-      bestow : currentOwner.bestow,
-      modifyCatalogue : currentOwner.modifyCatalogue,
-      board : currentOwner.board
+      currentOwner : this.props.biz.owners.filter((owner => owner.username == currentUsername))[0]
     }
     this.viewProducts = this.viewProducts.bind(this);
     this.viewOrg = this.viewOrg.bind(this);
@@ -59,6 +54,7 @@ export default class BizMgr extends React.Component {
   }
 
   mapOwners(owner, key) {
+    // TODO make these links to user profiles
     return <p key={key}>{owner.name}</p>
   }
 
@@ -144,9 +140,9 @@ export default class BizMgr extends React.Component {
                 <div className="col-6 mb-2 mt-1">
                   <h4>Ownership and shares</h4>
                   <p>{
-                    "Your stake: " + this.props.biz.shares + " shares of "
+                    "Your stake: " + this.state.currentOwner.shares + " shares of "
                       + this.props.biz.totalShares + " total shares, for a stake of "
-                      + ((this.props.biz.shares / this.props.biz.totalShares) * 100) + "%"
+                      + ((this.state.currentOwner.shares / this.props.biz.totalShares) * 100) + "%"
                   }</p>
                   <p>Owners:</p>
                   {this.props.biz.owners.map(this.mapOwners)}
@@ -164,7 +160,7 @@ export default class BizMgr extends React.Component {
                   </div>
                 </div>
               </div>
-              {this.state.dilute && <div className="row border">
+              {this.state.currentOwner.dilute && <div className="row border">
                 <div className="form col-6 mb-2 mt-1">
                   <legend>Give unallocated shares</legend>
                   <div className="form-group">
@@ -192,7 +188,7 @@ export default class BizMgr extends React.Component {
                 </div>
               }
               <div className="row border">
-                {this.state.bestow &&
+                {this.state.currentOwner.bestow &&
                   <div className="col-6 mb-2 mt-1">
                     <legend>Bestow permissioned roles to a co-owner:</legend>
                     <div className="form-group">
@@ -209,7 +205,7 @@ export default class BizMgr extends React.Component {
                     <button className="btn btn-primary mt-1" onClick={this.givePermission}>Give permission</button>
                   </div>
                 }
-                {this.state.dividend &&
+                {this.state.currentOwner.dividend &&
                   <div className="form col-6 mb-2 mt-1">
                     <legend>Call for a new dividend</legend>
                     <div className="form-group">
