@@ -64,7 +64,7 @@ export default class ProductEditor extends React.Component {
                 description: description,
                 price: price,
                 imageurl: url,
-                versions: this.state.versions}
+                versions: this.state.versions.join()}
         if (this.checkFields(product)) {
             this.service.updateProduct("123", product)
             window.location.href = "/"
