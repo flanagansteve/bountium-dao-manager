@@ -14,6 +14,7 @@ export default class BusinessService {
       return this.myInstance;
     }
 
+    // Sends a biz object with all requisite fields to create a new one
     createBiz = (biz) =>
       fetch(`${fetchHost}/api/business/`, {
         method: 'POST',
@@ -23,6 +24,8 @@ export default class BusinessService {
         }
       }).then(response => response.json());
 
+    // Send a new biz object with updated fields
+    // TODO one day this should only be callable by a permissioned owner
     updateBiz = (newBiz, bizId) =>
       fetch(`${fetchHost}/api/business/${bizId}`, {
         method: 'PUT',
@@ -32,6 +35,7 @@ export default class BusinessService {
         }
       }).then(response => response.json());
 
+    // Retrieve a business object
     // TODO one day this should only return most info if the user is a co owner
     getBiz = (bizId) =>
       fetch(`${fetchHost}/api/business/${bizId}`)

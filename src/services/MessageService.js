@@ -14,6 +14,7 @@ export default class MessageService {
       return this.myInstance;
     }
 
+    // Wants to push a message onto the array of messages within a biz
     sendMessage = (message, bizId) => {
       fetch(`${fetchHost}/api/business/${bizId}/messages`, {
         method: 'POST',
@@ -24,6 +25,7 @@ export default class MessageService {
       }).then(response => response.json());
     }
 
+    // expects a list of messages, ie, the messages field of a business
     getMessages = (bizId) =>
       fetch(`${fetchHost}/api/business/${bizId}/messages`).then(response => response.json());
 }
