@@ -25,5 +25,4 @@ export default class MessageService {
 
     getMessages = (bizId) =>
       fetch(`${fetchHost}/api/message${bizId}`).then(response => response.json());
-      
 }
