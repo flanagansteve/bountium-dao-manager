@@ -1,9 +1,7 @@
 import React from 'react';
 import Alert from 'react-bootstrap/Alert'
-import {Redirect} from "react-router-dom";
+
 import HTTPService from '../../services/HTTPService'
-
-
 const httpService = HTTPService.getInstance();
 
 export default class Register extends React.Component {
@@ -12,7 +10,6 @@ export default class Register extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            profileRedirect: false,
             username: "",
             password: "",
             verifyPassword: "",
@@ -21,9 +18,10 @@ export default class Register extends React.Component {
             PasswordDifAlert: false,
             PasswordLenAlert: false,
             FillOutFieldsAlert: false,
-            returnedUser: null
         }
     }
+
+    //=======================================================================
 
     handleDismiss = (alert) => {
         switch (alert) {
@@ -45,6 +43,8 @@ export default class Register extends React.Component {
         }
     };
 
+    //-----------------------------------------------------------------------
+
     handleShow = (alert) => {
         switch (alert) {
             case "UsernameTakenAlert" :
@@ -65,11 +65,15 @@ export default class Register extends React.Component {
         }
     };
 
+    //=======================================================================
+
     usernameChanged = (event) => {
         this.setState({
             username: (event.target.value)
         })
     };
+
+    //-----------------------------------------------------------------------
 
     passwordChanged = (event) => {
         this.setState({
@@ -77,16 +81,19 @@ export default class Register extends React.Component {
         })
     };
 
+    //-----------------------------------------------------------------------
+
     verifyChanged = (event) => {
         this.setState({
             verifyPassword: (event.target.value)
         })
     };
 
+    //=======================================================================
+
     signUp = () => {
 
         this.setState({
-            returnedUser: null,
             UsernameTakenAlert: false,
             UsernameSpaceAlert: false,
             PasswordDifAlert: false,
@@ -121,15 +128,14 @@ export default class Register extends React.Component {
                             UsernameTakenAlert: true
                         });
                     } else {
-                        this.setState({
-                            returnedUser: response,
-                        });
                         window.location.href = ("/profile");
                     }
                 }
             )
         }
     };
+
+    //==============================================================================
 
     render() {
 
