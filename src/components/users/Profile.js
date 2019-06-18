@@ -19,13 +19,19 @@ export default class Profile extends React.Component {
         this.state = {
             username: "",
             password: "",
+            newPassword: "",
             verifyPassword: "",
             firstName: "",
             lastName: "",
+            ViewingPassword: false,
             PasswordDifAlert: false,
             PasswordLenAlert: false,
+            PasswordSuccessAlert: false,
+            ChangesSuccessAlert: false
         }
     }
+
+    //==========================================================================================
 
     handleDismiss = (alert) => {
         switch (alert) {
@@ -34,6 +40,12 @@ export default class Profile extends React.Component {
                 break;
             case "PasswordLenAlert" :
                 this.setState({PasswordLenAlert: false});
+                break;
+            case "PasswordSuccessAlert" :
+                this.setState({PasswordSuccessAlert: false});
+                break;
+            case "ChangesSuccessAlert" :
+                this.setState({ChangesSuccessAlert: false});
                 break;
         }
     };
@@ -46,14 +58,32 @@ export default class Profile extends React.Component {
             case "PasswordLenAlert" :
                 this.setState({PasswordLenAlert: true});
                 break;
+            case "PasswordSuccessAlert" :
+                this.setState({PasswordSuccessAlert: true});
+                break;
+            case "ChangesSuccessAlert" :
+                this.setState({ChangesSuccessAlert: true});
+                break;
         }
     };
 
     //=============================================================================
 
+    firstNameChanged = (event) => {
+        this.setState({
+            firstName: (event.target.value)
+        })
+    };
+
+    lastNameChanged = (event) => {
+        this.setState({
+            lastName: (event.target.value)
+        })
+    };
+
     passwordChanged = (event) => {
         this.setState({
-            password: (event.target.value)
+            newPassword: (event.target.value)
         })
     };
 
@@ -65,66 +95,93 @@ export default class Profile extends React.Component {
 
     //===============================================================================
 
-    signUp = () => {
-
+    viewPassword = () => {
         this.setState({
-            returnedUser: null,
-            UsernameTakenAlert: false,
-            UsernameSpaceAlert: false,
-            PasswordDifAlert: false,
-            PasswordLenAlert: false,
-            FillOutFieldsAlert: false
-        });
+            ViewingPassword: true
+        })
+    };
 
-        // Make sure all fields are filled out
-        if (this.state.username === "" || this.state.password === "" || this.state.verifyPassword === "") {
-            this.handleShow("FillOutFieldsAlert")
-        }
+    hidePassword = () => {
+
         // Make sure passwords are the same
-        else if (this.state.password !== this.state.verifyPassword) {
+        if (this.state.newPassword !== this.state.verifyPassword) {
             this.handleShow("PasswordDifAlert")
         } else if (this.state.password.length < 8) {
             this.handleShow("PasswordLenAlert")
-        }
-        // Make sure the Username is has no spaces
-        else if (this.state.username.indexOf(' ') > 0) {
-            this.handleShow("UsernameSpaceAlert")
         } else {
-            let newUser = {
+            let updatedUser = {
+                id: this.state.id,
                 username: this.state.username,
-                password: this.state.password,
-                firstName: "",
-                lastName: ""
+                password: this.state.newPassword,
+                firstName: this.state.firstName,
+                lastName: this.state.lastName
             };
-            userService.createUser(newUser).then(response => {
-                    if (response.username !== "null") {
-                        this.setState({
-                            returnedUser: response
-                        });
 
-                        httpService.registerUser(response).then( response =>
-                            console.log("Registered User" + JSON.stringify(response))
-                        );
-
-                    } else {
-                        this.handleShow("UsernameTakenAlert")
-                    }
+            userService.updateUser(updatedUser).then(response => {
+                    this.setState({
+                        password: response.password,
+                        newPassword: "",
+                        verifyPassword: "",
+                        firstName: response.firstName,
+                        lastName: response.lastName
+                    })
                 }
             );
+            this.setState({
+                ViewingPassword: false,
+                PasswordSuccessAlert: true,
+            });
         }
-        console.log(this.state);
+
+
+    };
+
+    //=====================================================================
+
+    updateInfo = () => {
+
+        this.setState({
+            PasswordDifAlert: false,
+            PasswordLenAlert: false,
+            PasswordSuccessAlert: false,
+            ChangesSuccessAlert: false
+        });
+
+        let updatedUser = {
+            id: this.state.id,
+            username: this.state.username,
+            password: this.state.password,
+            firstName: this.state.firstName,
+            lastName: this.state.lastName,
+        };
+        userService.updateUser(updatedUser).then(response => {
+
+            console.log(response);
+
+                if (response !== null) {
+                    this.setState({
+                        username: response.username,
+                        password: response.password,
+                        firstName: response.firstName,
+                        lastName: response.lastName,
+                        ChangesSuccessAlert: true
+                    });
+                }
+            }
+        )
+
     };
 
     //=============================================================================
 
     render() {
 
-        if(this.state.username === ""){
+        if (this.state.username === "") {
             httpService.receiveSessionProfile().then(response =>
                 this.setState({
+                    id: response.id,
                     username: response.username,
                     password: response.password,
-                    verifyPassword: response.password,
                     firstName: response.firstName,
                     lastName: response.lastName
                 })
@@ -137,14 +194,26 @@ export default class Profile extends React.Component {
             <div>
                 {(this.state.username !== "") &&
                 <div>
-                    <legend className="">Sign up to save marketplaces, enable chat with co-owners, and more</legend>
+                    <legend className="">Welcome to your Profile page where you can view and edit your public and
+                        private information
+                    </legend>
                     <div className="container">
+
                         {this.state.PasswordDifAlert &&
                         <Alert variant='warning' onClose={() => this.handleDismiss("PasswordDifAlert")} dismissible>
                             Password fields are not the same </Alert>}
                         {this.state.PasswordLenAlert &&
                         <Alert variant='warning' onClose={() => this.handleDismiss("PasswordLenAlert")} dismissible>
                             Password needs to be at least 8 characters long </Alert>}
+
+                        {this.state.PasswordSuccessAlert &&
+                        <Alert variant='success' onClose={() => this.handleDismiss("PasswordSuccessAlert")} dismissible>
+                            Password Successfully Changed </Alert>}
+                        {this.state.ChangesSuccessAlert &&
+                        <Alert variant='success' onClose={() => this.handleDismiss("ChangesSuccessAlert")} dismissible>
+                             User Data Successfully Changed</Alert>}
+
+
                         <div className="form">
                             <div className="form-group">
                                 <label htmlFor="username"
@@ -156,32 +225,82 @@ export default class Profile extends React.Component {
                                        value={this.state.username}
                                        readOnly/>
                             </div>
+
                             <div className="form-group">
-                                <label htmlFor="password"
+                                <label htmlFor="firstName"
                                        className="col-form-label">
-                                    Password </label>
-                                <input type="password"
-                                       className="form-control"
-                                       id="password"
-                                       placeholder="123qwe#$%"
-                                       onChange={(event) => this.passwordChanged(event)}/>
+                                    First Name </label>
+                                <input className="form-control"
+                                       id="firstName"
+                                       value={this.state.firstName}
+                                       onChange={(event) => this.firstNameChanged(event)}/>
                             </div>
+
                             <div className="form-group">
-                                <label htmlFor="verify-password"
+                                <label htmlFor="lastName"
                                        className="col-form-label">
-                                    Verify Password </label>
-                                <input type="password"
-                                       className="form-control"
-                                       id="verify-password"
-                                       placeholder="123qwe#$%"
-                                       onChange={(event) => this.verifyChanged(event)}/>
+                                    Last Name </label>
+                                <input className="form-control"
+                                       id="lastName"
+                                       value={this.state.lastName}
+                                       onChange={(event) => this.lastNameChanged(event)}/>
                             </div>
+
                             <button
-                                onClick={() => this.signUp()}
+                                onClick={() => this.updateInfo()}
+                                type="button"
+                                className="btn btn-block btn-info">
+                                Save Profile Changes
+                            </button>
+
+                            {!this.state.ViewingPassword &&
+                            <button
+                                onClick={() => this.viewPassword()}
                                 type="button"
                                 className="btn btn-block btn-primary">
-                                Save Changes
+                                Change Password
                             </button>
+                            }
+
+                            {this.state.ViewingPassword &&
+                            <div>
+                                <div className="form-group">
+                                    <label htmlFor="password"
+                                           className="col-form-label">
+                                        Old Password </label>
+                                    <input className="form-control"
+                                           id="password"
+                                           value={this.state.password}
+                                           readOnly/>
+                                </div>
+                                <div className="form-group">
+                                    <label htmlFor="newPassword"
+                                           className="col-form-label">
+                                        New Password </label>
+                                    <input type="password"
+                                           className="form-control"
+                                           id="newPassword"
+                                           placeholder="123qwe#$%"
+                                           onChange={(event) => this.passwordChanged(event)}/>
+                                </div>
+                                <div className="form-group">
+                                    <label htmlFor="verify-password"
+                                           className="col-form-label">
+                                        Verify Password </label>
+                                    <input type="password"
+                                           className="form-control"
+                                           id="verify-password"
+                                           placeholder="123qwe#$%"
+                                           onChange={(event) => this.verifyChanged(event)}/>
+                                </div>
+                                <button
+                                    onClick={() => this.hidePassword()}
+                                    type="button"
+                                    className="btn btn-block btn-primary">
+                                    Update Password
+                                </button>
+                            </div>
+                            }
                         </div>
                     </div>
                 </div>
