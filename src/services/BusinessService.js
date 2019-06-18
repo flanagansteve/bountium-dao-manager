@@ -32,4 +32,9 @@ export default class BusinessService {
         }
       }).then(response => response.json());
 
+    // TODO one day this should only return most info if the user is a co owner
+    getBiz = (bizId) =>
+      fetch(`${fetchHost}/api/business/${bizId}`)
+        .then(response => response.json());
+
 }
