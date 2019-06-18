@@ -1,6 +1,7 @@
 import React from 'react';
 import ChatClient from './ChatClient';
 import BizDetails from './BizDetails';
+import BusinessService from '../services/BusinessService';
 
 export default class BizMgr extends React.Component {
 
