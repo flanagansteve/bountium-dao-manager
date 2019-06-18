@@ -14,15 +14,16 @@ export default class MessageService {
       return this.myInstance;
     }
 
-    sendMessage = (message, bizId) =>
-      fetch(`${fetchHost}/api/message/${bizId}`, {
+    sendMessage = (message, bizId) => {
+      fetch(`${fetchHost}/api/business/${bizId}/messages`, {
         method: 'POST',
         body: JSON.stringify(message),
         headers: {
           'content-type': 'application/json'
         }
       }).then(response => response.json());
+    }
 
     getMessages = (bizId) =>
-      fetch(`${fetchHost}/api/message${bizId}`).then(response => response.json());
+      fetch(`${fetchHost}/api/business/${bizId}/messages`).then(response => response.json());
 }

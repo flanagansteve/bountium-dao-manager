@@ -8,18 +8,25 @@ export default class ChatClient extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      msgs : [{sender:'Loading...', content:'Loading...', timestamp:0}]
+      msgs : this.props.msgs
     }
     this.fetchMsgs = this.fetchMsgs.bind(this);
   }
 
   componentDidMount() {
+    // TODO make an interval that fetches messages periodically here
     this.fetchMsgs();
   }
 
   fetchMsgs() {
-    msgService.getMessages(this.props.bizId).then(response => this.setState({msgs : response}));
+    // TODO make this ask the api for the messages field of the business
+    // msgService.getMessages(this.props.bizId).then(response => this.setState({msgs : response}));
     // this.setState({msgs:msgService.getMessages(this.props.bizId)})
+    this.setState({msgs:this.props.msgs})
+  }
+
+  sendMsg() {
+    msgService.sendMessage(document.getElementById("new-message").value);
   }
 
   renderMessages(msg, key) {
