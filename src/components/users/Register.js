@@ -1,6 +1,6 @@
 import React from 'react';
 import Alert from 'react-bootstrap/Alert'
-
+import {Redirect} from "react-router-dom";
 import HTTPService from '../../services/HTTPService'
 
 
@@ -12,6 +12,7 @@ export default class Register extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            profileRedirect: false,
             username: "",
             password: "",
             verifyPassword: "",
@@ -113,15 +114,25 @@ export default class Register extends React.Component {
                 firstName: "",
                 lastName: ""
             };
-            httpService.registerUser(newUser).then( response =>
-                this.setState({
-                    returnedUser: response
-                })
-            );
+            httpService.registerUser(newUser).then(response => {
+
+                    if (response.username === "null") {
+                        this.setState({
+                            UsernameTakenAlert: true
+                        });
+                    } else {
+                        this.setState({
+                            returnedUser: response,
+                        });
+                        window.location.href = ("/profile");
+                    }
+                }
+            )
         }
     };
 
     render() {
+
         return (
             <div>
                 <legend className="">Sign up to save marketplaces, enable chat with co-owners, and more</legend>
@@ -141,43 +152,43 @@ export default class Register extends React.Component {
                     {this.state.FillOutFieldsAlert &&
                     <Alert variant='warning' onClose={() => this.handleDismiss("FillOutFieldsAlert")} dismissible>
                         Fill out all of the fields before pressing the sign up button </Alert>}
-                    <div className = "form">
-                          <div className="form-group">
-                              <label htmlFor="username"
-                                     className="col-form-label">
-                                  Username </label>
-                              <input className="form-control"
-                                     id="username"
-                                     placeholder="Dao Manager Username"
-                                     onChange={(event) => this.usernameChanged(event)}/>
-                          </div>
-                          <div className="form-group">
-                              <label htmlFor="password"
-                                     className="col-form-label">
-                                  Password </label>
-                              <input type="password"
-                                     className="form-control"
-                                     id="password"
-                                     placeholder="123qwe#$%"
-                                     onChange={(event) => this.passwordChanged(event)}/>
-                          </div>
-                          <div className="form-group">
-                              <label htmlFor="verify-password"
-                                     className="col-form-label">
-                                  Verify Password </label>
-                              <input type="password"
-                                     className="form-control"
-                                     id="verify-password"
-                                     placeholder="123qwe#$%"
-                                     onChange={(event) => this.verifyChanged(event)}/>
-                          </div>
-                          <button
-                              onClick={() => this.signUp()}
-                              type="button"
-                              className="btn btn-block btn-primary">
-                              Sign Up
-                          </button>
-                      </div>
+                    <div className="form">
+                        <div className="form-group">
+                            <label htmlFor="username"
+                                   className="col-form-label">
+                                Username </label>
+                            <input className="form-control"
+                                   id="username"
+                                   placeholder="Dao Manager Username"
+                                   onChange={(event) => this.usernameChanged(event)}/>
+                        </div>
+                        <div className="form-group">
+                            <label htmlFor="password"
+                                   className="col-form-label">
+                                Password </label>
+                            <input type="password"
+                                   className="form-control"
+                                   id="password"
+                                   placeholder="123qwe#$%"
+                                   onChange={(event) => this.passwordChanged(event)}/>
+                        </div>
+                        <div className="form-group">
+                            <label htmlFor="verify-password"
+                                   className="col-form-label">
+                                Verify Password </label>
+                            <input type="password"
+                                   className="form-control"
+                                   id="verify-password"
+                                   placeholder="123qwe#$%"
+                                   onChange={(event) => this.verifyChanged(event)}/>
+                        </div>
+                        <button
+                            onClick={() => this.signUp()}
+                            type="button"
+                            className="btn btn-block btn-primary">
+                            Sign Up
+                        </button>
+                    </div>
                 </div>
             </div>
         )
