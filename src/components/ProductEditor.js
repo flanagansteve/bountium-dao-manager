@@ -65,8 +65,10 @@ export default class ProductEditor extends React.Component {
                 price: price,
                 imageurl: url,
                 versions: this.state.versions}
-        this.checkFields(product)
-        this.service.updateProduct("123", product)
+        if (this.checkFields(product)) {
+            this.service.updateProduct("123", product)
+            window.location.href = "/"
+        }
     }
 
     render() {
@@ -75,35 +77,35 @@ export default class ProductEditor extends React.Component {
             {this.state.alert}
             <div className="jumbotron">
                 <h1 className="display-4">Edit Product</h1>
-                <label for="productName" className="col-sm-4 col-form-label">
+                <label htmlFor="productName" className="col-sm-4 col-form-label">
         				Product Name </label>
         		<div className="col-sm-10">
         			<input className="form-control" id="productName"
                     placeholder="Mike's Mighty Mangos"/>
                 </div>
                 <br/>
-                <label for="productDescription" className="col-sm-4 col-form-label">
+                <label htmlFor="productDescription" className="col-sm-4 col-form-label">
         				Product Description </label>
         		<div className="col-sm-10">
         			<textarea className="form-control" id="productDescription"
                     placeholder="Premier mangos grown from the finest soils in the US."/>
                 </div>
                 <br/>
-                <label for="price" className="col-sm-4 col-form-label">
+                <label htmlFor="price" className="col-sm-4 col-form-label">
         				Product Price (US $) </label>
         		<div className="col-sm-10">
         			<input className="form-control" type="number" id="productPrice" min="0.00"
                     placeholder=" 1.25" step="0.01"/>
                 </div>
                 <br/>
-                <label for="imageurl" className="col-sm-4 col-form-label">
+                <label htmlFor="imageurl" className="col-sm-4 col-form-label">
                         Product Image URL </label>
                 <div className="col-sm-10">
                     <input className="form-control" id="imageurl" min="0.00"
                     placeholder="imgur.com/R390EId"/>
                 </div>
                 <br/>
-                <label for="version-input" className="col-sm-4 col-form-label">
+                <label htmlFor="version-input" className="col-sm-4 col-form-label">
                     Product Versions (Optional) </label>
                 <div className="container-fluid input-group" id="versions-input">
                     {this.state.versions.map(this.renderExistingVersion)}
