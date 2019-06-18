@@ -1,5 +1,4 @@
 import React from 'react'
-import PostingPage from './PostingPage'
 import {BrowserRouter as Router, Switch, Route, Link} from "react-router-dom";
 import JobSearchList from './JobSearchList'
 import Navbar from './Navbar'
@@ -9,6 +8,7 @@ import ReturningBusinessWorkflow from './ReturningBusinessWorkflow'
 import Login from './users/Login'
 import Register from './users/Register'
 import BizMgr from './BizMgr'
+import BountyMgr from './BountyMgr'
 import BusinessService from '../services/BusinessService';
 const bizService = BusinessService.getInstance();
 
@@ -19,7 +19,7 @@ export default class Welcome extends React.Component {
         <Router>
           <Navbar/>
           <Switch>
-            <Route path="/post/" render={() => <PostingPage/>}/>
+            <Route path="/post/" render={() => <div><h1>Welcome to Bountium</h1><BountyMgr/></div>}/>
             <Route path="/job-search-list/:jobWord" render={() => <JobSearchList/>}/>
             <Route path="/new" render={() => <NewBusinessWorkflow/>}/>
             <Route path="/migrating" render={() => <MigratingBusinessWorkflow/>}/>

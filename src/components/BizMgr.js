@@ -1,6 +1,7 @@
 import React from 'react';
 import ChatClient from './ChatClient';
 import BizDetails from './BizDetails';
+import BountyMgr from './BountyMgr'
 import BusinessService from '../services/BusinessService';
 const bizService = BusinessService.getInstance();
 
@@ -219,6 +220,10 @@ export default class BizMgr extends React.Component {
             {this.props.biz.products.map(this.mapProducts)}
           </div>
         </div>}
+        {this.state.viewingOps && <div className="container-fluid">
+          <BountyMgr/>
+        </div>
+        }
         <ChatClient msgs={this.props.biz.msgs}/>
       </div>
     );
