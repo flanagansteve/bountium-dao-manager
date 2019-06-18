@@ -8,6 +8,7 @@ import MigratingBusinessWorkflow from './MigratingBusinessWorkflow'
 import ReturningBusinessWorkflow from './ReturningBusinessWorkflow'
 import Login from './users/Login'
 import Register from './users/Register'
+import Profile from './users/Profile'
 import BizMgr from './BizMgr'
 
 export default class Welcome extends React.Component {
@@ -24,6 +25,7 @@ export default class Welcome extends React.Component {
             <Route path="/returning" render={() => <ReturningBusinessWorkflow/>}/>
             <Route path="/login" render={() => <Login/>}/>
             <Route path="/register" render={() => <Register/>}/>
+            <Route path="/profile" render={() => <Profile/>}/>
             <Route path="/mgr/:bizAddr" render={() => {
               {
                 /* TODO give it a business object, either from the contract or backend,

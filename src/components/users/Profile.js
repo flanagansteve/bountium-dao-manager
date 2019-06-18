@@ -11,7 +11,7 @@ const cookies = new Cookies();
 const userService = UserService.getInstance();
 const httpService = HTTPService.getInstance();
 
-export default class Register extends React.Component {
+export default class Profile extends React.Component {
 
 
     constructor(props) {
