@@ -8,8 +8,7 @@ export default class BizDetails extends React.Component {
       editing : false,
       biz : {
         name : this.props.biz.name,
-        description : this.props.biz.description,
-        tags : this.props.biz.tags
+        description : this.props.biz.description
       }
     }
     this.modifyBizDetails = this.modifyBizDetails.bind(this);
@@ -21,16 +20,14 @@ export default class BizDetails extends React.Component {
   updateName(e) {
     this.setState({biz: {
       name : e.target.value,
-      description : this.state.biz.description,
-      tags : this.state.biz.tags
+      description : this.state.biz.description
     }})
   }
 
   updateDescription(e) {
     this.setState({biz: {
       name : this.state.biz.name,
-      description : e.target.value,
-      tags : this.state.biz.tags
+      description : e.target.value
     }})
   }
 
@@ -52,9 +49,6 @@ export default class BizDetails extends React.Component {
         <div className="container-fluid jumbotron">
           <h5>Business Details</h5>
           <p>{"Description: " + this.props.biz.description}</p>
-          <ul>Tags:
-            {this.props.biz.tags.map((tag, key) => <li key={key}>{tag}</li>)}
-          </ul>
           <button className="btn btn-primary float-right" onClick={this.modifyBizDetails}>Modify</button>
         </div>);
     }
@@ -62,7 +56,6 @@ export default class BizDetails extends React.Component {
       <div className="container-fluid jumbotron">
         <input className="form-control mb-1" value={this.state.biz.name} onChange={this.updateName}/>
         <textarea className="form-control mb-1" value={this.state.biz.description} onChange={this.updateDescription} />
-        {/*TODO tags*/}
         <button className="btn btn-primary float-right" onClick={this.saveBizDetails}>Save</button>
       </div>);
   }

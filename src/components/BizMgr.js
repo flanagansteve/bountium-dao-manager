@@ -23,7 +23,6 @@ export default class BizMgr extends React.Component {
     // TODO these can be unbound once we start using the service
     this.updateName = this.updateName.bind(this);
     this.updateDescription = this.updateDescription.bind(this);
-    this.updateTags = this.updateTags.bind(this);
   }
 
   viewProducts() {
@@ -95,10 +94,6 @@ export default class BizMgr extends React.Component {
     this.props.biz.description = newDescription;
   }
 
-  updateTags(e) {
-
-  }
-
   render() {
     return (
       <div>
@@ -119,8 +114,7 @@ export default class BizMgr extends React.Component {
         {this.state.viewingOrg && <div>
           <BizDetails biz={this.props.biz}
                       updateName={this.updateName}
-                      updateDescription={this.updateDescription}
-                      updateTags={this.updateTags}/>
+                      updateDescription={this.updateDescription}/>
           <div className="container-fluid jumbotron">
             <h3>Your Organisation</h3>
             <div className="">

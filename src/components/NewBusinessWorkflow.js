@@ -17,7 +17,6 @@ export default class NewBusinessWorkflow extends React.Component {
       {
         name : document.getElementById("bizname").value,
         description : document.getElementById("biz-descript").value,
-        tags : [],
         totalShares : document.getElementById("total-shares").value,
         orgFunds : 4567,
         // TODO how to get the username??
