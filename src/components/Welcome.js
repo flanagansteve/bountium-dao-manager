@@ -9,6 +9,8 @@ import ReturningBusinessWorkflow from './ReturningBusinessWorkflow'
 import Login from './users/Login'
 import Register from './users/Register'
 import BizMgr from './BizMgr'
+import BusinessService from '../services/BusinessService';
+const bizService = BusinessService.getInstance();
 
 export default class Welcome extends React.Component {
 
@@ -25,13 +27,7 @@ export default class Welcome extends React.Component {
             <Route path="/login" render={() => <Login/>}/>
             <Route path="/register" render={() => <Register/>}/>
             <Route path="/mgr/:bizAddr" render={() => {
-              {
-                /* TODO give it a business object, either from the contract or backend,
-                   with all the fields in the below object
-                  // TODO this breaks - 'abi.forEach is not a function'
-                  bizContract : new web3.eth.Contract(autobizABI, window.location.href.split('/')[4])
-                */
-              }
+              {/* TODO use bizService.getBiz to get a biz object*/}
               return <BizMgr biz={
                 {
                   name : "Steve's Salacious Spaghetti Store",
