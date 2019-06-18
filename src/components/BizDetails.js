@@ -48,16 +48,31 @@ export default class BizDetails extends React.Component {
       return (
         <div className="container-fluid jumbotron">
           <h5>Business Details</h5>
-          <p>{"Description: " + this.props.biz.description}</p>
+          <div className="form-group">
+            <label hmtmlFor="bizdescript">Name</label>
+            <p id="bizdescript">{this.props.biz.name}</p>
+          </div>
+          <div className="form-group">
+            <label hmtmlFor="bizdescript">Description</label>
+            <p id="bizdescript">{this.props.biz.description}</p>
+          </div>
           <button className="btn btn-primary float-right" onClick={this.modifyBizDetails}>Modify</button>
         </div>);
     }
     return (
       <div className="container-fluid jumbotron">
-        <input className="form-control mb-1" value={this.state.biz.name} onChange={this.updateName}/>
-        <textarea className="form-control mb-1" value={this.state.biz.description} onChange={this.updateDescription} />
+        <h5>Business Details</h5>
+        <div className="form-group">
+          <label hmtmlFor="bizdescript">Name</label>
+          <input className="form-control mb-1" value={this.state.biz.name} onChange={this.updateName}/>
+        </div>
+        <div className="form-group">
+          <label hmtmlFor="bizdescript">Description</label>
+          <textarea className="form-control mb-1" value={this.state.biz.description} onChange={this.updateDescription} />
+        </div>
         <button className="btn btn-primary float-right" onClick={this.saveBizDetails}>Save</button>
-      </div>);
+      </div>
+    );
   }
 
 }
