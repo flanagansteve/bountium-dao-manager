@@ -2,8 +2,14 @@ import React from 'react';
 import Alert from 'react-bootstrap/Alert'
 
 import UserService from '../../services/UserService';
+import HTTPService from '../../services/HTTPService'
+
+import Cookies from 'universal-cookie';
+
+const cookies = new Cookies();
 
 const userService = UserService.getInstance();
+const httpService = HTTPService.getInstance();
 
 export default class Register extends React.Component {
 
@@ -116,7 +122,12 @@ export default class Register extends React.Component {
                     if (response.username !== "null") {
                         this.setState({
                             returnedUser: response
-                        })
+                        });
+
+                        httpService.registerUser(response).then( response =>
+                            console.log("Registered User" + JSON.stringify(response))
+                        );
+
                     } else {
                         this.handleShow("UsernameTakenAlert")
                     }
