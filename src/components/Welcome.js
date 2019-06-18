@@ -4,9 +4,9 @@ import JobSearchList from './JobSearchList'
 import Navbar from './Navbar'
 import NewBusinessWorkflow from './NewBusinessWorkflow'
 import MigratingBusinessWorkflow from './MigratingBusinessWorkflow'
-import ReturningBusinessWorkflow from './ReturningBusinessWorkflow'
 import Login from './users/Login'
 import Register from './users/Register'
+import Profile from './users/Profile'
 import BizMgr from './BizMgr'
 import BountyMgr from './BountyMgr'
 import BusinessService from '../services/BusinessService';
@@ -32,8 +32,9 @@ export default class Welcome extends React.Component {
             <Route path="/returning" render={() => <Login/>}/>
             <Route path="/login" render={() => <Login/>}/>
             <Route path="/register" render={() => <Register/>}/>
+            <Route path="/profile" render={() => <Profile/>}/>
             <Route path="/mgr/:bizAddr" render={() => {
-              {/* TODO use bizService.getBiz to get a biz object*/}
+              /* TODO use bizService.getBiz to get a biz object*/
               return <BizMgr biz={
                 {
                   name : "Steve's Salacious Spaghetti Store",

@@ -20,7 +20,7 @@ export default class BizMgr extends React.Component {
       viewingOps : false,
       viewingChat : false,
       // The permissions of the current user
-      currentOwner : this.props.biz.owners.filter((owner => owner.username == currentUsername))[0]
+      currentOwner : this.props.biz.owners.filter((owner => owner.username === currentUsername))[0]
     }
     this.viewProducts = this.viewProducts.bind(this);
     this.viewOrg = this.viewOrg.bind(this);
