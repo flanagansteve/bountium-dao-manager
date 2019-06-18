@@ -7,6 +7,9 @@ const bizService = BusinessService.getInstance();
 
 export default class BizMgr extends React.Component {
 
+  // TODO one day make the chat appear as a popover on the side/bottom,
+  // and put collaboration in operations tab
+
   constructor(props) {
     super(props);
     // TODO how do we get this from session
@@ -15,12 +18,14 @@ export default class BizMgr extends React.Component {
       viewingOrg : true,
       viewingProducts : false,
       viewingOps : false,
+      viewingChat : false,
       // The permissions of the current user
       currentOwner : this.props.biz.owners.filter((owner => owner.username == currentUsername))[0]
     }
     this.viewProducts = this.viewProducts.bind(this);
     this.viewOrg = this.viewOrg.bind(this);
     this.viewOps = this.viewOps.bind(this);
+    this.viewChat = this.viewChat.bind(this);
     // TODO these can be unbound once we start using the service
     this.updateName = this.updateName.bind(this);
     this.updateDescription = this.updateDescription.bind(this);
@@ -30,18 +35,28 @@ export default class BizMgr extends React.Component {
     this.setState({viewingProducts : true})
     this.setState({viewingOrg : false})
     this.setState({viewingOps : false})
+    this.setState({viewingChat : false})
   }
 
   viewOrg() {
     this.setState({viewingProducts : false})
     this.setState({viewingOrg : true})
     this.setState({viewingOps : false})
+    this.setState({viewingChat : false})
   }
 
   viewOps() {
     this.setState({viewingProducts : false})
     this.setState({viewingOrg : false})
     this.setState({viewingOps : true})
+    this.setState({viewingChat : false})
+  }
+
+  viewChat() {
+    this.setState({viewingProducts : false})
+    this.setState({viewingOrg : false})
+    this.setState({viewingOps : false})
+    this.setState({viewingChat : true})
   }
 
   mapProducts(product, key) {
@@ -101,14 +116,17 @@ export default class BizMgr extends React.Component {
         <h2>{this.props.biz.name}</h2>
         <div>
           <ul className="nav navbar">
-            <li className={"nav-item display-4 col-4" + (this.state.viewingOrg ? " border-bottom" : "")} onClick={this.viewOrg}>
+            <li className={"nav-item display-4 col-3" + (this.state.viewingOrg ? " border-bottom" : "")} onClick={this.viewOrg}>
               <h4 className="text-center">Organisation</h4>
             </li>
-            <li className={"nav-item display-4 col-4" + (this.state.viewingProducts ? " border-bottom" : "")} onClick={this.viewProducts}>
-              <h4 className="text-center">Products</h4>
+            <li className={"nav-item display-4 col-3" + (this.state.viewingProducts ? " border-bottom" : "")} onClick={this.viewProducts}>
+              <h4 className="text-center">Products & Supply Chains</h4>
             </li>
-            <li className={"nav-item display-4 col-4" + (this.state.viewingOps ? " border-bottom" : "")} onClick={this.viewOps}>
+            <li className={"nav-item display-4 col-3" + (this.state.viewingOps ? " border-bottom" : "")} onClick={this.viewOps}>
               <h4 className="text-center">Operations</h4>
+            </li>
+            <li className={"nav-item display-4 col-3" + (this.state.viewingChat ? " border-bottom" : "")} onClick={this.viewChat}>
+              <h4 className="text-center">Chat & Collaboration</h4>
             </li>
           </ul>
         </div>
@@ -117,7 +135,6 @@ export default class BizMgr extends React.Component {
                       updateName={this.updateName}
                       updateDescription={this.updateDescription}/>
           <div className="container-fluid jumbotron">
-            <h3>Your Organisation</h3>
             <div className="">
               <div className="row border">
                 <div className="col-6 mb-2 mt-1">
@@ -224,7 +241,7 @@ export default class BizMgr extends React.Component {
           <BountyMgr/>
         </div>
         }
-        <ChatClient msgs={this.props.biz.msgs}/>
+        {this.state.viewingChat && <ChatClient msgs={this.props.biz.msgs}/>}
       </div>
     );
   }

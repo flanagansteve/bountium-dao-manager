@@ -13,12 +13,11 @@ export default class BountyMgr extends React.Component {
     }
 
     render() {
-      // TODO somehow render the bounties this business has posted before here
       return (
         <div className="container-fluid jumbotron">
           <div className="row">
             <div className="col-12">
-              <h1>Hire some help!</h1>
+              <h3>Hire some help!</h3>
               <div className="form">
                 <div className="form-group">
                   <label htmlFor="jobCategory">Category</label>
@@ -48,6 +47,8 @@ export default class BountyMgr extends React.Component {
                   Post
                 </button>
               </div>
+              {/* TODO render the business's active bounties here
+                // including internal ops per keiths request!*/}
             </div>
           </div>
         </div>
