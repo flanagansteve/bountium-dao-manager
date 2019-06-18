@@ -36,6 +36,7 @@ export default class Welcome extends React.Component {
                 {
                   name : "Steve's Salacious Spaghetti Store",
                   description : "We sell the finest spaghetti in Essex county. From stringy, to not stringy, spaghetti, and including all varieties known to man. We grow our spaghetti free-range and cruelty free, and let it roam wild in its youth.",
+                  tags : ['Food', 'Italian', 'Small Business'],
                   shares : 1,
                   totalShares : 2,
                   dividend : true,

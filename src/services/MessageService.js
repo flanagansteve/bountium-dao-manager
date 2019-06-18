@@ -1,7 +1,7 @@
 var fetchHost = "http://localhost:8080";
 
 if (window.location.href.includes("heroku")) {
-  apiUrl = "https://guarded-tundra-80923.herokuapp.com";
+  fetchHost = "https://guarded-tundra-80923.herokuapp.com";
 }
 
 export default class MessageService {
@@ -17,12 +17,13 @@ export default class MessageService {
     sendMessage = (message, bizId) =>
       fetch(`${fetchHost}/api/message/${bizId}`, {
         method: 'POST',
-        body: JSON.stringify(user),
+        body: JSON.stringify(message),
         headers: {
           'content-type': 'application/json'
         }
       }).then(response => response.json());
 
     getMessages = (bizId) =>
-        fetch(`${fetchHost}/api/message${bizId}`).then(response => response.json());
+      fetch(`${fetchHost}/api/message${bizId}`).then(response => response.json());
+      
 }
