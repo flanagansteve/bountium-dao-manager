@@ -28,7 +28,7 @@ export default class BountyMgr extends React.Component {
                     <option value="HTML">Html/CSS</option>
                     <option value="SQL">SQL</option>
                   </select>
-                <Link to={`/job-search-list/${this.state.value}`}>
+                <Link to={`/search/${this.state.value}`}>
                   See jobs in this category</Link>
                 </div>
                 <div className="form-group">
