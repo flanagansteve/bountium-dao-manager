@@ -42,6 +42,8 @@ export default class JobSearchList extends React.Component {
     renderJobList() {
         if (!this.state.jobList) {
             this.getJobs()
+        } else if (this.state.jobList.length === 0){
+            window.location.href = "/search";
         } else {
             return this.state.jobList
                 .map(function (item, index) {
@@ -59,6 +61,7 @@ export default class JobSearchList extends React.Component {
 
 
     render() {
+
         return (
             <div className="container-fluid">
                 <h1> Job Search List for {this.state.keywords}
