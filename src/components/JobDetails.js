@@ -48,7 +48,7 @@ export default class JobDetails extends React.Component {
                     <h1>{this.state.jobObj.title} - for: {this.state.jobObj.company_url != null &&
                     <a href={this.state.jobObj.company_url}>{this.state.jobObj.company}</a>}
                         {this.state.jobObj.company_url == null && this.state.jobObj.company}</h1>
-                    <img src={this.state.jobObj.company_logo} className="float-right"/>
+                    <img src={this.state.jobObj.company_logo} className="float-right" alt="accessible"/>
                     <h1>{this.state.jobObj.type}</h1>
                     <p>Posted at: {this.state.jobObj.created_at}</p>
                     <p>Location: {this.state.jobObj.location}</p>
