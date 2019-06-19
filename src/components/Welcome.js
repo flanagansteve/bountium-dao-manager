@@ -8,6 +8,7 @@ import Login from './users/Login'
 import Register from './users/Register'
 import Profile from './users/Profile'
 import BizMgr from './BizMgr'
+import ProfileViewOnly from "./users/ProfileViewOnly";
 import BountyMgr from './BountyMgr'
 import BusinessService from '../services/BusinessService';
 const bizService = BusinessService.getInstance();
@@ -32,6 +33,7 @@ export default class Welcome extends React.Component {
             <Route path="/returning" render={() => <Login/>}/>
             <Route path="/login" render={() => <Login/>}/>
             <Route path="/register" render={() => <Register/>}/>
+            <Route path="/profile/:profileId" render={() => <ProfileViewOnly/>}/>
             <Route path="/profile" render={() => <Profile/>}/>
             <Route path="/mgr/:bizAddr" render={() => {
               /* TODO use bizService.getBiz to get a biz object*/
