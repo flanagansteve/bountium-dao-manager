@@ -9,9 +9,11 @@ import Register from './users/Register'
 import Profile from './users/Profile'
 import BizMgr from './BizMgr'
 import ProfileViewOnly from "./users/ProfileViewOnly";
+import JobDetails from "./JobDetails";
 import BountyMgr from './BountyMgr'
 import BusinessService from '../services/BusinessService';
 const bizService = BusinessService.getInstance();
+
 
 export default class Welcome extends React.Component {
 
@@ -26,8 +28,9 @@ export default class Welcome extends React.Component {
         <Router>
           <Navbar/>
           <Switch>
+            <Route path="/search/:jobWord" render={() => <JobSearchList/>}/>
+            <Route path="/details/:jobId" render={() => <JobDetails/>}/>
             <Route path="/post/" render={() => <div><h1>Welcome to Bountium</h1><BountyMgr/></div>}/>
-            <Route path="/job-search-list/:jobWord" render={() => <JobSearchList/>}/>
             <Route path="/new" render={() => <NewBusinessWorkflow/>}/>
             <Route path="/migrating" render={() => <MigratingBusinessWorkflow/>}/>
             <Route path="/returning" render={() => <Login/>}/>

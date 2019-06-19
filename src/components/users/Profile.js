@@ -188,7 +188,10 @@ export default class Profile extends React.Component {
 
 
             <div>
-                {(this.state.username !== "") &&
+                {this.state.username === "null" &&
+                <legend className="">You are not currently logged in!</legend>}
+
+                {(this.state.username !== "") && (this.state.username !== "null") &&
                 <div>
                     <legend className="">Welcome to your Profile page where you can view and edit your public and
                         private information

@@ -2,18 +2,61 @@ import React from 'react'
 
 // TODO why are bootstrap classes not working?
 
-const JobDetails = ({jobObj}) =>
-    <div className="jumbotron">
-        <h1>{jobObj.title} - for: {jobObj.company_url != null && <a href={jobObj.company_url}>{jobObj.company}</a>}
-            {jobObj.company_url == null && jobObj.company}</h1>
-        <img src={jobObj.company_logo} className="float-right" alt="silence accessibility warnings"/>
-        <h1>{jobObj.type}</h1>
-        <p>Posted at: {jobObj.created_at}</p>
-        <p>Location: {jobObj.location}</p>
-        <div dangerouslySetInnerHTML={{__html: jobObj.description}}/>
-        <div dangerouslySetInnerHTML={{__html: jobObj.how_to_apply}}/>
-    </div>;
 
-// unused: job.id, job.url
+export default class JobDetails extends React.Component {
 
-export default JobDetails
+    constructor(props) {
+        super(props);
+        this.state = {
+            jobObj: null
+        }
+    }
+
+    getJob() {
+
+        const pathSplit = window.location.href.split("/");
+        const jobId = pathSplit[4];
+
+        let url = "https://cors-anywhere.herokuapp.com/http://jobs.github.com/positions/";
+
+        url += jobId;
+        url += ".json";
+        fetch(url)
+            .then(res => res.json())
+            .then(json => {
+
+                    console.log(json);
+                    this.setState(
+                        {
+                            jobObj: json
+                        }
+                    )
+                }
+            )
+    }
+
+    render() {
+
+        if (!this.state.jobObj) {
+            this.getJob();
+        }
+
+        return (
+            <div>
+                {this.state.jobObj &&
+                <div className="jumbotron">
+                    <h1>{this.state.jobObj.title} - for: {this.state.jobObj.company_url != null &&
+                    <a href={this.state.jobObj.company_url}>{this.state.jobObj.company}</a>}
+                        {this.state.jobObj.company_url == null && this.state.jobObj.company}</h1>
+                    <img src={this.state.jobObj.company_logo} className="float-right"/>
+                    <h1>{this.state.jobObj.type}</h1>
+                    <p>Posted at: {this.state.jobObj.created_at}</p>
+                    <p>Location: {this.state.jobObj.location}</p>
+                    <div dangerouslySetInnerHTML={{__html: this.state.jobObj.description}}/>
+                    <div dangerouslySetInnerHTML={{__html: this.state.jobObj.how_to_apply}}/>
+                </div>
+                }
+            </div>
+        )
+    }
+}

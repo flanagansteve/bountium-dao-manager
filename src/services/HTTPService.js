@@ -77,5 +77,20 @@ export default class HTTPService {
 
     //--------------------------------------------------------------------
 
+    logOutUser = () => {
+        let pathSplit = window.location.href.split("/");
+        let host = pathSplit[2];
+        let fetchHost;
+        if (host === "localhost:3000") {
+            fetchHost = "http://localhost:8080"
+        } else {
+            fetchHost = "https://wbdv-server-as4.herokuapp.com"
+        }
 
+        return fetch(`${fetchHost}/api/logout`, {
+                credentials: 'include'
+            }
+        )
+            .then(response => response.json());
+    };
 }
