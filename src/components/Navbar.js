@@ -67,7 +67,7 @@ export default class Navbar extends React.Component {
                             <p className="nav-link">
                                 <Link className=""
                                       onClick={() => this.logOut()}
-                                      to="/logout/">Logout</Link>
+                                      to="/">Logout</Link>
                             </p>
                         </li>
                         }
