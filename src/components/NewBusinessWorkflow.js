@@ -1,7 +1,9 @@
 import React from 'react';
 import {Link} from 'react-router-dom'
 import BusinessService from '../services/BusinessService';
+import OwnerService from '../services/OwnerService';
 const bizService = BusinessService.getInstance();
+const ownerService = OwnerService.getInstance();
 
 export default class NewBusinessWorkflow extends React.Component {
 
@@ -13,18 +15,21 @@ export default class NewBusinessWorkflow extends React.Component {
   }
 
   newBiz() {
+    var bizId;
     bizService.createBiz(
       {
         name : document.getElementById("bizname").value,
         description : document.getElementById("biz-descript").value,
         totalShares : Number(document.getElementById("total-shares").value),
-        orgFunds : 4567,
-        owners : [{
-          username:this.props.user.username, shares:Number(document.getElementById("shares-for-self").value),
-          dividend : true, dilute : true, bestow : true, modifyCatalogue : true, board : true
-        }]
+        orgFunds : 4567
       }
-    ).then((biz) => this.setState({bizId : biz.id}))
+    ).then((biz) => {
+      bizId = biz.id;
+      ownerService.createOwnerForBiz({
+        username:this.props.user.username, shares:Number(document.getElementById("shares-for-self").value),
+        dividend : true, dilute : true, bestow : true, modifyCatalogue : true, board : true
+      }, biz.id).then((biz) => this.setState({bizId : bizId}));
+    })
   }
 
   render() {
