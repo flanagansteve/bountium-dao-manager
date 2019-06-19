@@ -255,7 +255,7 @@ export default class BizMgr extends React.Component {
           <div className="card-deck">
             {this.props.biz.products.map(this.mapProducts)}
           </div>
-          <button className="btn btn-primary" onClick={this.newProduct}>New Product</button>
+          <button className="btn btn-primary mt-1 float-right" onClick={this.newProduct}>New Product</button>
         </div>}
         {this.state.viewingOps && <div className="container-fluid">
           <BountyMgr/>
