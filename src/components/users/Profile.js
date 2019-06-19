@@ -4,10 +4,6 @@ import Alert from 'react-bootstrap/Alert'
 import UserService from '../../services/UserService';
 import HTTPService from '../../services/HTTPService'
 
-import Cookies from 'universal-cookie';
-
-const cookies = new Cookies();
-
 const userService = UserService.getInstance();
 const httpService = HTTPService.getInstance();
 
