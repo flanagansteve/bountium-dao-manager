@@ -35,13 +35,6 @@ export default class Navbar extends React.Component {
               </p>
             </li>
           }
-          {/* We don't need these yet but they're here if we want them:
-          <li className="nav-item">
-            <Link className="nav-link" to="/course/grid">Grid</Link>
-          </li>
-          <li className="nav-item">
-            <Link className="nav-link" to="/widgets">Widgets</Link>
-          </li>*/}
         </ul>
       </div>
     );
