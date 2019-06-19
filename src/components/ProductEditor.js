@@ -1,5 +1,6 @@
 import React from 'react'
 import ProductService from '../services/ProductService'
+const productService = ProductService.getInstance();
 
 export default class ProductEditor extends React.Component {
     constructor(props) {
@@ -66,8 +67,7 @@ export default class ProductEditor extends React.Component {
                 imageurl: url,
                 versions: this.state.versions.join()}
         if (this.checkFields(product)) {
-            this.service.updateProduct("123", product)
-            window.location.href = "/"
+            productService.createProductForBiz(product, this.props.bizId).then(() => this.props.done())
         }
     }
 

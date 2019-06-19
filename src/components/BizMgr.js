@@ -6,8 +6,10 @@ import ProductEditor from './ProductEditor';
 import {Link} from 'react-router-dom'
 import BusinessService from '../services/BusinessService';
 import OwnerService from '../services/OwnerService';
+import ProductService from '../services/ProductService';
 const bizService = BusinessService.getInstance();
 const ownerService = OwnerService.getInstance();
+const productService = ProductService.getInstance();
 
 export default class BizMgr extends React.Component {
 
@@ -16,15 +18,13 @@ export default class BizMgr extends React.Component {
 
   constructor(props) {
     super(props);
-    // TODO how do we get this from session
-    var currentUsername = this.props.user.username
     this.state = {
       viewingOrg : true,
       viewingProducts : false,
       viewingOps : false,
       viewingChat : false,
       // The permissions of the current user
-      currentOwner : this.props.biz.owners.filter((owner => owner.username === currentUsername))[0],
+      currentOwner : this.props.biz.owners.filter(owner => owner.username === this.props.user.username)[0],
       selectedProduct : -1,
       update : false
     }
@@ -80,13 +80,27 @@ export default class BizMgr extends React.Component {
 
   mapProducts(product, key) {
     if (key === this.state.selectedProduct) {
-      return <ProductEditor product={product}/>
+      return <ProductEditor bizId={this.props.biz.id} key={key} product={product} done={() => this.setState({selectedProduct : -1})}/>
     }
-    return <div className="card" key={key} id={"product-" + key}>
+    return <div className="card col-4" key={key} id={"product-" + key}>
       <div className="card-body">
         <h5 className="card-title">{product.name}</h5>
         <p className="card-text">{product.price}</p>
         <button id={key} className="btn btn-primary" onClick={this.selectProduct}>Edit</button>
+        <button id={key} className="btn btn-warning" onClick={this.deleteProduct}>Delete</button>
+      </div>
+    </div>
+  }
+
+  deleteProduct() {
+    productService.deleteProduct(this.props.biz.id, e.target.id)
+  }
+
+  mapProductsToNonOwner(product, key) {
+    return <div className="card" key={key} id={"product-" + key}>
+      <div className="card-body">
+        <h5 className="card-title">{product.name}</h5>
+        <p className="card-text">{product.price}</p>
       </div>
     </div>
   }
@@ -230,12 +244,41 @@ export default class BizMgr extends React.Component {
   newProduct() {
     // TODO use the service to send this change somewhere, testing for now:
     this.props.biz.products.push({name:'new product', price:0})
+    productService.createProductForBiz({
+      products : this.props.biz.products,
+      ...this.props.biz
+    }, this.props.biz.id)
     // changing meaningless state var to force re render:
     this.setState({update : !this.state.update})
   }
 
   render() {
-    console.log(this.props.biz.owners);
+    if (this.props.biz.owners.filter(owner => owner.username === this.props.user.username).length == 0 ) {
+      return (<div>
+        <h2>{this.props.biz.name}</h2>
+        <div>
+          <ul className="nav navbar">
+            <li className={"nav-item display-4 col-6" + (this.state.viewingOrg ? " border-bottom" : "")} onClick={this.viewOrg}>
+              <h4 className="text-center">Organisation</h4>
+            </li>
+            <li className={"nav-item display-4 col-6" + (this.state.viewingProducts ? " border-bottom" : "")} onClick={this.viewProducts}>
+              <h4 className="text-center">Products</h4>
+            </li>
+          </ul>
+        </div>
+        {this.state.viewingOrg && <div>
+          <BizDetails biz={this.props.biz}
+                      isOwner={false}/>
+        </div>}
+        {this.state.viewingProducts && <div className="container-fluid jumbotron bg-white">
+          <h3>Your products</h3>
+          <div className="card-deck">
+            {this.props.biz.products.map(this.mapProductsToNonOwner)}
+          </div>
+        </div>}
+      </div>
+    );
+    }
     return (
       <div>
         <h2>{this.props.biz.name}</h2>
@@ -258,7 +301,8 @@ export default class BizMgr extends React.Component {
         {this.state.viewingOrg && <div>
           <BizDetails biz={this.props.biz}
                       updateName={this.updateName}
-                      updateDescription={this.updateDescription}/>
+                      updateDescription={this.updateDescription}
+                      isOwner={true}/>
           <div className="container-fluid jumbotron">
             <div className="">
               <div className="row border">

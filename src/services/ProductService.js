@@ -1,3 +1,9 @@
+var fetchHost = "http://localhost:8080";
+
+if (window.location.href.includes("heroku")) {
+  fetchHost = "https://guarded-tundra-80923.herokuapp.com";
+}
+
 export default class ProductService {
 
 
@@ -11,38 +17,23 @@ export default class ProductService {
         return this.myInstance;
     }
 
-    static getUrl() {
-        let pathSplit = window.location.href.split("/");
-        let host = pathSplit[2];
-        if (host === "localhost:3000") {
-            return "http://localhost:8080/api/products"
-        } else {
-            return "https://wbdv-server-as4.herokuapp.com/api/products"
+    // Sends a biz object with all requisite fields to create a new one
+    createProductForBiz = (product, bizId) =>
+      fetch(`${fetchHost}/api/businesses/${bizId}/products`, {
+        method: 'POST',
+        body: JSON.stringify(product),
+        headers: {
+          'content-type': 'application/json'
         }
-    }
+      }).then(response => response.json());
 
+    getProductsForBiz = (bizId) =>
+      fetch(`${fetchHost}/api/businesses/${bizId}/products/`)
+        .then(response => response.json());
 
-    createProduct = (product) => {
-        fetch(ProductService.getUrl(), {
-            method: 'PUT',
-            body: JSON.stringify(product),
-            headers: {
-                'content-type': 'application/json'
-            }
-
-        }).then(response => response.json)
-    }
-
-    updateProduct = (id, product) => {
-        fetch(`${ProductService.getUrl()}/${id}`, {
-            method: 'PUT',
-            body: JSON.stringify(product),
-            headers: {
-                'content-type': 'application/json'
-            }
-        }).then(response => response.json())
-    }
-
-
+    deleteProduct = (bizId, productId) =>
+      fetch(`${fetchHost}/api/businesses/${bizId}/products/${productId}`, {
+        method: 'DELETE'
+      }).then(response => response.json());
 
 }

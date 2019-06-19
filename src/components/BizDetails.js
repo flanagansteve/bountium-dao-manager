@@ -44,6 +44,20 @@ export default class BizDetails extends React.Component {
   }
 
   render() {
+    if (!this.props.isOwner) {
+      return (
+        <div className="container-fluid jumbotron">
+          <h5>Business Details</h5>
+          <div className="form-group">
+            <label htmlFor="bizdescript">Name</label>
+            <p id="bizdescript">{this.props.biz.name}</p>
+          </div>
+          <div className="form-group">
+            <label htmlFor="bizdescript">Description</label>
+            <p id="bizdescript">{this.props.biz.description}</p>
+          </div>
+        </div>);
+    }
     if (!this.state.editing) {
       return (
         <div className="container-fluid jumbotron">

@@ -107,14 +107,17 @@ export default class Welcome extends React.Component {
                     {/*TODO pulled liked businesses from profile*/}
                     <table>
                       <tbody>
-                        {['1234', '5678'].map(this.renderBusiness)}
+                        {['2', '12', '22'].map(this.renderBusiness)}
                       </tbody>
                     </table>
-                    {this.state.user.username === 'null' && <table>
-                      <tbody>
-                        this.state.user.savedJobs.map(this.renderSavedJobs)
-                      </tbody>
-                    </table>}
+                    {this.state.user.username !== null && <div>
+                      <legend>Saved Jobs</legend>
+                      <table>
+                        <tbody>
+                          this.state.user.savedJobs.map(this.renderSavedJobs)
+                        </tbody>
+                      </table>
+                    </div>}
                   </div>
                 </div>
               </div>}}/>
