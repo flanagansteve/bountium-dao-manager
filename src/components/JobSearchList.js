@@ -45,21 +45,14 @@ export default class JobSearchList extends React.Component {
         } else {
             return this.state.jobList
                 .map(function (item, index) {
-                    return <Router key={index}>
-                    <tr className="d-flex" >
+                    return <tr className="d-flex" >
                         <td className="col-6">
-                            <Link to={`/job-details/${item.id}`}
+                            <Link to={`/details/${item.id}`}
                                   style={{color: 'black'}}>{item.title}</Link></td>
                         <td className="col-6">
                             {item.company}
                         </td>
-                    </tr>
-                        <Route path="/job-details/:jobId"
-                               render ={() =>
-                                   <JobDetails jobObj={item}/>
-                               }>
-                        </Route>
-                    </Router>;
+                    </tr>;
                 });
         }
     }
