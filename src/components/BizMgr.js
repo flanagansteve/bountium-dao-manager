@@ -2,9 +2,11 @@ import React from 'react';
 import ChatClient from './ChatClient';
 import BizDetails from './BizDetails';
 import BountyMgr from './BountyMgr'
-import BusinessService from '../services/BusinessService';
 import ProductEditor from './ProductEditor';
+/*
+import BusinessService from '../services/BusinessService';
 const bizService = BusinessService.getInstance();
+*/
 
 export default class BizMgr extends React.Component {
 
@@ -23,7 +25,7 @@ export default class BizMgr extends React.Component {
       // The permissions of the current user
       currentOwner : this.props.biz.owners.filter((owner => owner.username === currentUsername))[0],
       selectedProduct : -1,
-      newProduct : false
+      update : false
     }
     this.viewProducts = this.viewProducts.bind(this);
     this.viewOrg = this.viewOrg.bind(this);
@@ -31,9 +33,15 @@ export default class BizMgr extends React.Component {
     this.viewChat = this.viewChat.bind(this);
     this.mapProducts = this.mapProducts.bind(this);
     this.selectProduct = this.selectProduct.bind(this);
-    this.newProduct = this.newProduct.bind(this);
+    this.giveShares = this.giveShares.bind(this);
+    this.dilute = this.dilute.bind(this);
+    this.transfer = this.transfer.bind(this);
+    this.givePermission = this.givePermission.bind(this);
+    this.giveUnallocated = this.giveUnallocated.bind(this);
     // TODO these can be unbound once we start using the service
+    this.newProduct = this.newProduct.bind(this);
     this.updateName = this.updateName.bind(this);
+    this.updateOwners = this.updateOwners.bind(this);
     this.updateDescription = this.updateDescription.bind(this);
   }
 
@@ -84,27 +92,13 @@ export default class BizMgr extends React.Component {
 
   mapOwners(owner, key) {
     // TODO make these links to user profiles
-    return <p key={key}>{owner.name}</p>
+    return <p key={key}>{owner.username}</p>
   }
 
-  // TODO use the business service for these:
+  // modifying the business //
+
+  // Financials:
   fundBiz() {
-
-  }
-
-  transfer() {
-
-  }
-
-  dilute() {
-
-  }
-
-  giveUnallocated() {
-
-  }
-
-  givePermission() {
 
   }
 
@@ -112,24 +106,126 @@ export default class BizMgr extends React.Component {
 
   }
 
+  // Owner stuff:
+  transfer() {
+    var amt = Number(document.getElementById("transfer-shares-amt-input").value);
+    var currentOwners = this.props.biz.owners;
+    // TODO somehow get this from the httpservice
+    var currentUname = "Steve";
+    var transferringOwner = currentOwners.filter(owner => this.state.currentOwner.username === currentUname)[0];
+    if (transferringOwner.shares < amt) {
+      // TODO dont let them transfer, notify them of the mistake
+      return;
+    }
+    transferringOwner.shares -= amt;
+    this.giveShares(document.getElementById("transfer-shares-addr-input").value, amt);
+  }
+
+  dilute() {
+    var amt = Number(document.getElementById("dilute-shares-amt-input").value);
+    if (!this.state.currentOwner.dilute) {
+      // TODO dont let them transfer, notify them of the mistake
+      return;
+    }
+    this.giveShares(document.getElementById("dilute-shares-addr-input").value, amt);
+    // TODO use the service to send this change somewhere, testing for now:
+    this.props.biz.totalShares += amt;
+  }
+
+  giveUnallocated() {
+    var amt = Number(document.getElementById("give-shares-amt-input").value);
+    var currentOwners = this.props.biz.owners;
+    var takenShares = currentOwners.reduce((sharesAddedSoFar, nextOwner) => sharesAddedSoFar + nextOwner.shares);
+    if ((this.props.totalShares - takenShares) < amt || !this.state.currentOwner.dilute) {
+      // TODO dont let them dilute, notify them of the mistake
+      return;
+    }
+    this.giveShares(document.getElementById("give-shares-addr-input").value, amt);
+  }
+
+  giveShares(recipient, amt) {
+    var currentOwners = this.props.biz.owners;
+    var searchCurrentOwners = currentOwners.filter(owner => owner.address === recipient);
+    if (searchCurrentOwners.length > 0) {
+      // Give shares to one of the current owners
+      // TODO does mutating this specific variable actually change the currentOwner
+      // var or do we need to do currentOwners[x] = mutated?
+      searchCurrentOwners[0].shares += amt;
+    } else {
+      // Add the new owner
+      // TODO get the owners username by id/address from the UserService
+      currentOwners.push({
+       username:'NewOwner', address:recipient, shares:amt,
+       dividend : false, dilute : false, bestow : false, modifyCatalogue : false, board : false
+      });
+    }
+    this.updateOwners(currentOwners);
+  }
+
+  givePermission() {
+    var recipient = document.getElementById("give-permission-addr-input").value;
+    var role = document.getElementById("give-permission-value-input").value;
+    var currentOwners = this.props.biz.owners;
+    var bestowee = currentOwners.filter(owner => owner.username === recipient)[0];
+    switch(role) {
+      // TODO does mutating bestowee actually change the currentOwner
+      // var or do we need to do currentOwners[x] = mutated?
+      case 1:
+        bestowee.dividend = true;
+        break;
+      case 2:
+        bestowee.dilute = true;
+        break;
+      case 3:
+        bestowee.bestow = true;
+        break;
+      case 4:
+        bestowee.modifyCatalogue = true;
+        break;
+      case 5:
+        bestowee.board = true;
+        break;
+      default:
+        // TODO this will never happen, prolly throw an error;
+        return;
+    }
+    this.updateOwners(currentOwners);
+  }
+
+  // Sending updates out:
+  // (TODO these should all use the service to send a new biz object to the backend)
+  updateOwners(newOwnersArr) {
+    console.log('new owners:');
+    console.log(newOwnersArr)
+    // TODO use the service to send this change somewhere, testing for now:
+    this.props.biz.owners = newOwnersArr;
+    // changing meaningless state var to force re render:
+    this.setState({update : !this.state.update})
+  }
+
   updateName(newName) {
     // TODO use the service to send this change somewhere, testing for now:
     this.props.biz.name = newName;
+    // changing meaningless state var to force re render:
+    this.setState({update : !this.state.update})
   }
 
   updateDescription(newDescription) {
     // TODO use the service to send this change somewhere, testing for now:
     this.props.biz.description = newDescription;
+    // changing meaningless state var to force re render:
+    this.setState({update : !this.state.update})
   }
 
   newProduct() {
     // TODO use the service to send this change somewhere, testing for now:
     this.props.biz.products.push({name:'new product', price:0})
     // changing meaningless state var to force re render:
-    this.setState({newProduct : !this.state.newProduct})
+    this.setState({update : !this.state.update})
   }
 
   render() {
+    console.log(this.props.biz);
     return (
       <div>
         <h2>{this.props.biz.name}</h2>
@@ -226,7 +322,7 @@ export default class BizMgr extends React.Component {
                       <label htmlFor="give-permission-addr-input">Address of bestowee:</label>
                       <input type="text" className="form-control" id="give-permission-addr-input"/>
                     </div>
-                    <select className="form-control">
+                    <select className="form-control" id="give-permission-value-input">
                       <option value={1}>Can call dividends</option>
                       <option value={2}>Can dilute shares</option>
                       <option value={3}>Can give other co-owners permissions</option>
