@@ -17,13 +17,32 @@ const bizService = BusinessService.getInstance();
 
 export default class Welcome extends React.Component {
 
-  renderBusinesses(bizId, key) {
+  constructor(props) {
+    super(props)
+    this.renderBusinessToLogged = this.renderBusinessToLogged.bind(this);
+  }
+
+  addToLiked() {
+    // TODO somehow use httpService to add the e.target.id business to a user's
+    // liked businesses
+  }
+
+  renderBusinessToLogged(bizId, key) {
     return <tr key={key}>
-      <a href={"/mgr/" + bizId}>Business at {bizId}</a>
+      <td><a href={"/mgr/" + bizId}>Business at {bizId}</a></td>
+      <td><button id={bizId} className="btn btn-primary" onClick={this.addToLiked}>Like</button></td>
+    </tr>
+  }
+
+  renderBusinessToAnon(bizId, key) {
+    return <tr key={key}>
+      <td><a href={"/mgr/" + bizId}>Business at {bizId}</a></td>
     </tr>
   }
 
   render() {
+    // TODO how do we use the HTTPService to actually figure this out?
+    var loggedIn = true;
     return <div className="container-fluid">
         <Router>
           <Navbar/>
@@ -95,11 +114,14 @@ export default class Welcome extends React.Component {
                     </div>
                   </div>
                   <div className="col-6 float-right">
-                    <h4>Browse business</h4>
-                    {/*TODO show business a non-logged-in user can see*/}
-                    <table>
-                      {['1234', '5678'].map(this.renderBusinesses)}
-                    </table>
+                    <h4>Browse businesses</h4>
+                    {/*TODO pulled liked businesses from profile*/}
+                    {loggedIn && <table><tbody>
+                        {['1234', '5678'].map(this.renderBusinessToLogged)}
+                      </tbody></table>}
+                    {!loggedIn && <table><tbody>
+                      {['1234', '5678'].map(this.renderBusinessToAnon)}
+                    </tbody></table>}
                   </div>
                 </div>
               </div>}}/>
