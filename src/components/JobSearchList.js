@@ -3,6 +3,8 @@ import JobDetails from './JobDetails'
 import {BrowserRouter as Router, Link, Route}
     from "react-router-dom";
 
+import JobSearchService from '../services/JobSearchService'
+const jobService = JobSearchService.getInstance();
 
 export default class JobSearchList extends React.Component {
 
@@ -19,6 +21,13 @@ export default class JobSearchList extends React.Component {
         )
     }
 
+    //======================================================================================
+
+    addJobsToDatabase() {
+        for(let i = 0; i < this.state.jobList.length; i++){
+            jobService.addJobToDatabase(this.state.jobList[i])
+        }
+    }
 
     getJobs() {
         let url = "https://cors-anywhere.herokuapp.com/http://jobs.github.com/positions.json?description=";
@@ -34,9 +43,11 @@ export default class JobSearchList extends React.Component {
 
         fetch(url)
             .then(res => res.json())
-            .then(json => this.setState({
-                jobList: json
-            }))
+            .then(json => {
+                this.setState({
+                    jobList: json
+                })
+            })
     }
 
     renderJobList() {
@@ -45,6 +56,9 @@ export default class JobSearchList extends React.Component {
         } else if (this.state.jobList.length === 0){
             window.location.href = "/search";
         } else {
+
+            this.addJobsToDatabase();
+
             return this.state.jobList
                 .map(function (item, index) {
                     return <tr className="d-flex" >
