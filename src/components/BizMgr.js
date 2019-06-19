@@ -16,7 +16,9 @@ export default class BizMgr extends React.Component {
   constructor(props) {
     super(props);
     // TODO how do we get this from session
-    var currentUsername = "Steve"
+    var currentUsername = this.props.user.username
+    console.log(this.props.user)
+    console.log(this.props.biz)
     this.state = {
       viewingOrg : true,
       viewingProducts : false,

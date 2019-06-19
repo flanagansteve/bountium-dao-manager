@@ -16,7 +16,7 @@ export default class BusinessService {
 
     // Sends a biz object with all requisite fields to create a new one
     createBiz = (biz) =>
-      fetch(`${fetchHost}/api/business/`, {
+      fetch(`${fetchHost}/api/businesses/`, {
         method: 'POST',
         body: JSON.stringify(biz),
         headers: {
@@ -27,7 +27,7 @@ export default class BusinessService {
     // Send a new biz object with updated fields
     // TODO one day this should only be callable by a permissioned owner
     updateBiz = (newBiz, bizId) =>
-      fetch(`${fetchHost}/api/business/${bizId}`, {
+      fetch(`${fetchHost}/api/businesses/${bizId}`, {
         method: 'PUT',
         body: JSON.stringify(newBiz),
         headers: {
@@ -38,7 +38,11 @@ export default class BusinessService {
     // Retrieve a business object
     // TODO one day this should only return most info if the user is a co owner
     getBiz = (bizId) =>
-      fetch(`${fetchHost}/api/business/${bizId}`)
+      fetch(`${fetchHost}/api/businesses/${bizId}`)
+        .then(response => response.json());
+
+    getAllBusinesses = (bizId) =>
+      fetch(`${fetchHost}/api/businesses/`)
         .then(response => response.json());
 
 }
