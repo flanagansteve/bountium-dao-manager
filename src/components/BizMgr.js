@@ -3,6 +3,7 @@ import ChatClient from './ChatClient';
 import BizDetails from './BizDetails';
 import BountyMgr from './BountyMgr'
 import BusinessService from '../services/BusinessService';
+import ProductEditor from './ProductEditor';
 const bizService = BusinessService.getInstance();
 
 export default class BizMgr extends React.Component {
@@ -20,12 +21,17 @@ export default class BizMgr extends React.Component {
       viewingOps : false,
       viewingChat : false,
       // The permissions of the current user
-      currentOwner : this.props.biz.owners.filter((owner => owner.username === currentUsername))[0]
+      currentOwner : this.props.biz.owners.filter((owner => owner.username === currentUsername))[0],
+      selectedProduct : -1,
+      newProduct : false
     }
     this.viewProducts = this.viewProducts.bind(this);
     this.viewOrg = this.viewOrg.bind(this);
     this.viewOps = this.viewOps.bind(this);
     this.viewChat = this.viewChat.bind(this);
+    this.mapProducts = this.mapProducts.bind(this);
+    this.selectProduct = this.selectProduct.bind(this);
+    this.newProduct = this.newProduct.bind(this);
     // TODO these can be unbound once we start using the service
     this.updateName = this.updateName.bind(this);
     this.updateDescription = this.updateDescription.bind(this);
@@ -59,11 +65,19 @@ export default class BizMgr extends React.Component {
     this.setState({viewingChat : true})
   }
 
+  selectProduct(e) {
+    this.setState({selectedProduct : Number(e.target.id)})
+  }
+
   mapProducts(product, key) {
+    if (key === this.state.selectedProduct) {
+      return <ProductEditor product={product}/>
+    }
     return <div className="card" key={key} id={"product-" + key}>
       <div className="card-body">
         <h5 className="card-title">{product.name}</h5>
         <p className="card-text">{product.price}</p>
+        <button id={key} className="btn btn-primary" onClick={this.selectProduct}>Edit</button>
       </div>
     </div>
   }
@@ -100,14 +114,19 @@ export default class BizMgr extends React.Component {
 
   updateName(newName) {
     // TODO use the service to send this change somewhere, testing for now:
-    console.log('new name is ' + newName);
     this.props.biz.name = newName;
   }
 
   updateDescription(newDescription) {
     // TODO use the service to send this change somewhere, testing for now:
-    console.log('new description is ' + newDescription);
     this.props.biz.description = newDescription;
+  }
+
+  newProduct() {
+    // TODO use the service to send this change somewhere, testing for now:
+    this.props.biz.products.push({name:'new product', price:0})
+    // changing meaningless state var to force re render:
+    this.setState({newProduct : !this.state.newProduct})
   }
 
   render() {
@@ -236,6 +255,7 @@ export default class BizMgr extends React.Component {
           <div className="card-deck">
             {this.props.biz.products.map(this.mapProducts)}
           </div>
+          <button className="btn btn-primary" onClick={this.newProduct}>New Product</button>
         </div>}
         {this.state.viewingOps && <div className="container-fluid">
           <BountyMgr/>
