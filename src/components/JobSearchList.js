@@ -17,6 +17,8 @@ export default class JobSearchList extends React.Component {
                 jobList: null
             }
         )
+
+        this.renderJobList = this.renderJobList.bind(this);
     }
 
 
@@ -39,33 +41,37 @@ export default class JobSearchList extends React.Component {
             }))
     }
 
+    saveJob(e) {
+      // Send to server:
+      // thisUser.savedJobs.push(this.state.jobList[e.target.id])
+    }
+
     renderJobList() {
         if (!this.state.jobList) {
             this.getJobs()
+        } else if (this.state.jobList.length === 0){
+            window.location.href = "/search";
         } else {
             return this.state.jobList
-                .map(function (item, index) {
-                    return <Router key={index}>
-                    <tr className="d-flex" >
-                        <td className="col-6">
-                            <Link to={`/job-details/${item.id}`}
+                .map((item, index) => {
+                    return <tr className="d-flex" key={index}>
+                        <td className="col-5">
+                            <Link to={`/details/${item.id}`}
                                   style={{color: 'black'}}>{item.title}</Link></td>
-                        <td className="col-6">
+                        <td className="col-5">
                             {item.company}
                         </td>
-                    </tr>
-                        <Route path="/job-details/:jobId"
-                               render ={() =>
-                                   <JobDetails jobObj={item}/>
-                               }>
-                        </Route>
-                    </Router>;
+                        <td className="col-2">
+                            <button id={index} className="btn btn-primary" onClick={this.saveJob}>Save</button>
+                        </td>
+                    </tr>;
                 });
         }
     }
 
 
     render() {
+
         return (
             <div className="container-fluid">
                 <h1> Job Search List for {this.state.keywords}
@@ -78,6 +84,7 @@ export default class JobSearchList extends React.Component {
                     <tr className="d-flex">
                         <th className="col-6">Title</th>
                         <th className="col-6">Company Name</th>
+                        <th></th>
                     </tr>
                     </thead>
                     <tbody>

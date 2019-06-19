@@ -1,20 +1,18 @@
-export default class UserService {
+export default class HTTPService {
 
     static myInstance = null;
 
-
     static getInstance() {
-        if (UserService.myInstance == null) {
-            UserService.myInstance =
-                new UserService();
+        if (HTTPService.myInstance == null) {
+            HTTPService.myInstance =
+                new HTTPService();
         }
         return this.myInstance;
     }
 
     //--------------------------------------------------------------------
 
-
-    createUser = (user) => {
+    registerUser = (user) => {
         let pathSplit = window.location.href.split("/");
         let host = pathSplit[2];
         let fetchHost;
@@ -24,7 +22,8 @@ export default class UserService {
             fetchHost = "https://wbdv-server-as4.herokuapp.com"
         }
 
-        return fetch(`${fetchHost}/api/users`, {
+        return fetch(`${fetchHost}/api/register`, {
+            credentials: 'include',
             method: 'POST',
             body: JSON.stringify(user),
             headers: {
@@ -36,7 +35,7 @@ export default class UserService {
 
     //--------------------------------------------------------------------
 
-    deleteUser = (userId) => {
+    loginUser = (user) => {
         let pathSplit = window.location.href.split("/");
         let host = pathSplit[2];
         let fetchHost;
@@ -46,75 +45,20 @@ export default class UserService {
             fetchHost = "https://wbdv-server-as4.herokuapp.com"
         }
 
-        return fetch(`${fetchHost}/api/users/${userId}`, {
-            method: 'DELETE'
-        })
-            .then(response => response.json())
-    };
-
-    //--------------------------------------------------------------------
-
-    findAllUsers = () => {
-
-        let pathSplit = window.location.href.split("/");
-        let host = pathSplit[2];
-        let fetchHost;
-        if (host === "localhost:3000") {
-            fetchHost = "http://localhost:8080"
-        } else {
-            fetchHost = "https://wbdv-server-as4.herokuapp.com"
-        }
-
-
-        return fetch(`${fetchHost}/api/users`)
-            .then(response => response.json());
-    };
-
-    //--------------------------------------------------------------------
-
-    findUserById = (userId) => {
-        let pathSplit = window.location.href.split("/");
-        let host = pathSplit[2];
-        let fetchHost;
-        if (host === "localhost:3000") {
-            fetchHost = "http://localhost:8080"
-        } else {
-            fetchHost = "https://wbdv-server-as4.herokuapp.com"
-        }
-
-        return fetch(`${fetchHost}/api/users/${userId}`)
-            .then(response => response.json());
-    };
-
-    //--------------------------------------------------------------------
-
-    updateUser = (user) => {
-
-        let pathSplit = window.location.href.split("/");
-        let host = pathSplit[2];
-        let fetchHost;
-        if (host === "localhost:3000") {
-            fetchHost = "http://localhost:8080"
-        } else {
-            fetchHost = "https://wbdv-server-as4.herokuapp.com"
-        }
-
-        let userId = user.id;
-
-        return fetch(`${fetchHost}/api/users/${userId}`, {
-            method: 'PUT',
+        return fetch(`${fetchHost}/api/login`, {
+            credentials: 'include',
+            method: 'POST',
             body: JSON.stringify(user),
             headers: {
                 'content-type': 'application/json'
             }
         })
-            .then(response => response.json())
+            .then(response => response.json());
     };
 
-    //===================================================================
+        //-------------------------------------------------------------------
 
-    findOtherProfile = (profileId) => {
-
+    receiveSessionProfile = () => {
         let pathSplit = window.location.href.split("/");
         let host = pathSplit[2];
         let fetchHost;
@@ -124,8 +68,29 @@ export default class UserService {
             fetchHost = "https://wbdv-server-as4.herokuapp.com"
         }
 
-        return fetch(`${fetchHost}/api/profile/${profileId}`)
-            .then(response => response.json())
+        return fetch(`${fetchHost}/api/profile`, {
+            credentials: 'include'
+        }
+    )
+            .then(response => response.json());
     };
 
+    //--------------------------------------------------------------------
+
+    logOutUser = () => {
+        let pathSplit = window.location.href.split("/");
+        let host = pathSplit[2];
+        let fetchHost;
+        if (host === "localhost:3000") {
+            fetchHost = "http://localhost:8080"
+        } else {
+            fetchHost = "https://wbdv-server-as4.herokuapp.com"
+        }
+
+        return fetch(`${fetchHost}/api/logout`, {
+                credentials: 'include'
+            }
+        )
+            .then(response => response.json());
+    };
 }

@@ -1,9 +1,8 @@
 import React from 'react';
 import Alert from 'react-bootstrap/Alert'
 
-import UserService from '../../services/UserService';
-
-const userService = UserService.getInstance();
+import HTTPService from '../../services/HTTPService'
+const httpService = HTTPService.getInstance();
 
 export default class Register extends React.Component {
 
@@ -19,9 +18,10 @@ export default class Register extends React.Component {
             PasswordDifAlert: false,
             PasswordLenAlert: false,
             FillOutFieldsAlert: false,
-            returnedUser: null
         }
     }
+
+    //=======================================================================
 
     handleDismiss = (alert) => {
         switch (alert) {
@@ -40,8 +40,12 @@ export default class Register extends React.Component {
             case "FillOutFieldsAlert" :
                 this.setState({FillOutFieldsAlert: false});
                 break;
+            default:
+                break;
         }
     };
+
+    //-----------------------------------------------------------------------
 
     handleShow = (alert) => {
         switch (alert) {
@@ -60,8 +64,12 @@ export default class Register extends React.Component {
             case "FillOutFieldsAlert" :
                 this.setState({FillOutFieldsAlert: true});
                 break;
+            default :
+                break;
         }
     };
+
+    //=======================================================================
 
     usernameChanged = (event) => {
         this.setState({
@@ -69,11 +77,15 @@ export default class Register extends React.Component {
         })
     };
 
+    //-----------------------------------------------------------------------
+
     passwordChanged = (event) => {
         this.setState({
             password: (event.target.value)
         })
     };
+
+    //-----------------------------------------------------------------------
 
     verifyChanged = (event) => {
         this.setState({
@@ -81,10 +93,16 @@ export default class Register extends React.Component {
         })
     };
 
+    //=======================================================================
+
     signUp = () => {
 
         this.setState({
-            returnedUser: null,
+            UsernameTakenAlert: false,
+            UsernameSpaceAlert: false,
+            PasswordDifAlert: false,
+            PasswordLenAlert: false,
+            FillOutFieldsAlert: false
         });
 
         // Make sure all fields are filled out
@@ -107,21 +125,24 @@ export default class Register extends React.Component {
                 firstName: "",
                 lastName: ""
             };
-            userService.createUser(newUser).then(response => {
-                    if (response.username !== "null") {
+            httpService.registerUser(newUser).then(response => {
+
+                    if (response.username === "null") {
                         this.setState({
-                            returnedUser: response
-                        })
+                            UsernameTakenAlert: true
+                        });
                     } else {
-                        this.handleShow("UsernameTakenAlert")
+                        window.location.href = ("/profile");
                     }
                 }
-            );
+            )
         }
-        console.log(this.state);
     };
 
+    //==============================================================================
+
     render() {
+
         return (
             <div>
                 <legend className="">Sign up to save marketplaces, enable chat with co-owners, and more</legend>
@@ -141,43 +162,43 @@ export default class Register extends React.Component {
                     {this.state.FillOutFieldsAlert &&
                     <Alert variant='warning' onClose={() => this.handleDismiss("FillOutFieldsAlert")} dismissible>
                         Fill out all of the fields before pressing the sign up button </Alert>}
-                    <div className = "form">
-                          <div className="form-group">
-                              <label htmlFor="username"
-                                     className="col-form-label">
-                                  Username </label>
-                              <input className="form-control"
-                                     id="username"
-                                     placeholder="Dao Manager Username"
-                                     onChange={(event) => this.usernameChanged(event)}/>
-                          </div>
-                          <div className="form-group">
-                              <label htmlFor="password"
-                                     className="col-form-label">
-                                  Password </label>
-                              <input type="password"
-                                     className="form-control"
-                                     id="password"
-                                     placeholder="123qwe#$%"
-                                     onChange={(event) => this.passwordChanged(event)}/>
-                          </div>
-                          <div className="form-group">
-                              <label htmlFor="verify-password"
-                                     className="col-form-label">
-                                  Verify Password </label>
-                              <input type="password"
-                                     className="form-control"
-                                     id="verify-password"
-                                     placeholder="123qwe#$%"
-                                     onChange={(event) => this.verifyChanged(event)}/>
-                          </div>
-                          <button
-                              onClick={() => this.signUp()}
-                              type="button"
-                              className="btn btn-block btn-primary">
-                              Sign Up
-                          </button>
-                      </div>
+                    <div className="form">
+                        <div className="form-group">
+                            <label htmlFor="username"
+                                   className="col-form-label">
+                                Username </label>
+                            <input className="form-control"
+                                   id="username"
+                                   placeholder="Dao Manager Username"
+                                   onChange={(event) => this.usernameChanged(event)}/>
+                        </div>
+                        <div className="form-group">
+                            <label htmlFor="password"
+                                   className="col-form-label">
+                                Password </label>
+                            <input type="password"
+                                   className="form-control"
+                                   id="password"
+                                   placeholder="123qwe#$%"
+                                   onChange={(event) => this.passwordChanged(event)}/>
+                        </div>
+                        <div className="form-group">
+                            <label htmlFor="verify-password"
+                                   className="col-form-label">
+                                Verify Password </label>
+                            <input type="password"
+                                   className="form-control"
+                                   id="verify-password"
+                                   placeholder="123qwe#$%"
+                                   onChange={(event) => this.verifyChanged(event)}/>
+                        </div>
+                        <button
+                            onClick={() => this.signUp()}
+                            type="button"
+                            className="btn btn-block btn-primary">
+                            Sign Up
+                        </button>
+                    </div>
                 </div>
             </div>
         )

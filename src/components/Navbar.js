@@ -1,31 +1,83 @@
 import React from 'react'
 import {Link} from "react-router-dom";
+import HTTPService from '../services/HTTPService'
+
+const httpService = HTTPService.getInstance();
 
 export default class Navbar extends React.Component {
 
-  render() {
-    return <header className="navbar navbar-expand">
-          <Link className="navbar-brand mr-0 mr-md-2" to="/">Bountium Business Manager</Link>
-          <div className="col-8 d-none d-md-inline my-navbar">
-            <ul className="nav navbar-collapse">
-              <li className="nav-item mt-2 ml-auto">
-                <p>
-                  <Link className="" to="/login/">Login </Link>
-                  or
-                  <Link className="" to="/register/"> sign up </Link>
-                  to get even more features
-                </p>
-              </li>
-              {/* We don't need these yet but they're here if we want them:
-              <li className="nav-item">
-                <Link className="nav-link" to="/course/grid">Grid</Link>
-              </li>
-              <li className="nav-item">
-                <Link className="nav-link" to="/widgets">Widgets</Link>
-              </li>*/}
-            </ul>
-          </div>
-      </header>
-  }
+    constructor(props) {
+        super(props);
 
+        this.state = {
+            loggedIn: null,
+            username: null
+        }
+    }
+
+    checkIfLoggedIn() {
+        httpService.receiveSessionProfile().then((profile) => {
+            this.setState({
+                loggedIn: (profile.username !== "null"),
+                username: profile.username
+            });
+        });
+    }
+
+    logOut() {
+        httpService.logOutUser();
+        this.setState({
+            loggedIn: false
+        })
+    }
+
+
+    render() {
+
+        if (this.state.loggedIn === null) {
+            this.checkIfLoggedIn();
+        }
+
+        return (
+            <div className="col-12">
+                {(this.state.loggedIn !== null) &&
+                <div>
+                    <ul className="nav navbar-collapse md-auto">
+                        <li className="nav-item">
+                            <Link className="navbar-brand"
+                                  to="/">Bountium Business Manager</Link>
+                        </li>
+                        {!this.state.loggedIn && <li className="nav-item ml-auto mt-3">
+                            <p className="nav-link">
+                                <Link className=""
+                                      to="/login/">Login </Link>
+                                or
+                                <Link className=""
+                                      to="/register/"> sign up </Link>
+                                to get even more features
+                            </p>
+                        </li>}
+                        {this.state.loggedIn &&
+                        <li className="nav-item ml-auto mt-3">
+                            <p className="nav-link">
+                                <Link className=""
+                                      to="/profile/">Profile for {this.state.username}
+                                </Link>
+                            </p>
+                        </li>}
+                        {this.state.loggedIn &&
+                        <li className="nav-item mt-3">
+                            <p className="nav-link">
+                                <Link className=""
+                                      onClick={() => this.logOut()}
+                                      to="/">Logout</Link>
+                            </p>
+                        </li>
+                        }
+                    </ul>
+                </div>
+                }
+            </div>
+        );
+    }
 }
