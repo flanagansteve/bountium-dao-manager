@@ -195,8 +195,6 @@ export default class BizMgr extends React.Component {
   // Sending updates out:
   // (TODO these should all use the service to send a new biz object to the backend)
   updateOwners(newOwnersArr) {
-    console.log('new owners:');
-    console.log(newOwnersArr)
     // TODO use the service to send this change somewhere, testing for now:
     this.props.biz.owners = newOwnersArr;
     // changing meaningless state var to force re render:
@@ -225,7 +223,6 @@ export default class BizMgr extends React.Component {
   }
 
   render() {
-    console.log(this.props.biz);
     return (
       <div>
         <h2>{this.props.biz.name}</h2>
