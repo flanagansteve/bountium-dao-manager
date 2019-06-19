@@ -28,7 +28,6 @@ export default class Welcome extends React.Component {
         <Router>
           <Navbar/>
           <Switch>
-            <Route path="/post/" render={() => <PostingPage/>}/>
             <Route path="/search/:jobWord" render={() => <JobSearchList/>}/>
             <Route path="/details/:jobId" render={() => <JobDetails/>}/>
             <Route path="/post/" render={() => <div><h1>Welcome to Bountium</h1><BountyMgr/></div>}/>
