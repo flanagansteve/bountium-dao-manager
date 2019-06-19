@@ -10,14 +10,16 @@ export default class Navbar extends React.Component {
         super(props);
 
         this.state = {
-            loggedIn: null
+            loggedIn: null,
+            username: null
         }
     }
 
     checkIfLoggedIn() {
         httpService.receiveSessionProfile().then((profile) => {
             this.setState({
-                loggedIn: (profile.username !== "null")
+                loggedIn: (profile.username !== "null"),
+                username: profile.username
             });
         });
     }
@@ -59,7 +61,8 @@ export default class Navbar extends React.Component {
                         <li className="nav-item ml-auto mt-3">
                             <p className="nav-link">
                                 <Link className=""
-                                      to="/profile/">Profile</Link>
+                                      to="/profile/">Profile for {this.state.username}
+                                </Link>
                             </p>
                         </li>}
                         {this.state.loggedIn &&
