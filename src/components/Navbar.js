@@ -5,6 +5,12 @@ const httpService = HTTPService.getInstance();
 
 export default class Navbar extends React.Component {
 
+  constructor(props){
+    super(props);
+
+
+  }
+
   render() {
     var loggedIn = false;
     httpService.receiveSessionProfile().then( (profile) => loggedIn = (profile != null));

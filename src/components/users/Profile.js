@@ -106,7 +106,7 @@ export default class Profile extends React.Component {
         // Make sure passwords are the same
         if (this.state.newPassword !== this.state.verifyPassword) {
             this.handleShow("PasswordDifAlert")
-        } else if (this.state.password.length < 8) {
+        } else if (this.state.newPassword.length < 8) {
             this.handleShow("PasswordLenAlert")
         } else {
             let updatedUser = {
