@@ -1,7 +1,5 @@
 import React from 'react';
-import JobDetails from './JobDetails'
-import {BrowserRouter as Router, Link, Route}
-    from "react-router-dom";
+import {Link} from "react-router-dom";
 import UserJobsService from '../services/UserJobsService';
 const userJobsService = UserJobsService.getInstance();
 

@@ -8,7 +8,8 @@ export default class JobDetails extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            jobObj: null
+            jobObj: null,
+            internal: false
         }
     }
 
@@ -16,11 +17,16 @@ export default class JobDetails extends React.Component {
 
         const pathSplit = window.location.href.split("/");
         const jobId = pathSplit[4];
-
         let url = "https://cors-anywhere.herokuapp.com/http://jobs.github.com/positions/";
-
         url += jobId;
         url += ".json";
+        if (jobId.length <= 6 && !isNaN(Number(jobId))) {
+          var fetchHost = "http://localhost:8080";
+          if (window.location.href.includes("heroku")) {
+            fetchHost = "https://guarded-tundra-80923.herokuapp.com";
+          }
+          url = fetchHost + "/api/injobs/" + jobId
+        }
         fetch(url)
             .then(res => res.json())
             .then(json => {
@@ -36,11 +42,20 @@ export default class JobDetails extends React.Component {
     }
 
     render() {
-
         if (!this.state.jobObj) {
             this.getJob();
         }
-
+        if (this.state.internal) {
+          return ( <div>
+            {this.state.jobObj &&
+              <div className="jumbotron">
+                <h1>{this.state.jobObj.title}</h1>
+                <p>{this.state.jobObj.description}</p>
+              </div>
+            }
+            </div>
+          )
+        }
         return (
             <div>
                 {this.state.jobObj &&

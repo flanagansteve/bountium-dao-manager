@@ -11,7 +11,6 @@ import BizMgr from './BizMgr'
 import ProfileViewOnly from "./users/ProfileViewOnly";
 import JobDetails from "./JobDetails";
 import BountyMgr from './BountyMgr'
-import JobEmptySearch from "./JobEmptySearch";
 import BusinessService from '../services/BusinessService';
 import UserJobsService from '../services/UserJobsService';
 import HTTPService from '../services/HTTPService';

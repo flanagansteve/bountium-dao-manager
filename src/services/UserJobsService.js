@@ -17,6 +17,15 @@ export default class UserJobsService {
         return this.myInstance;
     }
 
+    postInternalJob = (newJob) =>
+      fetch(`${fetchHost}/api/injobs`, {
+        method: 'POST',
+        body: JSON.stringify(newJob),
+        headers: {
+          'content-type': 'application/json'
+        }
+      }).then(response => response.json());
+
     getInternalJobsById = (userId) =>
       fetch(`${fetchHost}/api/users/${userId}/injobs`)
         .then(response => response.json());
