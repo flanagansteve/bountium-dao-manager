@@ -3,6 +3,7 @@ import Alert from 'react-bootstrap/Alert'
 
 import UserService from '../../services/UserService';
 import HTTPService from '../../services/HTTPService'
+import {Link} from "react-router-dom";
 
 const userService = UserService.getInstance();
 const httpService = HTTPService.getInstance();
@@ -19,6 +20,7 @@ export default class Profile extends React.Component {
             verifyPassword: "",
             firstName: "",
             lastName: "",
+            jobList: [],
             ViewingPassword: false,
             PasswordDifAlert: false,
             PasswordLenAlert: false,
@@ -152,7 +154,7 @@ export default class Profile extends React.Component {
         };
         userService.updateUser(updatedUser).then(response => {
 
-            console.log(response);
+                console.log(response);
 
                 if (response !== null) {
                     this.setState({
@@ -165,10 +167,26 @@ export default class Profile extends React.Component {
                 }
             }
         )
-
     };
 
     //=============================================================================
+
+    renderJobList() {
+        return this.state.jobList
+            .map(function (item, index) {
+                return <tr className="d-flex"
+                           key={index}>
+                    <td className="col-6">
+                        <Link to={`/details/${item.id}`}
+                              style={{color: 'black'}}>{item.title}</Link></td>
+                    <td className="col-6">
+                        {item.company}
+                    </td>
+                </tr>;
+            });
+    }
+
+//=============================================================================
 
     render() {
 
@@ -182,6 +200,7 @@ export default class Profile extends React.Component {
                     lastName: response.lastName
                 })
             )
+
         }
 
         return (
@@ -210,7 +229,7 @@ export default class Profile extends React.Component {
                             Password Successfully Changed </Alert>}
                         {this.state.ChangesSuccessAlert &&
                         <Alert variant='success' onClose={() => this.handleDismiss("ChangesSuccessAlert")} dismissible>
-                             User Data Successfully Changed</Alert>}
+                            User Data Successfully Changed</Alert>}
 
 
                         <div className="form">
@@ -302,6 +321,18 @@ export default class Profile extends React.Component {
                             }
                         </div>
                     </div>
+
+                    <table>
+                        <thead>
+                        <tr className="d-flex">
+                            <th className="col-6">Title</th>
+                            <th className="col-6">Company Name</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {this.renderJobList()}
+                        </tbody>
+                    </table>
                 </div>
                 }
             </div>

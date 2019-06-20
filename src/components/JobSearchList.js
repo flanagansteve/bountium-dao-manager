@@ -3,8 +3,8 @@ import JobDetails from './JobDetails'
 import {BrowserRouter as Router, Link, Route}
     from "react-router-dom";
 
-import JobSearchService from '../services/JobSearchService'
-const jobService = JobSearchService.getInstance();
+import ExternalJobSearchService from '../services/ExternalJobSearchService'
+const jobService = ExternalJobSearchService.getInstance();
 
 export default class JobSearchList extends React.Component {
 
