@@ -2,25 +2,25 @@ import React from 'react';
 import Alert from 'react-bootstrap/Alert'
 
 import UserService from '../../services/UserService';
-import HTTPService from '../../services/HTTPService'
 import {Link} from "react-router-dom";
 
 const userService = UserService.getInstance();
-const httpService = HTTPService.getInstance();
 
 export default class Profile extends React.Component {
-
 
     constructor(props) {
         super(props);
         this.state = {
-            username: "",
-            password: "",
+            user: this.props.user,
+            id: this.props.user.id,
+            username: this.props.user.username,
+            password: this.props.user.password,
             newPassword: "",
             verifyPassword: "",
-            firstName: "",
-            lastName: "",
-            jobList: [],
+            firstName: this.props.user.firstName,
+            lastName: this.props.user.lastName,
+            externalJobs: this.props.externalJobs,
+            internalJobs: this.props.internalJobs,
             ViewingPassword: false,
             PasswordDifAlert: false,
             PasswordLenAlert: false,
@@ -157,9 +157,6 @@ export default class Profile extends React.Component {
             lastName: this.state.lastName,
         };
         userService.updateUser(updatedUser).then(response => {
-
-                console.log(response);
-
                 if (response !== null) {
                     this.setState({
                         username: response.username,
@@ -179,9 +176,8 @@ export default class Profile extends React.Component {
 
     //=============================================================================
 
-    renderJobList() {
-        console.log(this.state.jobList);
-        return this.state.jobList
+    renderExternalJobList() {
+        return this.state.externalJobs
             .map(function (item, index) {
                 return <tr className="d-flex"
                            key={index}>
@@ -198,19 +194,6 @@ export default class Profile extends React.Component {
 //=============================================================================
 
     render() {
-
-        if (this.state.username === "") {
-            httpService.receiveSessionProfile().then(response =>
-                this.setState({
-                    id: response.id,
-                    username: response.username,
-                    password: response.password,
-                    firstName: response.firstName,
-                    lastName: response.lastName
-                })
-            )
-
-        }
 
         return (
 
@@ -339,7 +322,7 @@ export default class Profile extends React.Component {
                         </tr>
                         </thead>
                         <tbody>
-                        {this.renderJobList()}
+                        {this.renderExternalJobList()}
                         </tbody>
                     </table>
                 </div>

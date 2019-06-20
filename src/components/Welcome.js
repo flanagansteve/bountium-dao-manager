@@ -103,7 +103,9 @@ export default class Welcome extends React.Component {
             <Route path="/login" render={() => <Login/>}/>
             <Route path="/register" render={() => <Register/>}/>
             <Route path="/profile/:profileId" render={() => <ProfileViewOnly/>}/>
-            <Route path="/profile" render={() => <Profile/>}/>
+            <Route path="/profile" render={() => <Profile user={this.state.user}
+                                                          internalJobs={this.state.internalJobs}
+                                                          externalJobs={this.state.externalJobs}/>}/>
             <Route path="/mgr/:bizAddr" render={() => {
               if (!this.state.biz)
                 this.getBiz(window.location.href.split("/")[4])
