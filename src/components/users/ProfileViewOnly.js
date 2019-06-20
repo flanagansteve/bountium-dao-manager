@@ -2,6 +2,7 @@ import React from 'react';
 import Alert from 'react-bootstrap/Alert'
 
 import UserService from '../../services/UserService';
+import {Link} from "react-router-dom";
 
 const userService = UserService.getInstance();
 
@@ -20,6 +21,22 @@ export default class ProfileViewOnly extends React.Component {
         }
     }
 
+    //=============================================================================
+
+    renderJobList() {
+        return this.state.jobList
+            .map(function (item, index) {
+                return <tr className="d-flex"
+                           key={index}>
+                    <td className="col-6">
+                        <Link to={`/details/${item.id}`}
+                              style={{color: 'black'}}>{item.title}</Link></td>
+                    <td className="col-6">
+                        {item.company}
+                    </td>
+                </tr>;
+            });
+    }
 
     //=============================================================================
 
@@ -93,6 +110,16 @@ export default class ProfileViewOnly extends React.Component {
                             </div>
                         </div>
                     </div>
+                    <table>
+                        <thead>
+                            <tr className="d-flex">
+                                <th className="col-6">Title</th>
+                                <th className="col-6">Company Name</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
                 </div>
                 }
             </div>
