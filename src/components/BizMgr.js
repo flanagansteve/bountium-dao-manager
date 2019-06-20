@@ -39,6 +39,7 @@ export default class BizMgr extends React.Component {
     this.transfer = this.transfer.bind(this);
     this.givePermission = this.givePermission.bind(this);
     this.giveUnallocated = this.giveUnallocated.bind(this);
+    this.deleteProduct = this.deleteProduct.bind(this);
     // TODO these can be unbound once we start using the service
     this.newProduct = this.newProduct.bind(this);
     this.updateName = this.updateName.bind(this);
@@ -92,8 +93,9 @@ export default class BizMgr extends React.Component {
     </div>
   }
 
-  deleteProduct() {
-    productService.deleteProduct(this.props.biz.id, e.target.id)
+  deleteProduct(e) {
+    console.log(this.props.biz.products[e.target.id])
+    productService.deleteProduct(this.props.biz.id, this.props.biz.products[e.target.id].id)
   }
 
   mapProductsToNonOwner(product, key) {

@@ -13,9 +13,11 @@ import JobDetails from "./JobDetails";
 import BountyMgr from './BountyMgr'
 import JobEmptySearch from "./JobEmptySearch";
 import BusinessService from '../services/BusinessService';
+import UserJobsService from '../services/UserJobsService';
 import HTTPService from '../services/HTTPService';
 const bizService = BusinessService.getInstance();
 const httpService = HTTPService.getInstance();
+const userJobsService = UserJobsService.getInstance();
 
 
 export default class Welcome extends React.Component {
@@ -24,7 +26,9 @@ export default class Welcome extends React.Component {
     super(props);
     this.state = {
       user : null,
-      biz : null
+      biz : null,
+      internalJobs : null,
+      externalJobs : null
     }
   }
 
@@ -57,15 +61,33 @@ export default class Welcome extends React.Component {
     })
   }
 
+  getInternalJobs(userId) {
+    userJobsService.getInternalJobsById(userId).then((jobsArr) => {
+      this.setState({internalJobs : jobsArr})
+    })
+  }
+
+  getExternalJobs(userId) {
+    userJobsService.getExternalJobsById(userId).then((jobsArr) => {
+      this.setState({externalJobs : jobsArr})
+    })
+  }
+
   render() {
     if (!this.state.user)
       this.getUser();
+    else {
+      if (!this.state.internalJobs)
+        this.getInternalJobs(this.state.user.id)
+      if (!this.state.externalJobs)
+        this.getExternalJobs(this.state.user.id)
+    }
     return <div className="container-fluid">
         {this.state.user && <Router>
           <Navbar/>
           <Switch>
-            <Route path="/search/:jobWord" render={() => <JobSearchList/>}/>
-            <Route path="/search" render={() => <JobEmptySearch/>}/>
+            <Route path="/search/:jobWord" render={() => <JobSearchList user={this.state.user}/>}/>
+            <Route path="/search" render={() => <BountyMgr/>}/>
             <Route path="/details/:jobId" render={() => <JobDetails/>}/>
             <Route path="/post/" render={() => <div><h1>Welcome to Bountium</h1><BountyMgr/></div>}/>
             <Route path="/new" render={() => <NewBusinessWorkflow user={this.state.user}/>}/>
@@ -83,7 +105,7 @@ export default class Welcome extends React.Component {
             }}/>
             <Route path="/" render={() => {
               return <div>
-                <h3>Welcome - lets work on your business!</h3>
+                <h3>Welcome {this.state.user.firstName}</h3>
                 <div className="row">
                   <div className="col-6">
                     <div className="container-fluid mt-1">
@@ -92,8 +114,8 @@ export default class Welcome extends React.Component {
                       </Link>
                     </div>
                     <div className="container-fluid mt-1">
-                      <Link to={`/migrating/`} className="btn btn-info">
-                        Convert your existing business to Bountium
+                      <Link to={`/search/`} className="btn btn-info">
+                        Search for jobs posted to Github
                       </Link>
                     </div>
                     <div className="container-fluid mt-1">
@@ -110,13 +132,25 @@ export default class Welcome extends React.Component {
                         {['2', '12', '22'].map(this.renderBusiness)}
                       </tbody>
                     </table>
-                    {this.state.user.username !== null && <div>
-                      <legend>Saved Jobs</legend>
-                      <table>
-                        <tbody>
-                          this.state.user.savedJobs.map(this.renderSavedJobs)
-                        </tbody>
-                      </table>
+                  </div>
+                  <div className="container-fluid">
+                    {this.state.user.username !== "null" && <div className="row mt-1">
+                      {this.state.internalJobs && <div className="col-6">
+                        <legend>Saved Internal Jobs</legend>
+                        <table>
+                          <tbody>
+                            {this.state.internalJobs.map(this.renderSavedJobs)}
+                          </tbody>
+                        </table>
+                      </div>}
+                      {this.state.externalJobs && <div className="col-6">
+                        <legend>Saved External Jobs</legend>
+                        <table>
+                          <tbody>
+                            {this.state.externalJobs.map(this.renderSavedJobs)}
+                          </tbody>
+                        </table>
+                      </div>}
                     </div>}
                   </div>
                 </div>

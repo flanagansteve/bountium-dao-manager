@@ -17,7 +17,7 @@ export default class BountyMgr extends React.Component {
         <div className="container-fluid jumbotron">
           <div className="row">
             <div className="col-12">
-              <h3>Hire some help!</h3>
+              <h3>Search for jobs, or post your own</h3>
               <div className="form">
                 <div className="form-group">
                   <label htmlFor="jobCategory">Category</label>

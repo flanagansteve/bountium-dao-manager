@@ -2,6 +2,8 @@ import React from 'react';
 import JobDetails from './JobDetails'
 import {BrowserRouter as Router, Link, Route}
     from "react-router-dom";
+import UserJobsService from '../services/UserJobsService';
+const userJobsService = UserJobsService.getInstance();
 
 
 export default class JobSearchList extends React.Component {
@@ -14,11 +16,13 @@ export default class JobSearchList extends React.Component {
         this.state = (
             {
                 keywords: jobKeyword,
-                jobList: null
+                jobList: null,
+                savedJobs : []
             }
         )
 
         this.renderJobList = this.renderJobList.bind(this);
+        this.saveJob = this.saveJob.bind(this);
     }
 
 
@@ -42,8 +46,10 @@ export default class JobSearchList extends React.Component {
     }
 
     saveJob(e) {
-      // Send to server:
-      // thisUser.savedJobs.push(this.state.jobList[e.target.id])
+      userJobsService.addUserToExJob(e.target.id, this.props.user.id)
+      var sj = this.state.savedJobs;
+      sj.push(e.target.id);
+      this.setState({savedJobs:sj})
     }
 
     renderJobList() {
@@ -54,6 +60,7 @@ export default class JobSearchList extends React.Component {
         } else {
             return this.state.jobList
                 .map((item, index) => {
+                    var alreadySaved = this.state.savedJobs.filter((jobid) => jobid === item.id).length > 0;
                     return <tr className="d-flex" key={index}>
                         <td className="col-5">
                             <Link to={`/details/${item.id}`}
@@ -62,7 +69,10 @@ export default class JobSearchList extends React.Component {
                             {item.company}
                         </td>
                         <td className="col-2">
-                            <button id={index} className="btn btn-primary" onClick={this.saveJob}>Save</button>
+                            {!alreadySaved &&
+                              <button id={item.id} className="btn btn-primary" onClick={this.saveJob}>Save</button>}
+                            {alreadySaved &&
+                              <button className="btn btn-disabled" disabled>Saved</button>}
                         </td>
                     </tr>;
                 });
