@@ -87,11 +87,11 @@ export default class Welcome extends React.Component {
         {this.state.user && <Router>
           <Navbar/>
           <Switch>
-            <Route path="/search/:jobWord" render={() => <JobSearchList/>}/>
-            <Route path="/search" render={() => <JobEmptySearch/>}/>
+            <Route path="/search/:jobWord" render={() => <JobSearchList user={this.props.user}/>}/>
+            <Route path="/search" render={() => <BountyMgr/>}/>
             <Route path="/details/:jobId" render={() => <ExternalJobDetails/>}/>
-            // TODO resolve this
-            /*
+            {
+              /* TODO resolve this
               < Route path="/search" render={() => <BountyMgr/>}/>
               <Route path="/details/:jobId" render={() => <JobDetails/>}/>
               */
@@ -124,12 +124,7 @@ export default class Welcome extends React.Component {
                     </div>
                     <div className="container-fluid mt-1">
                       <Link to={`/search/`} className="btn btn-info">
-                        Search for jobs posted to Github
-                      </Link>
-                    </div>
-                    <div className="container-fluid mt-1">
-                      <Link to={`/returning/`} className="btn btn-success">
-                        Log in and manage your Bountium business
+                        Search for jobs
                       </Link>
                     </div>
                   </div>

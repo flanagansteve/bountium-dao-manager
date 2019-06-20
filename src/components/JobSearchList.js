@@ -92,7 +92,6 @@ export default class JobSearchList extends React.Component {
 
 
     render() {
-
         return (
             <div className="container-fluid">
                 <h1> Job Search List for {this.state.keywords}

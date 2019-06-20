@@ -67,7 +67,7 @@ export default class ProductEditor extends React.Component {
                 imageurl: url,
                 versions: this.state.versions.join()}
         if (this.checkFields(product)) {
-            productService.createProductForBiz(product, this.props.bizId).then(() => this.props.done())
+            productService.updateProduct(this.props.bizId, this.props.productIndex, product).then(() => this.props.done())
         }
     }
 
