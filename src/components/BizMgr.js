@@ -254,6 +254,8 @@ export default class BizMgr extends React.Component {
     this.setState({update : !this.state.update})
   }
 
+  // TODO get and render the jobs this business has posted below the bountyMgr
+
   render() {
     if (this.props.biz.owners.filter(owner => owner.username === this.props.user.username).length == 0 ) {
       return (<div>

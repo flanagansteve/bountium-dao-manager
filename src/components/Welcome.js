@@ -90,7 +90,7 @@ export default class Welcome extends React.Component {
             <Route path="/search/:jobWord" render={() => <JobSearchList/>}/>
             <Route path="/search" render={() => <JobEmptySearch/>}/>
             <Route path="/details/:jobId" render={() => <ExternalJobDetails/>}/>
-
+            // TODO resolve this
             /*
               < Route path="/search" render={() => <BountyMgr/>}/>
               <Route path="/details/:jobId" render={() => <JobDetails/>}/>
