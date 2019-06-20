@@ -2,8 +2,14 @@ import React from 'react';
 import ChatClient from './ChatClient';
 import BizDetails from './BizDetails';
 import BountyMgr from './BountyMgr'
+import ProductEditor from './ProductEditor';
+import {Link} from 'react-router-dom'
 import BusinessService from '../services/BusinessService';
+import OwnerService from '../services/OwnerService';
+import ProductService from '../services/ProductService';
 const bizService = BusinessService.getInstance();
+const ownerService = OwnerService.getInstance();
+const productService = ProductService.getInstance();
 
 export default class BizMgr extends React.Component {
 
@@ -12,22 +18,32 @@ export default class BizMgr extends React.Component {
 
   constructor(props) {
     super(props);
-    // TODO how do we get this from session
-    var currentUsername = "Steve"
     this.state = {
       viewingOrg : true,
       viewingProducts : false,
       viewingOps : false,
       viewingChat : false,
       // The permissions of the current user
-      currentOwner : this.props.biz.owners.filter((owner => owner.username === currentUsername))[0]
+      currentOwner : this.props.biz.owners.filter(owner => owner.username === this.props.user.username)[0],
+      selectedProduct : -1,
+      update : false
     }
     this.viewProducts = this.viewProducts.bind(this);
     this.viewOrg = this.viewOrg.bind(this);
     this.viewOps = this.viewOps.bind(this);
     this.viewChat = this.viewChat.bind(this);
+    this.mapProducts = this.mapProducts.bind(this);
+    this.selectProduct = this.selectProduct.bind(this);
+    this.giveShares = this.giveShares.bind(this);
+    this.dilute = this.dilute.bind(this);
+    this.transfer = this.transfer.bind(this);
+    this.givePermission = this.givePermission.bind(this);
+    this.giveUnallocated = this.giveUnallocated.bind(this);
+    this.deleteProduct = this.deleteProduct.bind(this);
     // TODO these can be unbound once we start using the service
+    this.newProduct = this.newProduct.bind(this);
     this.updateName = this.updateName.bind(this);
+    this.updateOwners = this.updateOwners.bind(this);
     this.updateDescription = this.updateDescription.bind(this);
   }
 
@@ -59,7 +75,30 @@ export default class BizMgr extends React.Component {
     this.setState({viewingChat : true})
   }
 
+  selectProduct(e) {
+    this.setState({selectedProduct : Number(e.target.id)})
+  }
+
   mapProducts(product, key) {
+    if (key === this.state.selectedProduct) {
+      return <ProductEditor bizId={this.props.biz.id} key={key} product={product} done={() => this.setState({selectedProduct : -1})}/>
+    }
+    return <div className="card col-4" key={key} id={"product-" + key}>
+      <div className="card-body">
+        <h5 className="card-title">{product.name}</h5>
+        <p className="card-text">{product.price}</p>
+        <button id={key} className="btn btn-primary" onClick={this.selectProduct}>Edit</button>
+        <button id={key} className="btn btn-warning" onClick={this.deleteProduct}>Delete</button>
+      </div>
+    </div>
+  }
+
+  deleteProduct(e) {
+    console.log(this.props.biz.products[e.target.id])
+    productService.deleteProduct(this.props.biz.id, this.props.biz.products[e.target.id].id)
+  }
+
+  mapProductsToNonOwner(product, key) {
     return <div className="card" key={key} id={"product-" + key}>
       <div className="card-body">
         <h5 className="card-title">{product.name}</h5>
@@ -69,28 +108,13 @@ export default class BizMgr extends React.Component {
   }
 
   mapOwners(owner, key) {
-    // TODO make these links to user profiles
-    return <p key={key}>{owner.name}</p>
+    return <Link className="col-12" to={"/profile/" + owner.username} key={key}>{owner.username}</Link>
   }
 
-  // TODO use the business service for these:
+  // modifying the business //
+
+  // Financials:
   fundBiz() {
-
-  }
-
-  transfer() {
-
-  }
-
-  dilute() {
-
-  }
-
-  giveUnallocated() {
-
-  }
-
-  givePermission() {
 
   }
 
@@ -98,19 +122,165 @@ export default class BizMgr extends React.Component {
 
   }
 
+  // Owner stuff:
+  transfer() {
+    var amt = Number(document.getElementById("transfer-shares-amt-input").value);
+    var currentOwners = this.props.biz.owners;
+    var transferringOwner = currentOwners.filter(owner => this.state.currentOwner.username === owner.username)[0];
+    if (transferringOwner.shares < amt) {
+      // TODO dont let them transfer, notify them of the mistake
+      return;
+    }
+    transferringOwner.shares -= amt;
+    this.giveShares(document.getElementById("transfer-shares-addr-input").value, amt);
+  }
+
+  dilute() {
+    var amt = Number(document.getElementById("dilute-shares-amt-input").value);
+    if (!this.state.currentOwner.dilute) {
+      // TODO dont let them transfer, notify them of the mistake
+      return;
+    }
+    this.giveShares(document.getElementById("dilute-shares-addr-input").value, amt);
+    this.props.biz.totalShares += amt;
+    bizService.updateBiz({
+      totalShares : this.props.biz.totalShares,
+      ...this.props.biz
+    }, this.props.biz.id)
+  }
+
+  giveUnallocated() {
+    var amt = Number(document.getElementById("give-shares-amt-input").value);
+    var currentOwners = this.props.biz.owners;
+    var takenShares = currentOwners.reduce((sharesAddedSoFar, nextOwner) => sharesAddedSoFar + nextOwner.shares);
+    if ((this.props.totalShares - takenShares) < amt || !this.state.currentOwner.dilute) {
+      // TODO dont let them dilute, notify them of the mistake
+      return;
+    }
+    this.giveShares(document.getElementById("give-shares-addr-input").value, amt);
+  }
+
+  giveShares(recipient, amt) {
+    var currentOwners = this.props.biz.owners;
+    var searchCurrentOwners = currentOwners.filter(owner => owner.username === recipient);
+    if (searchCurrentOwners.length > 0) {
+      // Give shares to one of the current owners
+      // TODO does mutating this specific variable actually change the currentOwner
+      // var or do we need to do currentOwners[x] = mutated?
+      searchCurrentOwners[0].shares += amt;
+    } else {
+      // Add the new owner
+      currentOwners.push({
+       username:recipient, shares:amt,
+       dividend : false, dilute : false, bestow : false, modifyCatalogue : false, board : false
+      });
+    }
+    this.updateOwners(currentOwners);
+  }
+
+  // TODO this don't work
+  givePermission() {
+    var recipient = document.getElementById("give-permission-addr-input").value;
+    var role = document.getElementById("give-permission-value-input").value;
+    var currentOwners = this.props.biz.owners;
+    var bestowee = currentOwners.filter(owner => owner.username === recipient)[0];
+    switch(role) {
+      // TODO does mutating bestowee actually change the currentOwner
+      // var or do we need to do currentOwners[x] = mutated?
+      case 1:
+        bestowee.dividend = true;
+        break;
+      case 2:
+        bestowee.dilute = true;
+        break;
+      case 3:
+        bestowee.bestow = true;
+        break;
+      case 4:
+        bestowee.modifyCatalogue = true;
+        break;
+      case 5:
+        bestowee.board = true;
+        break;
+      default:
+        // TODO this will never happen, prolly throw an error;
+        return;
+    }
+    this.updateOwners(currentOwners);
+  }
+
+  // Sending updates out:
+  // (TODO these should all use the service to send a new biz object to the backend)
+  updateOwners(newOwnersArr) {
+    // TODO use the service to send this change somewhere, testing for now:
+    this.props.biz.owners = newOwnersArr;
+    for (let i = 0; i < newOwnersArr.length; i++) {
+      ownerService.createOwnerForBiz(newOwnersArr[i], this.props.biz.id)
+    }
+    // changing meaningless state var to force re render:
+    this.setState({update : !this.state.update})
+  }
+
   updateName(newName) {
     // TODO use the service to send this change somewhere, testing for now:
-    console.log('new name is ' + newName);
     this.props.biz.name = newName;
+    bizService.updateBiz({
+      name : newName,
+      ...this.props.biz
+    }, this.props.biz.id)
+    // changing meaningless state var to force re render:
+    this.setState({update : !this.state.update})
   }
 
   updateDescription(newDescription) {
     // TODO use the service to send this change somewhere, testing for now:
-    console.log('new description is ' + newDescription);
     this.props.biz.description = newDescription;
+    bizService.updateBiz({
+      description : newDescription,
+      ...this.props.biz
+    }, this.props.biz.id)
+    // changing meaningless state var to force re render:
+    this.setState({update : !this.state.update})
+  }
+
+  newProduct() {
+    // TODO use the service to send this change somewhere, testing for now:
+    this.props.biz.products.push({name:'new product', price:0})
+    productService.createProductForBiz({
+      products : this.props.biz.products,
+      ...this.props.biz
+    }, this.props.biz.id)
+    // changing meaningless state var to force re render:
+    this.setState({update : !this.state.update})
   }
 
   render() {
+    if (this.props.biz.owners.filter(owner => owner.username === this.props.user.username).length == 0 ) {
+      return (<div>
+        <h2>{this.props.biz.name}</h2>
+        <div>
+          <ul className="nav navbar">
+            <li className={"nav-item display-4 col-6" + (this.state.viewingOrg ? " border-bottom" : "")} onClick={this.viewOrg}>
+              <h4 className="text-center">Organisation</h4>
+            </li>
+            <li className={"nav-item display-4 col-6" + (this.state.viewingProducts ? " border-bottom" : "")} onClick={this.viewProducts}>
+              <h4 className="text-center">Products</h4>
+            </li>
+          </ul>
+        </div>
+        {this.state.viewingOrg && <div>
+          <BizDetails biz={this.props.biz}
+                      isOwner={false}/>
+        </div>}
+        {this.state.viewingProducts && <div className="container-fluid jumbotron bg-white">
+          <h3>Your products</h3>
+          <div className="card-deck">
+            {this.props.biz.products.map(this.mapProductsToNonOwner)}
+          </div>
+        </div>}
+      </div>
+    );
+    }
     return (
       <div>
         <h2>{this.props.biz.name}</h2>
@@ -133,7 +303,8 @@ export default class BizMgr extends React.Component {
         {this.state.viewingOrg && <div>
           <BizDetails biz={this.props.biz}
                       updateName={this.updateName}
-                      updateDescription={this.updateDescription}/>
+                      updateDescription={this.updateDescription}
+                      isOwner={true}/>
           <div className="container-fluid jumbotron">
             <div className="">
               <div className="row border">
@@ -165,7 +336,7 @@ export default class BizMgr extends React.Component {
                       <input type="number" className="form-control" id="transfer-shares-amt-input"/>
                     </div>
                     <div className="form-group">
-                      <label htmlFor="transfer-shares-addr-input">Address of new owner:</label>
+                      <label htmlFor="transfer-shares-addr-input">Username of new owner:</label>
                       <input type="text" className="form-control" id="transfer-shares-addr-input"/>
                     </div>
                     <button className="btn btn-primary" onClick={this.transfer}>Transfer shares</button>
@@ -180,7 +351,7 @@ export default class BizMgr extends React.Component {
                     <input type="number" className="form-control" id="give-shares-amt-input"/>
                   </div>
                   <div className="form-group">
-                    <label htmlFor="give-shares-addr-input">Address of new owner:</label>
+                    <label htmlFor="give-shares-addr-input">Username of new owner:</label>
                     <input type="text" className="form-control" id="give-shares-addr-input"/>
                   </div>
                   <button className="btn btn-primary" onClick={this.giveUnallocated}>Give shares</button>
@@ -192,7 +363,7 @@ export default class BizMgr extends React.Component {
                     <input type="number" className="form-control" id="dilute-shares-amt-input"/>
                   </div>
                   <div className="form-group">
-                    <label htmlFor="dilute-shares-addr-input">Address of new owner:</label>
+                    <label htmlFor="dilute-shares-addr-input">Username of new owner:</label>
                     <input type="text" className="form-control" id="dilute-shares-addr-input"/>
                   </div>
                   <button className="btn btn-primary" onClick={this.dilute}>Create and give shares</button>
@@ -204,10 +375,10 @@ export default class BizMgr extends React.Component {
                   <div className="col-6 mb-2 mt-1">
                     <legend>Bestow permissioned roles to a co-owner:</legend>
                     <div className="form-group">
-                      <label htmlFor="give-permission-addr-input">Address of bestowee:</label>
+                      <label htmlFor="give-permission-addr-input">Username of bestowee:</label>
                       <input type="text" className="form-control" id="give-permission-addr-input"/>
                     </div>
-                    <select className="form-control">
+                    <select className="form-control" id="give-permission-value-input">
                       <option value={1}>Can call dividends</option>
                       <option value={2}>Can dilute shares</option>
                       <option value={3}>Can give other co-owners permissions</option>
@@ -236,6 +407,7 @@ export default class BizMgr extends React.Component {
           <div className="card-deck">
             {this.props.biz.products.map(this.mapProducts)}
           </div>
+          <button className="btn btn-primary mt-1 float-right" onClick={this.newProduct}>New Product</button>
         </div>}
         {this.state.viewingOps && <div className="container-fluid">
           <BountyMgr/>

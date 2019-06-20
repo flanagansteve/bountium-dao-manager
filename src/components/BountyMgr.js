@@ -1,23 +1,38 @@
 import React from 'react'
-
 import {Link} from "react-router-dom";
+import UserJobsService from '../services/UserJobsService';
+const userJobsService = UserJobsService.getInstance();
 
 export default class BountyMgr extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {value: "PYTHON"}
+        this.state = {value: "PYTHON", postedJobId: "none"}
+        this.postInternalJob = this.postInternalJob.bind(this);
     }
 
     updateCategory(value) {
         this.setState( {value: value});
     }
 
+    postInternalJob() {
+      userJobsService.postInternalJob(
+        {title : document.getElementById("bounty-title").value,
+        description : document.getElementById("bounty-description").value}).then(
+        postedJob => this.setState({postedJobId : postedJob.id})
+      );
+    }
+
     render() {
+      if (this.state.postedJobId !== "none") {
+        return <div className="container-fluid jumbotron">
+          <h3>Success! View your job <Link to={"/details/" + this.state.postedJobId}>here</Link></h3>
+        </div>
+      }
       return (
         <div className="container-fluid jumbotron">
           <div className="row">
             <div className="col-12">
-              <h3>Hire some help!</h3>
+              <h3>Search for jobs, or post your own</h3>
               <div className="form">
                 <div className="form-group">
                   <label htmlFor="jobCategory">Category</label>
@@ -43,7 +58,7 @@ export default class BountyMgr extends React.Component {
                   </textarea>
                 </div>
                 <button className="btn btn-primary"
-                        onClick={() => console.log(this.state.value)}>
+                        onClick={this.postInternalJob}>
                   Post
                 </button>
               </div>

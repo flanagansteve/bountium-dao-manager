@@ -40,6 +40,8 @@ export default class Register extends React.Component {
             case "FillOutFieldsAlert" :
                 this.setState({FillOutFieldsAlert: false});
                 break;
+            default:
+                break;
         }
     };
 
@@ -61,6 +63,8 @@ export default class Register extends React.Component {
                 break;
             case "FillOutFieldsAlert" :
                 this.setState({FillOutFieldsAlert: true});
+                break;
+            default :
                 break;
         }
     };

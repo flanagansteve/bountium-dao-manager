@@ -13,28 +13,90 @@ import ExternalJobDetails from "./ExternalJobDetails"
 import JobDetails from "./JobDetails";
 import BountyMgr from './BountyMgr'
 import BusinessService from '../services/BusinessService';
-import JobEmptySearch from "./JobEmptySearch";
+import UserJobsService from '../services/UserJobsService';
+import HTTPService from '../services/HTTPService';
 const bizService = BusinessService.getInstance();
+const httpService = HTTPService.getInstance();
+const userJobsService = UserJobsService.getInstance();
 
 
 export default class Welcome extends React.Component {
 
-  renderBusinesses(bizId, key) {
+  constructor(props) {
+    super(props);
+    this.state = {
+      user : null,
+      biz : null,
+      internalJobs : null,
+      externalJobs : null
+    }
+  }
+
+  renderSavedJobs(job, index) {
+    return <tr className="d-flex" key={index}>
+        <td className="col-6">
+            <Link to={`/details/${job.id}`}
+                  style={{color: 'black'}}>{job.title}</Link></td>
+        <td className="col-6">
+            {job.company}
+        </td>
+    </tr>;
+  }
+
+  renderBusiness(bizId, key) {
     return <tr key={key}>
-      <a href={"/mgr/" + bizId}>Business at {bizId}</a>
+      <td><a href={"/mgr/" + bizId}>Business at {bizId}</a></td>
     </tr>
   }
 
+  getUser() {
+    httpService.receiveSessionProfile().then((user) => {
+      this.setState({user : user})
+    });
+  }
+
+  getBiz(bizId) {
+    bizService.getBiz(Number(bizId)).then((biz) => {
+      this.setState({biz : biz})
+    })
+  }
+
+  getInternalJobs(userId) {
+    userJobsService.getInternalJobsById(userId).then((jobsArr) => {
+      this.setState({internalJobs : jobsArr})
+    })
+  }
+
+  getExternalJobs(userId) {
+    userJobsService.getExternalJobsById(userId).then((jobsArr) => {
+      this.setState({externalJobs : jobsArr})
+    })
+  }
+
   render() {
+    if (!this.state.user)
+      this.getUser();
+    else {
+      if (!this.state.internalJobs)
+        this.getInternalJobs(this.state.user.id)
+      if (!this.state.externalJobs)
+        this.getExternalJobs(this.state.user.id)
+    }
     return <div className="container-fluid">
-        <Router>
+        {this.state.user && <Router>
           <Navbar/>
           <Switch>
             <Route path="/search/:jobWord" render={() => <JobSearchList/>}/>
             <Route path="/search" render={() => <JobEmptySearch/>}/>
             <Route path="/details/:jobId" render={() => <ExternalJobDetails/>}/>
+            {/*
+              <Route path="/search/:jobWord" render={() => <JobSearchList user={this.state.user}/>}/>
+              < Route path="/search" render={() => <BountyMgr/>}/>
+              <Route path="/details/:jobId" render={() => <JobDetails/>}/>
+              */
+            }
             <Route path="/post/" render={() => <div><h1>Welcome to Bountium</h1><BountyMgr/></div>}/>
-            <Route path="/new" render={() => <NewBusinessWorkflow/>}/>
+            <Route path="/new" render={() => <NewBusinessWorkflow user={this.state.user}/>}/>
             <Route path="/migrating" render={() => <MigratingBusinessWorkflow/>}/>
             <Route path="/returning" render={() => <Login/>}/>
             <Route path="/login" render={() => <Login/>}/>
@@ -42,43 +104,14 @@ export default class Welcome extends React.Component {
             <Route path="/profile/:profileId" render={() => <ProfileViewOnly/>}/>
             <Route path="/profile" render={() => <Profile/>}/>
             <Route path="/mgr/:bizAddr" render={() => {
+              if (!this.state.biz)
+                this.getBiz(window.location.href.split("/")[4])
               /* TODO use bizService.getBiz to get a biz object*/
-              return <BizMgr biz={
-                {
-                  name : "Steve's Salacious Spaghetti Store",
-                  description : "We sell the finest spaghetti in Essex county. From stringy, to not stringy, spaghetti, and including all varieties known to man. We grow our spaghetti free-range and cruelty free, and let it roam wild in its youth.",
-                  totalShares : 2,
-                  orgFunds : 4567,
-                  owners : [
-                    {
-                     username:'Steve', address:'0x3bB1B904FC9f15Ec050108C0FfB3FB5Ba48c5510', shares:1,
-                     dividend : true, dilute : true, bestow : true, modifyCatalogue : true, board : true
-                    },
-                    {
-                      username:'John', address:'0x4cA1B904FC9f15Ec050108C0FfB3FB5Ba48c5510', shares:1,
-                      dividend : false, dilute : false, bestow : true, modifyCatalogue : true, board : false
-                    }
-                  ],
-                  products : [{name:'weenie', price:1}, {name:'hot dog', price:2}],
-                  id : window.location.href.split('/')[4],
-                  msgs : [
-                    {sender:'steveF', content:'message 1', timestamp:156787654},
-                    {sender:'steveA', content:'message 2', timestamp:156787655},
-                    {sender:'steveB', content:'why are we all named steve', timestamp:156787656},
-                    {sender:'steveC', content:'steve master race', timestamp:156787657},
-                    {sender:'steveF', content:'lol i am sending a second msg', timestamp:156787658},
-                    {sender:'steveM', content:'message 6', timestamp:156787659},
-                    {sender:'steveN', content:'message 7', timestamp:156787660},
-                    {sender:'steveK', content:'message 8', timestamp:156787661},
-                    {sender:'steveL', content:'message 9', timestamp:156787662},
-                    {sender:'steve', content:'i am the one true steve', timestamp:156787663}
-                  ]
-                }
-              }/>
+              return <div>{this.state.biz && <BizMgr user={this.state.user} biz={this.state.biz}/>}</div>
             }}/>
             <Route path="/" render={() => {
               return <div>
-                <h3>Welcome - lets work on your business!</h3>
+                <h3>Welcome {this.state.user.firstName}</h3>
                 <div className="row">
                   <div className="col-6">
                     <div className="container-fluid mt-1">
@@ -87,8 +120,8 @@ export default class Welcome extends React.Component {
                       </Link>
                     </div>
                     <div className="container-fluid mt-1">
-                      <Link to={`/migrating/`} className="btn btn-info">
-                        Convert your existing business to Bountium
+                      <Link to={`/search/`} className="btn btn-info">
+                        Search for jobs posted to Github
                       </Link>
                     </div>
                     <div className="container-fluid mt-1">
@@ -98,16 +131,38 @@ export default class Welcome extends React.Component {
                     </div>
                   </div>
                   <div className="col-6 float-right">
-                    <h4>Browse business</h4>
-                    {/*TODO show business a non-logged-in user can see*/}
+                    <h4>Browse businesses</h4>
+                    {/*TODO pulled liked businesses from profile*/}
                     <table>
-                      {['1234', '5678'].map(this.renderBusinesses)}
+                      <tbody>
+                        {['2', '12', '22'].map(this.renderBusiness)}
+                      </tbody>
                     </table>
+                  </div>
+                  <div className="container-fluid">
+                    {this.state.user.username !== "null" && <div className="row mt-1">
+                      {this.state.internalJobs && <div className="col-6">
+                        <legend>Saved Internal Jobs</legend>
+                        <table>
+                          <tbody>
+                            {this.state.internalJobs.map(this.renderSavedJobs)}
+                          </tbody>
+                        </table>
+                      </div>}
+                      {this.state.externalJobs && <div className="col-6">
+                        <legend>Saved External Jobs</legend>
+                        <table>
+                          <tbody>
+                            {this.state.externalJobs.map(this.renderSavedJobs)}
+                          </tbody>
+                        </table>
+                      </div>}
+                    </div>}
                   </div>
                 </div>
               </div>}}/>
           </Switch>
-        </Router>
+        </Router>}
       </div>
   }
 

@@ -1,7 +1,7 @@
 import React from 'react';
-import JobDetails from './JobDetails'
-import {BrowserRouter as Router, Link, Route}
-    from "react-router-dom";
+import {Link} from "react-router-dom";
+import UserJobsService from '../services/UserJobsService';
+const userJobsService = UserJobsService.getInstance();
 
 import ExternalJobSearchService from '../services/ExternalJobSearchService'
 const jobService = ExternalJobSearchService.getInstance();
@@ -16,9 +16,13 @@ export default class JobSearchList extends React.Component {
         this.state = (
             {
                 keywords: jobKeyword,
-                jobList: null
+                jobList: null,
+                savedJobs : []
             }
         )
+
+        this.renderJobList = this.renderJobList.bind(this);
+        this.saveJob = this.saveJob.bind(this);
     }
 
     //======================================================================================
@@ -50,6 +54,13 @@ export default class JobSearchList extends React.Component {
             })
     }
 
+    saveJob(e) {
+      userJobsService.addUserToExJob(e.target.id, this.props.user.id)
+      var sj = this.state.savedJobs;
+      sj.push(e.target.id);
+      this.setState({savedJobs:sj})
+    }
+
     renderJobList() {
         if (!this.state.jobList) {
             this.getJobs()
@@ -60,13 +71,20 @@ export default class JobSearchList extends React.Component {
             this.addJobsToDatabase();
 
             return this.state.jobList
-                .map(function (item, index) {
-                    return <tr className="d-flex" >
-                        <td className="col-6">
+                .map((item, index) => {
+                    var alreadySaved = this.state.savedJobs.filter((jobid) => jobid === item.id).length > 0;
+                    return <tr className="d-flex" key={index}>
+                        <td className="col-5">
                             <Link to={`/details/${item.id}`}
                                   style={{color: 'black'}}>{item.title}</Link></td>
-                        <td className="col-6">
+                        <td className="col-5">
                             {item.company}
+                        </td>
+                        <td className="col-2">
+                            {!alreadySaved &&
+                              <button id={item.id} className="btn btn-primary" onClick={this.saveJob}>Save</button>}
+                            {alreadySaved &&
+                              <button className="btn btn-disabled" disabled>Saved</button>}
                         </td>
                     </tr>;
                 });
@@ -88,6 +106,7 @@ export default class JobSearchList extends React.Component {
                     <tr className="d-flex">
                         <th className="col-6">Title</th>
                         <th className="col-6">Company Name</th>
+                        <th></th>
                     </tr>
                     </thead>
                     <tbody>

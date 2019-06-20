@@ -45,6 +45,8 @@ export default class Profile extends React.Component {
             case "ChangesSuccessAlert" :
                 this.setState({ChangesSuccessAlert: false});
                 break;
+            default :
+                break;
         }
     };
 
@@ -61,6 +63,8 @@ export default class Profile extends React.Component {
                 break;
             case "ChangesSuccessAlert" :
                 this.setState({ChangesSuccessAlert: true});
+                break;
+            default :
                 break;
         }
     };

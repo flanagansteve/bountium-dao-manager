@@ -16,7 +16,7 @@ export default class MessageService {
 
     // Wants to push a message onto the array of messages within a biz
     sendMessage = (message, bizId) => {
-      fetch(`${fetchHost}/api/business/${bizId}/messages`, {
+      fetch(`${fetchHost}/api/businesses/${bizId}/messages`, {
         method: 'POST',
         body: JSON.stringify(message),
         headers: {
@@ -27,5 +27,5 @@ export default class MessageService {
 
     // expects a list of messages, ie, the messages field of a business
     getMessages = (bizId) =>
-      fetch(`${fetchHost}/api/business/${bizId}/messages`).then(response => response.json());
+      fetch(`${fetchHost}/api/businesses/${bizId}/messages`).then(response => response.json());
 }
