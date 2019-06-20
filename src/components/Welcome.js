@@ -112,7 +112,7 @@ export default class Welcome extends React.Component {
             }}/>
             <Route path="/" render={() => {
               return <div>
-                <h3>Welcome {this.state.user.firstName}</h3>
+                <h3>Welcome{this.state.user.firstName != "null" ? " " + this.state.user.firstName : "!"}</h3>
                 <div className="row">
                   <div className="col-6">
                     <div className="container-fluid mt-1">
