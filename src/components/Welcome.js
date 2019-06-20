@@ -11,7 +11,8 @@ import BizMgr from './BizMgr'
 import ProfileViewOnly from "./users/ProfileViewOnly";
 import ExternalJobDetails from "./ExternalJobDetails"
 import JobDetails from "./JobDetails";
-import BountyMgr from './BountyMgr'
+import JobEmptySearch from "./JobEmptySearch";
+import BountyMgr from './BountyMgr';
 import BusinessService from '../services/BusinessService';
 import UserJobsService from '../services/UserJobsService';
 import HTTPService from '../services/HTTPService';
@@ -89,8 +90,8 @@ export default class Welcome extends React.Component {
             <Route path="/search/:jobWord" render={() => <JobSearchList/>}/>
             <Route path="/search" render={() => <JobEmptySearch/>}/>
             <Route path="/details/:jobId" render={() => <ExternalJobDetails/>}/>
-            {/*
-              <Route path="/search/:jobWord" render={() => <JobSearchList user={this.state.user}/>}/>
+
+            /*
               < Route path="/search" render={() => <BountyMgr/>}/>
               <Route path="/details/:jobId" render={() => <JobDetails/>}/>
               */

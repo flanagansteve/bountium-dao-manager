@@ -1,9 +1,8 @@
 import React from 'react';
 import {Link} from "react-router-dom";
 import UserJobsService from '../services/UserJobsService';
-const userJobsService = UserJobsService.getInstance();
-
 import ExternalJobSearchService from '../services/ExternalJobSearchService'
+const userJobsService = UserJobsService.getInstance();
 const jobService = ExternalJobSearchService.getInstance();
 
 export default class JobSearchList extends React.Component {

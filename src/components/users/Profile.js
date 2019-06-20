@@ -176,6 +176,7 @@ export default class Profile extends React.Component {
     //=============================================================================
 
     renderJobList() {
+        console.log(this.state.jobList);
         return this.state.jobList
             .map(function (item, index) {
                 return <tr className="d-flex"
