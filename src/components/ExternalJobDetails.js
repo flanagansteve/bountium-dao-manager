@@ -94,7 +94,7 @@ export default class ExternalJobDetails extends React.Component {
                 );
         }
     }
-    
+
     //============================================================================
 
 
@@ -148,6 +148,7 @@ export default class ExternalJobDetails extends React.Component {
             this.getJob();
             this.checkIfLoggedIn();
         }
+
         if (this.state.internal) {
             return (
                 <div>
@@ -195,4 +196,3 @@ export default class ExternalJobDetails extends React.Component {
         }
     }
 }
-

@@ -170,6 +170,10 @@ export default class Profile extends React.Component {
         )
     };
 
+    // TODO make this render an internal liked jobs and an external liked jobs
+    // TODO make those lists pretty
+    // TODO duplicate this on the profileViewOnly
+
     //=============================================================================
 
     renderExternalJobList() {

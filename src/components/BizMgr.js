@@ -81,7 +81,11 @@ export default class BizMgr extends React.Component {
 
   mapProducts(product, key) {
     if (key === this.state.selectedProduct) {
-      return <ProductEditor bizId={this.props.biz.id} key={key} product={product} done={() => this.setState({selectedProduct : -1})}/>
+      return <ProductEditor productIndex={this.state.selectedProduct}
+                            bizId={this.props.biz.id}
+                            key={key}
+                            product={product}
+                            done={() => this.setState({selectedProduct : -1})}/>
     }
     return <div className="card col-4" key={key} id={"product-" + key}>
       <div className="card-body">
@@ -94,8 +98,11 @@ export default class BizMgr extends React.Component {
   }
 
   deleteProduct(e) {
-    console.log(this.props.biz.products[e.target.id])
-    productService.deleteProduct(this.props.biz.id, this.props.biz.products[e.target.id].id)
+    productService.deleteProduct(this.props.biz.id, this.props.biz.products[e.target.id].id).then((newProducts) =>
+      this.setState({products : newProducts})
+    )
+    // changing meaningless state var to force re render:
+    this.setState({update : !this.state.update})
   }
 
   mapProductsToNonOwner(product, key) {
@@ -245,14 +252,14 @@ export default class BizMgr extends React.Component {
 
   newProduct() {
     // TODO use the service to send this change somewhere, testing for now:
-    this.props.biz.products.push({name:'new product', price:0})
-    productService.createProductForBiz({
-      products : this.props.biz.products,
-      ...this.props.biz
-    }, this.props.biz.id)
+    productService.createProductForBiz({name:'new product', price:0}, this.props.biz.id).then((updatedProducts) =>
+      this.setState({products : updatedProducts})
+    );
     // changing meaningless state var to force re render:
     this.setState({update : !this.state.update})
   }
+
+  // TODO get and render the jobs this business has posted below the bountyMgr
 
   render() {
     if (this.props.biz.owners.filter(owner => owner.username === this.props.user.username).length == 0 ) {

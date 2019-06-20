@@ -31,9 +31,18 @@ export default class ProductService {
       fetch(`${fetchHost}/api/businesses/${bizId}/products/`)
         .then(response => response.json());
 
-    deleteProduct = (bizId, productId) =>
-      fetch(`${fetchHost}/api/businesses/${bizId}/products/${productId}`, {
+    deleteProduct = (bizId, productIndex) =>
+      fetch(`${fetchHost}/api/businesses/${bizId}/products/${productIndex}`, {
         method: 'DELETE'
+      }).then(response => response.json());
+
+    updateProduct = (bizId, productIndex, newProduct) =>
+      fetch(`${fetchHost}/api/businesses/${bizId}/products/${productIndex}`, {
+        method: 'PUT',
+        body: JSON.stringify(newProduct),
+        headers: {
+          'content-type': 'application/json'
+        }
       }).then(response => response.json());
 
 }
