@@ -26,7 +26,8 @@ export default class BizMgr extends React.Component {
       // The permissions of the current user
       currentOwner : this.props.biz.owners.filter(owner => owner.username === this.props.user.username)[0],
       selectedProduct : -1,
-      update : false
+      update : false,
+      products : this.props.biz.products
     }
     this.viewProducts = this.viewProducts.bind(this);
     this.viewOrg = this.viewOrg.bind(this);
@@ -81,24 +82,30 @@ export default class BizMgr extends React.Component {
 
   mapProducts(product, key) {
     if (key === this.state.selectedProduct) {
+      console.log(this.state.products);
       return <ProductEditor productIndex={this.state.selectedProduct}
                             bizId={this.props.biz.id}
                             key={key}
                             product={product}
-                            done={() => this.setState({selectedProduct : -1})}/>
+                            done={(newProducts) => {
+                              console.log(newProducts);
+                              this.setState({selectedProduct : -1});
+                              if (newProducts != this.state.products && newProducts != null)
+                                this.setState({products:newProducts});
+                            }}/>
     }
-    return <div className="card col-4" key={key} id={"product-" + key}>
-      <div className="card-body">
-        <h5 className="card-title">{product.name}</h5>
-        <p className="card-text">{product.price}</p>
-        <button id={key} className="btn btn-primary" onClick={this.selectProduct}>Edit</button>
-        <button id={key} className="btn btn-warning" onClick={this.deleteProduct}>Delete</button>
+    return <div className="border mx-auto col-4" key={key} id={"product-" + key}>
+        <div className="card-body">
+          <h5 className="card-title">{product.name}</h5>
+          <p className="card-text">{product.price}</p>
+          <button id={key} className="btn btn-primary" onClick={this.selectProduct}>Edit</button>
+          <button id={key} className="btn btn-warning" onClick={this.deleteProduct}>Delete</button>
+        </div>
       </div>
-    </div>
   }
 
   deleteProduct(e) {
-    productService.deleteProduct(this.props.biz.id, this.props.biz.products[e.target.id].id).then((newProducts) =>
+    productService.deleteProduct(this.props.biz.id, Number(e.target.id)).then((newProducts) =>
       this.setState({products : newProducts})
     )
     // changing meaningless state var to force re render:
@@ -252,11 +259,9 @@ export default class BizMgr extends React.Component {
 
   newProduct() {
     // TODO use the service to send this change somewhere, testing for now:
-    productService.createProductForBiz({name:'new product', price:0}, this.props.biz.id).then((updatedProducts) =>
+    productService.createProductForBiz({name:'new product', price:0}, this.props.biz.id).then((updatedProducts) => {
       this.setState({products : updatedProducts})
-    );
-    // changing meaningless state var to force re render:
-    this.setState({update : !this.state.update})
+    });
   }
 
   // TODO get and render the jobs this business has posted below the bountyMgr
@@ -281,9 +286,9 @@ export default class BizMgr extends React.Component {
         </div>}
         {this.state.viewingProducts && <div className="container-fluid jumbotron bg-white">
           <h3>Your products</h3>
-          <div className="card-deck">
-            {this.props.biz.products.map(this.mapProductsToNonOwner)}
-          </div>
+          {this.state.products && <div className="w-100 d-block">
+            {this.state.products.map(this.mapProductsToNonOwner)}
+          </div>}
         </div>}
       </div>
     );
@@ -411,9 +416,9 @@ export default class BizMgr extends React.Component {
         </div>}
         {this.state.viewingProducts && <div className="container-fluid jumbotron bg-white">
           <h3>Your products</h3>
-          <div className="card-deck">
-            {this.props.biz.products.map(this.mapProducts)}
-          </div>
+          {this.state.products && <div className="card-deck">
+            {this.state.products.map(this.mapProducts)}
+          </div>}
           <button className="btn btn-primary mt-1 float-right" onClick={this.newProduct}>New Product</button>
         </div>}
         {this.state.viewingOps && <div className="container-fluid">
