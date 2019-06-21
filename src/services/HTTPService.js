@@ -87,10 +87,9 @@ export default class HTTPService {
             fetchHost = "https://wbdv-server-as4.herokuapp.com"
         }
 
-        return fetch(`${fetchHost}/api/logout`, {
+        fetch(`${fetchHost}/api/logout`, {
                 credentials: 'include'
             }
         )
-            .then(response => response.json());
     };
 }
