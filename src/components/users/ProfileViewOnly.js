@@ -74,36 +74,15 @@ export default class ProfileViewOnly extends React.Component {
 
     //=============================================================================
 
-    renderExternalJobList() {
-        return this.state.externalJobs
-            .map(function (item, index) {
-                return <tr className="d-flex"
-                           key={index}>
-                    <td className="col-6">
-                        <Link to={`/details/${item.id}`}
-                              style={{color: 'black'}}>{item.title}</Link></td>
-                    <td className="col-6">
-                        {item.company}
-                    </td>
-                </tr>;
-            });
-    }
-
-    //-------------------------------------------------------------------------------
-
-    renderInternalJobList() {
-        return this.state.internalJobs
-            .map(function (item, index) {
-                return <tr className="d-flex"
-                           key={index}>
-                    <td className="col-6">
-                        <Link to={`/details/${item.id}`}
-                              style={{color: 'black'}}>{item.title}</Link></td>
-                    <td className="col-6">
-                        {item.company}
-                    </td>
-                </tr>;
-            });
+    renderSavedJobs(job, index) {
+        return <tr className="d-flex" key={index}>
+            <td className="col-6">
+                <Link to={`/details/${job.id}`}
+                      style={{color: 'black'}}>{job.title}</Link></td>
+            <td className="col-6">
+                {job.company}
+            </td>
+        </tr>;
     }
 
     //=============================================================================
@@ -174,29 +153,29 @@ export default class ProfileViewOnly extends React.Component {
                             </div>
                         </div>
                     </div>
-                    <table>
-                        <thead>
-                        <tr className="d-flex">
-                            <th className="col-6">Title</th>
-                            <th className="col-6">Company Name</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {this.state.externalJobs && this.renderExternalJobList()}
-                        </tbody>
-                    </table>
+                    <br>
+                    </br>
 
-                    <table>
-                        <thead>
-                        <tr className="d-flex">
-                            <th className="col-6">Title Internal</th>
-                            <th className="col-6">Company Name</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {this.state.internalJobs && this.renderInternalJobList()}
-                        </tbody>
-                    </table>
+                    <div className="container-fluid">
+                        {this.state.username !== "null" && <div className="row mt-1">
+                            {this.state.internalJobs && <div className="col-6">
+                                <legend>Saved Internal Jobs</legend>
+                                <table>
+                                    <tbody>
+                                    {this.state.internalJobs.map(this.renderSavedJobs)}
+                                    </tbody>
+                                </table>
+                            </div>}
+                            {this.state.externalJobs && <div className="col-6">
+                                <legend>Saved External Jobs</legend>
+                                <table>
+                                    <tbody>
+                                    {this.state.externalJobs.map(this.renderSavedJobs)}
+                                    </tbody>
+                                </table>
+                            </div>}
+                        </div>}
+                    </div>
                 </div>
                 }
             </div>

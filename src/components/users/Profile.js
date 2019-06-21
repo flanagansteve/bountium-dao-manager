@@ -176,6 +176,11 @@ export default class Profile extends React.Component {
     //-------------------------------------------------------------------------------
 
     getInternalJobs() {
+
+        this.setState({
+            LookedForJobs: true
+        });
+
         if (this.state.id !== null) {
             userJobsService.getInternalJobsById(this.state.id).then((jobsArr) => {
                 this.setState({internalJobs: jobsArr})
@@ -186,6 +191,11 @@ export default class Profile extends React.Component {
     //--------------------------------------------------------------------------------
 
     getExternalJobs() {
+
+        this.setState({
+            LookedForJobs: true
+        });
+
         if (this.state.id !== null) {
             userJobsService.getExternalJobsById(this.state.id).then((jobsArr) => {
                 this.setState({externalJobs: jobsArr})
@@ -215,9 +225,6 @@ export default class Profile extends React.Component {
     render() {
 
         if (!this.state.LookedForJobs && this.state.username !== "null") {
-            this.setState({
-                LookedForJobs: true
-            });
             this.getExternalJobs();
             this.getInternalJobs();
         }
