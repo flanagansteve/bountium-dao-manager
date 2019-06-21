@@ -1,28 +1,24 @@
 import React from 'react';
 import {Link} from "react-router-dom";
 import UserJobsService from '../services/UserJobsService';
-import ExternalJobSearchService from '../services/ExternalJobSearchService'
 import HTTPService from '../services/HTTPService'
 import BountyMgr from './BountyMgr'
 import Alert from "react-bootstrap/Alert";
+
 const userJobsService = UserJobsService.getInstance();
-const jobService = ExternalJobSearchService.getInstance();
 const httpService = HTTPService.getInstance();
 
-export default class JobSearchList extends React.Component {
+export default class InternalJobList extends React.Component {
 
     constructor(props) {
         super(props);
-        const pathSplit = window.location.href.split("/");
-        const jobKeyword = pathSplit[4];
-
         this.state = (
             {
-                keywords: jobKeyword,
                 jobList: null,
-                savedJobs : [],
+                savedJobs: [],
                 savedJobsIds: [],
                 userId: null,
+                triedLoggingIn: false,
                 loggedIn: null,
                 addedJobs: false,
                 MustLoginAlert: false
@@ -35,44 +31,24 @@ export default class JobSearchList extends React.Component {
 
     //======================================================================================
 
-    addJobsToDatabase() {
-        for(let i = 0; i < this.state.jobList.length; i++){
-            jobService.addJobToDatabase(this.state.jobList[i])
-        }
-    }
-
-    //-------------------------------------------------------------------------------------
-
-    getJobs() {
-        let url = "https://cors-anywhere.herokuapp.com/http://jobs.github.com/positions.json?description=";
-
-        let wordSplit = this.state.keywords.split(" ");
-        for (let i = 0; i < wordSplit.length; i++) {
-            if (i === 0) {
-                url = url + wordSplit[i];
-            } else {
-                url = url + "+" + wordSplit[i];
-            }
-        }
-
-        fetch(url)
-            .then(res => res.json())
-            .then(json => {
+    getAllInternalJobs() {
+        userJobsService.getAllInternalJobs().then(
+            res =>
                 this.setState({
-                    jobList: json
+                    jobList: res
                 })
-            })
+        )
     }
 
     //-----------------------------------------------------------------------------------------
 
-    getExternalJobs() {
+    getInternalJobs() {
         this.setState({
             LookedForJobs: true
         });
 
         if (this.state.userId !== null) {
-            userJobsService.getExternalJobsById(this.state.userId).then((jobsArr) => {
+            userJobsService.getInternalJobsById(this.state.userId).then((jobsArr) => {
                 this.setState({savedJobs: jobsArr})
             })
         }
@@ -82,9 +58,8 @@ export default class JobSearchList extends React.Component {
 
     saveJob(e) {
 
-        if(this.state.loggedIn) {
-            console.log("Hello");
-            userJobsService.addUserToExJob(e.target.id, this.state.userId);
+        if (this.state.loggedIn) {
+            userJobsService.addUserToInJob(e.target.id, this.state.userId);
             var sj = this.state.savedJobsIds;
             sj.push(e.target.id);
             this.setState({savedJobsIds: sj})
@@ -100,6 +75,7 @@ export default class JobSearchList extends React.Component {
     checkIfLoggedIn() {
         httpService.receiveSessionProfile().then((profile) => {
             this.setState({
+                triedLoggingIn: true,
                 loggedIn: (profile.username !== "null"),
                 userId: profile.id
             });
@@ -118,14 +94,13 @@ export default class JobSearchList extends React.Component {
 
     renderJobList() {
         if (this.state.loggedIn === null) {
-            this.getJobs();
+            this.getAllInternalJobs();
             this.checkIfLoggedIn();
         } else if (this.state.jobList && !this.state.addedJobs) {
             this.setState({
                 addedJobs: true
             });
-            this.addJobsToDatabase();
-            this.getExternalJobs();
+            this.getInternalJobs();
         } else if (this.state.jobList) {
             return this.state.jobList
                 .map((item, index) => {
@@ -133,7 +108,7 @@ export default class JobSearchList extends React.Component {
                     if (this.state.loggedIn) {
                         alreadySaved = this.state.savedJobs.filter((job) => job.id === item.id).length > 0;
                     }
-                    if (this.state.savedJobsIds.filter((jobId) => jobId === item.id).length > 0) {
+                    if (this.state.savedJobsIds.filter((jobId) => jobId === item.id.toString()).length > 0) {
                         alreadySaved = true;
                     }
                     return <tr className="d-flex" key={index}>
@@ -141,13 +116,13 @@ export default class JobSearchList extends React.Component {
                             <Link to={`/details/${item.id}`}
                                   style={{color: 'black'}}>{item.title}</Link></td>
                         <td className="col-5">
-                            {item.company}
+                            {item.description}
                         </td>
                         <td className="col-2">
                             {!alreadySaved &&
-                              <button id={item.id} className="btn btn-primary" onClick={this.saveJob}>Save</button>}
+                            <button id={item.id} className="btn btn-primary" onClick={this.saveJob}>Save</button>}
                             {alreadySaved &&
-                              <button className="btn btn-disabled" disabled>Saved</button>}
+                            <button className="btn btn-disabled" disabled>Saved</button>}
                         </td>
                     </tr>;
                 });
@@ -158,16 +133,16 @@ export default class JobSearchList extends React.Component {
 
 
     render() {
-        if (this.state.jobList && this.state.jobList.length === 0) {
-          return <div>
-            <h1>No jobs with keyword '{this.state.keywords}' found</h1>
-            <BountyMgr/>
-          </div>
+        if (this.state.triedLoggingIn && !this.state.loggedIn) {
+            return (
+                <h3> Cant access this page unless logged in, please go back to the HomePage or log in/register.</h3>
+            )
         }
         return (
             <div className="container-fluid">
-                <h3> Job Search List for {this.state.keywords}
-                </h3>
+
+                <h3> All Internal Jobs </h3>
+
                 {this.state.MustLoginAlert &&
                 <Alert variant='warning' onClose={() => this.handleDismiss()} dismissible>
                     Must be logged in to save a job to your profile </Alert>
@@ -176,11 +151,11 @@ export default class JobSearchList extends React.Component {
                     <thead>
                     <tr className="d-flex">
                         <th className="col-6">Title</th>
-                        <th className="col-6">Company Name</th>
+                        <th className="col-6">Description</th>
                     </tr>
                     </thead>
                     <tbody>
-                        {this.renderJobList()}
+                    {this.renderJobList()}
                     </tbody>
                 </table>
             </div>

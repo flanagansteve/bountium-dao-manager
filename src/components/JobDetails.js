@@ -150,6 +150,7 @@ export default class ExternalJobDetails extends React.Component {
         if (this.state.internal) {
             return (
                 <div>
+                    {console.log(this.state.jobObj)}
                     {this.state.jobObj &&
                     <div className="jumbotron">
                         <h1>{this.state.jobObj.title}</h1>

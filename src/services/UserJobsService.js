@@ -30,6 +30,10 @@ export default class UserJobsService {
       fetch(`${fetchHost}/api/users/${userId}/injobs`)
         .then(response => response.json());
 
+    getAllInternalJobs = () =>
+        fetch(`${fetchHost}/api/injobs`)
+            .then(response => response.json());
+
     getExternalJobsById = (userId) =>
       fetch(`${fetchHost}/api/users/${userId}/exjobs`)
         .then(response => response.json());
@@ -37,5 +41,9 @@ export default class UserJobsService {
     addUserToExJob = (jobId, userId) =>
       fetch(`${fetchHost}/api/exjobs/${jobId}/users/${userId}`)
         .then(response => response.json());
+
+    addUserToInJob = (jobId, userId) =>
+        fetch(`${fetchHost}/api/injobs/${jobId}/users/${userId}`)
+            .then(response => response.json());
 
 }

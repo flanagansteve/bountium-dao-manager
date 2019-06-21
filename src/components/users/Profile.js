@@ -209,15 +209,27 @@ export default class Profile extends React.Component {
 
     //=============================================================================
 
-    renderSavedJobs(job, index) {
-        return <tr className="d-flex" key={index}>
-            <td className="col-6">
-                <Link to={`/details/${job.id}`}
-                      style={{color: 'black'}}>{job.title}</Link></td>
-            <td className="col-6">
-                {job.company}
-            </td>
-        </tr>;
+    renderSavedJobs(job, index, inOrEx) {
+
+        if (inOrEx === "in") {
+            return <tr className="d-flex" key={index}>
+                <td className="col-6">
+                    <Link to={`/details/${job.id}`}
+                          style={{color: 'black'}}>{job.title}</Link></td>
+                <td className="col-6">
+                    {job.description}
+                </td>
+            </tr>;
+        } else {
+            return <tr className="d-flex" key={index}>
+                <td className="col-6">
+                    <Link to={`/details/${job.id}`}
+                          style={{color: 'black'}}>{job.title}</Link></td>
+                <td className="col-6">
+                    {job.company}
+                </td>
+            </tr>;
+        }
     }
 
 //=============================================================================
@@ -355,7 +367,8 @@ export default class Profile extends React.Component {
                                 <legend>Saved Internal Jobs</legend>
                                 <table>
                                     <tbody>
-                                    {this.state.internalJobs.map(this.renderSavedJobs)}
+                                    {this.state.internalJobs.map((job, index) =>
+                                        this.renderSavedJobs(job, index, "in"))}
                                     </tbody>
                                 </table>
                             </div>}
@@ -363,7 +376,8 @@ export default class Profile extends React.Component {
                                 <legend>Saved External Jobs</legend>
                                 <table>
                                     <tbody>
-                                    {this.state.externalJobs.map(this.renderSavedJobs)}
+                                    {this.state.externalJobs.map((job, index) =>
+                                        this.renderSavedJobs(job, index, "ex"))}
                                     </tbody>
                                 </table>
                             </div>}

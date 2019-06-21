@@ -15,6 +15,8 @@ export default class Navbar extends React.Component {
         }
     }
 
+    //===================================================================================
+
     checkIfLoggedIn() {
         httpService.receiveSessionProfile().then((profile) => {
             this.setState({
@@ -24,12 +26,17 @@ export default class Navbar extends React.Component {
         });
     }
 
+    //----------------------------------------------------------------------------------
+
     logOut() {
         httpService.logOutUser();
         this.setState({
             loggedIn: false
-        })
+        });
+        window.location.href = ("/");
     }
+
+    //-================================================================================
 
 
     render() {
@@ -71,6 +78,14 @@ export default class Navbar extends React.Component {
                                 <Link className=""
                                       onClick={() => this.logOut()}
                                       to="/">Logout</Link>
+                            </p>
+                        </li>
+                        }
+                        {this.state.loggedIn &&
+                        <li className="nav-item mt-3">
+                            <p className="nav-link">
+                                <Link className=""
+                                      to="/job-list">Look at Bountium Jobs</Link>
                             </p>
                         </li>
                         }
