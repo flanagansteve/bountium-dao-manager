@@ -2,6 +2,7 @@ import React from 'react';
 import {Link} from "react-router-dom";
 import UserJobsService from '../services/UserJobsService';
 import ExternalJobSearchService from '../services/ExternalJobSearchService'
+import BountyMgr from './BountyMgr'
 const userJobsService = UserJobsService.getInstance();
 const jobService = ExternalJobSearchService.getInstance();
 
@@ -63,8 +64,6 @@ export default class JobSearchList extends React.Component {
     renderJobList() {
         if (!this.state.jobList) {
             this.getJobs()
-        } else if (this.state.jobList.length === 0){
-            window.location.href = "/search";
         } else {
 
             this.addJobsToDatabase();
@@ -92,13 +91,16 @@ export default class JobSearchList extends React.Component {
 
 
     render() {
+        if (this.state.jobList && this.state.jobList.length === 0) {
+          return <div>
+            <h1>No jobs with keyword '{this.state.keywords}' found</h1>
+            <BountyMgr/>
+          </div>
+        }
         return (
             <div className="container-fluid">
-                <h1> Job Search List for {this.state.keywords}
-                    <span className="float-right">
-                            <Link to="/home-page"> Back to Homepage </Link>
-                    </span>
-                </h1>
+                <h3> Job Search List for {this.state.keywords}
+                </h3>
                 <table>
                     <thead>
                     <tr className="d-flex">
