@@ -303,13 +303,13 @@ export default class BizMgr extends React.Component {
               <h4 className="text-center">Organisation</h4>
             </li>
             <li className={"nav-item display-4 col-3" + (this.state.viewingProducts ? " border-bottom" : "")} onClick={this.viewProducts}>
-              <h4 className="text-center">Products & Supply Chains</h4>
+              <h4 className="text-center">Products</h4>
             </li>
             <li className={"nav-item display-4 col-3" + (this.state.viewingOps ? " border-bottom" : "")} onClick={this.viewOps}>
               <h4 className="text-center">Operations</h4>
             </li>
             <li className={"nav-item display-4 col-3" + (this.state.viewingChat ? " border-bottom" : "")} onClick={this.viewChat}>
-              <h4 className="text-center">Chat & Collaboration</h4>
+              <h4 className="text-center">Chat</h4>
             </li>
           </ul>
         </div>
@@ -321,7 +321,8 @@ export default class BizMgr extends React.Component {
           <div className="container-fluid jumbotron">
             <div className="">
               <div className="row border">
-                <div className="col-6 mb-2 mt-1">
+                {/* Out of scope for web dev final project:
+                  <div className="col-6 mb-2 mt-1">
                   <h4>Organisation funds</h4>
                   <p>{"Current organisation balance: " + this.props.biz.orgFunds + " wei"}</p>
                   <div className="form">
@@ -332,7 +333,7 @@ export default class BizMgr extends React.Component {
                     </div>
                     <button className="btn btn-primary" onClick={this.fundBiz}>Send funds</button>
                   </div>
-                </div>
+                </div>*/}
                 <div className="col-6 mb-2 mt-1">
                   <h4>Ownership and shares</h4>
                   <p>{
@@ -401,6 +402,7 @@ export default class BizMgr extends React.Component {
                     <button className="btn btn-primary mt-1" onClick={this.givePermission}>Give permission</button>
                   </div>
                 }
+                {/* Out of scope for the webdev final project:
                 {this.state.currentOwner.dividend &&
                   <div className="form col-6 mb-2 mt-1">
                     <legend>Call for a new dividend</legend>
@@ -410,7 +412,7 @@ export default class BizMgr extends React.Component {
                       <button className="btn btn-primary mt-1" onClick={this.callDividend}>Call for a dividend</button>
                     </div>
                   </div>
-                }
+                }*/}
               </div>
             </div>
           </div>
