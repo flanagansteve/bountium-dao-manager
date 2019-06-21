@@ -9,9 +9,7 @@ import Register from './users/Register'
 import Profile from './users/Profile'
 import BizMgr from './BizMgr'
 import ProfileViewOnly from "./users/ProfileViewOnly";
-import ExternalJobDetails from "./ExternalJobDetails"
 import JobDetails from "./JobDetails";
-import JobEmptySearch from "./JobEmptySearch";
 import BountyMgr from './BountyMgr';
 import BusinessService from '../services/BusinessService';
 import UserJobsService from '../services/UserJobsService';
@@ -108,11 +106,10 @@ export default class Welcome extends React.Component {
           <Switch>
             <Route path="/search/:jobWord" render={() => <JobSearchList user={this.props.user}/>}/>
             <Route path="/search" render={() => <BountyMgr/>}/>
-            <Route path="/details/:jobId" render={() => <ExternalJobDetails/>}/>
+            <Route path="/details/:jobId" render={() => <JobDetails/>}/>
             {
               /* TODO resolve this
               < Route path="/search" render={() => <BountyMgr/>}/>
-              <Route path="/details/:jobId" render={() => <JobDetails/>}/>
               */
             }
             <Route path="/post/" render={() => <div><h1>Welcome to Bountium</h1><BountyMgr/></div>}/>
