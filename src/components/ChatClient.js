@@ -28,7 +28,15 @@ export default class ChatClient extends React.Component {
   }
 
   sendMsg() {
-    let msg = {content: document.getElementById("new-message").value};
+    var today = new Date();
+    var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+    var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+    var dateTime = date+' '+time;
+    let msg = {
+      content: document.getElementById("new-message").value,
+      timestamp: dateTime,
+      sender:this.props.sender
+    };
     msgService.sendMessage(msg, this.props.bizId)
     .then(response => this.setState({msgs : response}));
     document.getElementById("new-message").value = "";
@@ -37,8 +45,8 @@ export default class ChatClient extends React.Component {
   renderMessages(msg, key) {
     return <div className="row" id = {"msg-" + key} key={key}>
       <p className="col-2">{msg.sender}</p>
-      <p className="col-9">{msg.content}</p>
-      <p className="col-1">{msg.timestamp}</p>
+      <p className="col-8">{msg.content}</p>
+      <p className="col-2">{msg.timestamp}</p>
     </div>
   }
 
