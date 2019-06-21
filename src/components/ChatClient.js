@@ -11,6 +11,7 @@ export default class ChatClient extends React.Component {
       msgs : this.props.msgs
     }
     this.fetchMsgs = this.fetchMsgs.bind(this);
+    this.sendMsg = this.sendMsg.bind(this);
   }
 
   componentDidMount() {
@@ -20,13 +21,17 @@ export default class ChatClient extends React.Component {
 
   fetchMsgs() {
     // TODO make this ask the api for the messages field of the business
-    // msgService.getMessages(this.props.bizId).then(response => this.setState({msgs : response}));
-    // this.setState({msgs:msgService.getMessages(this.props.bizId)})
-    this.setState({msgs:this.props.msgs})
+    msgService.getMessages(this.props.bizId)
+    .then(response => this.setState({msgs : response}))
+    //this.setState({msgs:msgService.getMessages(this.props.bizId)})
+    //this.setState({msgs:this.props.msgs})
   }
 
   sendMsg() {
-    msgService.sendMessage(document.getElementById("new-message").value);
+    let msg = {content: document.getElementById("new-message").value};
+    msgService.sendMessage(msg, this.props.bizId)
+    .then(response => this.setState({msgs : response}));
+    document.getElementById("new-message").value = "";
   }
 
   renderMessages(msg, key) {
