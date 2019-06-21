@@ -34,6 +34,8 @@ export default class BountyMgr extends React.Component {
         <div className="row">
           <div className="col-12">
             <h3>Search for jobs, or post your own</h3>
+            <hr/>
+            <h5>Search</h5>
             <div className="form">
               <div className="form-group">
                 <label htmlFor="jobCategory">Category</label>
@@ -47,6 +49,8 @@ export default class BountyMgr extends React.Component {
               <Link to={`/search/${this.state.value}`}>
                 See jobs in this category from Github</Link>
               </div>
+              <hr/>
+              <h5>Post</h5>
               <div className="form-group">
                 <label htmlFor="bounty-title">Job Title</label>
                 <input id="bounty-title" className="form-control" placeholder="Junior Python Developer Intern">
@@ -55,7 +59,7 @@ export default class BountyMgr extends React.Component {
               <div className="form-group">
                 <label htmlFor="bounty-description">Job Description</label>
                 <textarea className="form-control" id="bounty-description"
-                          placeholder="Coffee intern needed to ensure execs remain thoroughly caffeinated.">
+                          placeholder="Make sure to include your contact information so you hear back!">
                 </textarea>
               </div>
               <button className="btn btn-primary"

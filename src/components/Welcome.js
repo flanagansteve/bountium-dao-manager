@@ -74,6 +74,49 @@ export default class Welcome extends React.Component {
         });
     }
 
+    //---------------------------------------------------------------------------------
+
+    renderBusiness(biz, key) {
+        return <tr key={key}>
+            <td><Link to={"/mgr/" + biz.id}>{biz.name}</Link></td>
+        </tr>
+    }
+
+    //=================================================================================
+
+    getUser() {
+        console.log("Hello");
+        httpService.receiveSessionProfile().then((user) => {
+            this.setState({user: user})
+        });
+    }
+
+    //--------------------------------------------------------------------------------
+
+    getBiz(bizId) {
+        bizService.getBiz(Number(bizId)).then((biz) => {
+            this.setState({biz: biz})
+        })
+    }
+
+    //--------------------------------------------------------------------------------
+
+    getAllBusinesses() {
+        bizService.getAllBusinesses().then((businesses) => {
+            this.setState({businesses: businesses})
+        })
+    }
+
+    //--------------------------------------------------------------------------------
+
+    getInternalJobs(userId) {
+        if (userId !== null) {
+            userJobsService.getInternalJobsById(userId).then((jobsArr) => {
+                this.setState({internalJobs: jobsArr})
+            })
+        }
+    }
+
     //--------------------------------------------------------------------------------
 
     getBiz(bizId) {
@@ -113,6 +156,9 @@ export default class Welcome extends React.Component {
             if (!this.state.externalJobs)
                 this.getExternalJobs(this.state.user.id);
         }
+        if (!this.state.businesses) {
+            this.getAllBusinesses();
+        }
         return <div className="container-fluid">
             {this.state.user && <Router>
                 <Navbar/>
@@ -151,15 +197,15 @@ export default class Welcome extends React.Component {
                                         </Link>
                                     </div>
                                 </div>
-                                <div className="col-6 float-right">
+                                {this.state.businesses && <div className="col-6 float-right">
                                     <h4>Browse businesses</h4>
                                     {/*TODO pulled liked businesses from profile*/}
                                     <table>
                                         <tbody>
-                                        {['2', '12', '22'].map(this.renderBusiness)}
+                                        {this.state.businesses.map(this.renderBusiness)}
                                         </tbody>
                                     </table>
-                                </div>
+                                </div>}
                                 <div className="container-fluid">
                                     {this.state.user.username !== "null" && <div className="row mt-1">
                                         {this.state.internalJobs && <div className="col-6">
@@ -167,7 +213,7 @@ export default class Welcome extends React.Component {
                                             <table>
                                                 <tbody>
                                                 {this.state.internalJobs.map((job, index) =>
-                                                    this.renderSavedJobs(job, index,"in"))}
+                                                    this.renderSavedJobs(job, index, "in"))}
                                                 </tbody>
                                             </table>
                                         </div>}
@@ -176,7 +222,7 @@ export default class Welcome extends React.Component {
                                             <table>
                                                 <tbody>
                                                 {this.state.externalJobs.map((job, index) =>
-                                                    this.renderSavedJobs(job, index,"ex"))}
+                                                    this.renderSavedJobs(job, index, "ex"))}
                                                 </tbody>
                                             </table>
                                         </div>}
@@ -189,5 +235,4 @@ export default class Welcome extends React.Component {
             </Router>}
         </div>
     }
-
 }
