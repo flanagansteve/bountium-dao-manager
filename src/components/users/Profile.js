@@ -287,6 +287,7 @@ export default class Profile extends React.Component {
                                 <input className="form-control"
                                        id="firstName"
                                        value={this.state.firstName}
+                                       defaultvalue={this.props}
                                        onChange={(event) => this.firstNameChanged(event)}/>
                             </div>
 
