@@ -33,6 +33,8 @@ export default class Welcome extends React.Component {
     }
   }
 
+  //=================================================================================
+
   renderSavedJobs(job, index) {
     return <tr className="d-flex" key={index}>
         <td className="col-6">
@@ -44,17 +46,24 @@ export default class Welcome extends React.Component {
     </tr>;
   }
 
+  //---------------------------------------------------------------------------------
+
   renderBusiness(bizId, key) {
     return <tr key={key}>
       <td><a href={"/mgr/" + bizId}>Business at {bizId}</a></td>
     </tr>
   }
 
+  //=================================================================================
+
   getUser() {
+    console.log("Hello");
     httpService.receiveSessionProfile().then((user) => {
       this.setState({user : user})
     });
   }
+
+  //--------------------------------------------------------------------------------
 
   getBiz(bizId) {
     bizService.getBiz(Number(bizId)).then((biz) => {
@@ -62,26 +71,36 @@ export default class Welcome extends React.Component {
     })
   }
 
+  //--------------------------------------------------------------------------------
+
   getInternalJobs(userId) {
-    userJobsService.getInternalJobsById(userId).then((jobsArr) => {
-      this.setState({internalJobs : jobsArr})
-    })
+    if (userId !== null) {
+      userJobsService.getInternalJobsById(userId).then((jobsArr) => {
+        this.setState({internalJobs: jobsArr})
+      })
+    }
   }
 
+  //--------------------------------------------------------------------------------
+
   getExternalJobs(userId) {
-    userJobsService.getExternalJobsById(userId).then((jobsArr) => {
-      this.setState({externalJobs : jobsArr})
-    })
+    if (userId !== null) {
+      userJobsService.getExternalJobsById(userId).then((jobsArr) => {
+        this.setState({externalJobs: jobsArr})
+      })
+    }
   }
+
+  //===================================================================================
 
   render() {
     if (!this.state.user)
       this.getUser();
     else {
       if (!this.state.internalJobs)
-        this.getInternalJobs(this.state.user.id)
+        this.getInternalJobs(this.state.user.id);
       if (!this.state.externalJobs)
-        this.getExternalJobs(this.state.user.id)
+        this.getExternalJobs(this.state.user.id);
     }
     return <div className="container-fluid">
         {this.state.user && <Router>
@@ -103,9 +122,7 @@ export default class Welcome extends React.Component {
             <Route path="/login" render={() => <Login/>}/>
             <Route path="/register" render={() => <Register/>}/>
             <Route path="/profile/:profileId" render={() => <ProfileViewOnly/>}/>
-            <Route path="/profile" render={() => <Profile user={this.state.user}
-                                                          internalJobs={this.state.internalJobs}
-                                                          externalJobs={this.state.externalJobs}/>}/>
+            <Route path="/profile" render={() => <Profile user={this.state.user}/>}/>
             <Route path="/mgr/:bizAddr" render={() => {
               if (!this.state.biz)
                 this.getBiz(window.location.href.split("/")[4])

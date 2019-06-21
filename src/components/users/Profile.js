@@ -2,9 +2,11 @@ import React from 'react';
 import Alert from 'react-bootstrap/Alert'
 
 import UserService from '../../services/UserService';
+import UserJobsService from '../../services/UserJobsService'
 import {Link} from "react-router-dom";
 
 const userService = UserService.getInstance();
+const userJobsService = UserJobsService.getInstance();
 
 export default class Profile extends React.Component {
 
@@ -19,8 +21,9 @@ export default class Profile extends React.Component {
             verifyPassword: "",
             firstName: this.props.user.firstName,
             lastName: this.props.user.lastName,
-            externalJobs: this.props.externalJobs,
-            internalJobs: this.props.internalJobs,
+            externalJobs: [],
+            internalJobs: [],
+            LookedForJobs: false,
             ViewingPassword: false,
             PasswordDifAlert: false,
             PasswordLenAlert: false,
@@ -170,34 +173,56 @@ export default class Profile extends React.Component {
         )
     };
 
+    //-------------------------------------------------------------------------------
+
+    getInternalJobs() {
+        if (this.state.id !== null) {
+            userJobsService.getInternalJobsById(this.state.id).then((jobsArr) => {
+                this.setState({internalJobs: jobsArr})
+            })
+        }
+    }
+
+    //--------------------------------------------------------------------------------
+
+    getExternalJobs() {
+        if (this.state.id !== null) {
+            userJobsService.getExternalJobsById(this.state.id).then((jobsArr) => {
+                this.setState({externalJobs: jobsArr})
+            })
+        }
+    }
+
     // TODO make this render an internal liked jobs and an external liked jobs
     // TODO make those lists pretty
     // TODO duplicate this on the profileViewOnly
 
     //=============================================================================
 
-    renderExternalJobList() {
-        return this.state.externalJobs
-            .map(function (item, index) {
-                return <tr className="d-flex"
-                           key={index}>
-                    <td className="col-6">
-                        <Link to={`/details/${item.id}`}
-                              style={{color: 'black'}}>{item.title}</Link></td>
-                    <td className="col-6">
-                        {item.company}
-                    </td>
-                </tr>;
-            });
+    renderSavedJobs(job, index) {
+        return <tr className="d-flex" key={index}>
+            <td className="col-6">
+                <Link to={`/details/${job.id}`}
+                      style={{color: 'black'}}>{job.title}</Link></td>
+            <td className="col-6">
+                {job.company}
+            </td>
+        </tr>;
     }
 
 //=============================================================================
 
     render() {
 
+        if (!this.state.LookedForJobs && this.state.username !== "null") {
+            this.setState({
+                LookedForJobs: true
+            });
+            this.getExternalJobs();
+            this.getInternalJobs();
+        }
+
         return (
-
-
             <div>
                 {this.state.username === "null" &&
                 <legend className="">You are not currently logged in!</legend>}
@@ -314,17 +339,29 @@ export default class Profile extends React.Component {
                         </div>
                     </div>
 
-                    <table>
-                        <thead>
-                        <tr className="d-flex">
-                            <th className="col-6">Title</th>
-                            <th className="col-6">Company Name</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {this.renderExternalJobList()}
-                        </tbody>
-                    </table>
+                    <br>
+                    </br>
+
+                    <div className="container-fluid">
+                        {this.state.user.username !== "null" && <div className="row mt-1">
+                            {this.state.internalJobs && <div className="col-6">
+                                <legend>Saved Internal Jobs</legend>
+                                <table>
+                                    <tbody>
+                                    {this.state.internalJobs.map(this.renderSavedJobs)}
+                                    </tbody>
+                                </table>
+                            </div>}
+                            {this.state.externalJobs && <div className="col-6">
+                                <legend>Saved External Jobs</legend>
+                                <table>
+                                    <tbody>
+                                    {this.state.externalJobs.map(this.renderSavedJobs)}
+                                    </tbody>
+                                </table>
+                            </div>}
+                        </div>}
+                    </div>
                 </div>
                 }
             </div>

@@ -56,14 +56,13 @@ export default class ExternalJobDetails extends React.Component {
                             {
                                 jobObj: json,
                                 savedUsers: json.internalSaves,
-                                internal: true
+                                internal: true,
                             }
                         )
                     }
                 )
 
         } else {
-
 
             let url2 = "https://cors-anywhere.herokuapp.com/http://jobs.github.com/positions/";
             url2 += jobId;
@@ -74,7 +73,7 @@ export default class ExternalJobDetails extends React.Component {
                 .then(json => {
                         this.setState(
                             {
-                                jobObj: json
+                                jobObj: json,
                             }
                         );
 
@@ -108,7 +107,6 @@ export default class ExternalJobDetails extends React.Component {
     }
 
     saveJobForUser() {
-
         if (this.state.loggedIn) {
             jobService.addUserToJob(this.state.jobObj.id, this.state.userId)
         } else {
@@ -144,9 +142,9 @@ export default class ExternalJobDetails extends React.Component {
 
     render() {
 
-        if (!this.state.jobObj) {
-            this.getJob();
+        if (this.state.loggedIn === null) {
             this.checkIfLoggedIn();
+            this.getJob();
         }
 
         if (this.state.internal) {
