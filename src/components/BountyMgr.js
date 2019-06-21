@@ -4,7 +4,7 @@ import UserJobsService from '../services/UserJobsService';
 const userJobsService = UserJobsService.getInstance();
 
 export default class BountyMgr extends React.Component {
-  
+
   constructor(props) {
       super(props);
       this.state = {value: "PYTHON", postedJobId: "none"}
@@ -60,7 +60,7 @@ export default class BountyMgr extends React.Component {
               </div>
               <button className="btn btn-primary"
                       onClick={this.postInternalJob}>
-                Post to Bountiums job board
+                Post to Bountium's job board
               </button>
             </div>
             {/* TODO render the business's active bounties here
