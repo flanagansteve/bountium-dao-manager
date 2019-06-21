@@ -29,7 +29,8 @@ export default class Welcome extends React.Component {
       user : null,
       biz : null,
       internalJobs : null,
-      externalJobs : null
+      externalJobs : null,
+      businesses : null
     }
   }
 
@@ -48,9 +49,9 @@ export default class Welcome extends React.Component {
 
   //---------------------------------------------------------------------------------
 
-  renderBusiness(bizId, key) {
+  renderBusiness(biz, key) {
     return <tr key={key}>
-      <td><a href={"/mgr/" + bizId}>Business at {bizId}</a></td>
+      <td><Link to={"/mgr/" + biz.id}>{biz.name}</Link></td>
     </tr>
   }
 
@@ -68,6 +69,14 @@ export default class Welcome extends React.Component {
   getBiz(bizId) {
     bizService.getBiz(Number(bizId)).then((biz) => {
       this.setState({biz : biz})
+    })
+  }
+
+  //--------------------------------------------------------------------------------
+
+  getAllBusinesses() {
+    bizService.getAllBusinesses().then((businesses) => {
+      this.setState({businesses : businesses})
     })
   }
 
@@ -102,6 +111,8 @@ export default class Welcome extends React.Component {
       if (!this.state.externalJobs)
         this.getExternalJobs(this.state.user.id);
     }
+    if (!this.state.businesses)
+      this.getAllBusinesses();
     return <div className="container-fluid">
         {this.state.user && <Router>
           <Navbar/>
@@ -126,6 +137,8 @@ export default class Welcome extends React.Component {
             <Route path="/mgr/:bizAddr" render={() => {
               if (!this.state.biz)
                 this.getBiz(window.location.href.split("/")[4])
+              else if (this.state.biz.id != Number(window.location.href.split("/")[4]))
+                this.getBiz(window.location.href.split("/")[4])
               /* TODO use bizService.getBiz to get a biz object*/
               return <div>{this.state.biz && <BizMgr user={this.state.user} biz={this.state.biz}/>}</div>
             }}/>
@@ -145,15 +158,15 @@ export default class Welcome extends React.Component {
                       </Link>
                     </div>
                   </div>
-                  <div className="col-6 float-right">
+                  {this.state.businesses && <div className="col-6 float-right">
                     <h4>Browse businesses</h4>
                     {/*TODO pulled liked businesses from profile*/}
                     <table>
                       <tbody>
-                        {['2', '12', '22'].map(this.renderBusiness)}
+                        {this.state.businesses.map(this.renderBusiness)}
                       </tbody>
                     </table>
-                  </div>
+                  </div>}
                   <div className="container-fluid">
                     {this.state.user.username !== "null" && <div className="row mt-1">
                       {this.state.internalJobs && <div className="col-6">

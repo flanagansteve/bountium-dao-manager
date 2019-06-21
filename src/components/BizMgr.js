@@ -286,7 +286,7 @@ export default class BizMgr extends React.Component {
                       isOwner={false}/>
         </div>}
         {this.state.viewingProducts && <div className="container-fluid jumbotron bg-white">
-          <h3>Your products</h3>
+          <h3>{this.props.biz.name}s products</h3>
           {this.state.products && <div className="w-100 d-block">
             {this.state.products.map(this.mapProductsToNonOwner)}
           </div>}
