@@ -91,7 +91,7 @@ export default class BizMgr extends React.Component {
                             done={(newProducts) => {
                               console.log(newProducts);
                               this.setState({selectedProduct : -1});
-                              if (newProducts != this.state.products && newProducts != null)
+                              if (newProducts !== this.state.products && newProducts !== null)
                                 this.setState({products:newProducts});
                             }}/>
     }
@@ -268,7 +268,7 @@ export default class BizMgr extends React.Component {
   // TODO get and render the jobs this business has posted below the bountyMgr
 
   render() {
-    if (this.state.owners.filter(owner => owner.username === this.props.user.username).length == 0 ) {
+    if (this.state.owners.filter(owner => owner.username === this.props.user.username).length === 0 ) {
       return (<div>
         <h2>{this.props.biz.name}</h2>
         <div>

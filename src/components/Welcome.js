@@ -60,22 +60,6 @@ export default class Welcome extends React.Component {
 
     //---------------------------------------------------------------------------------
 
-    renderBusiness(bizId, key) {
-        return <tr key={key}>
-            <td><a href={"/mgr/" + bizId}>Business at {bizId}</a></td>
-        </tr>
-    }
-
-    //=================================================================================
-
-    getUser() {
-        httpService.receiveSessionProfile().then((user) => {
-            this.setState({user: user})
-        });
-    }
-
-    //---------------------------------------------------------------------------------
-
     renderBusiness(biz, key) {
         return <tr key={key}>
             <td><Link to={"/mgr/" + biz.id}>{biz.name}</Link></td>
@@ -85,7 +69,6 @@ export default class Welcome extends React.Component {
     //=================================================================================
 
     getUser() {
-        console.log("Hello");
         httpService.receiveSessionProfile().then((user) => {
             this.setState({user: user})
         });
@@ -104,24 +87,6 @@ export default class Welcome extends React.Component {
     getAllBusinesses() {
         bizService.getAllBusinesses().then((businesses) => {
             this.setState({businesses: businesses})
-        })
-    }
-
-    //--------------------------------------------------------------------------------
-
-    getInternalJobs(userId) {
-        if (userId !== null) {
-            userJobsService.getInternalJobsById(userId).then((jobsArr) => {
-                this.setState({internalJobs: jobsArr})
-            })
-        }
-    }
-
-    //--------------------------------------------------------------------------------
-
-    getBiz(bizId) {
-        bizService.getBiz(Number(bizId)).then((biz) => {
-            this.setState({biz: biz})
         })
     }
 
@@ -183,7 +148,7 @@ export default class Welcome extends React.Component {
                     }}/>
                     <Route path="/" render={() => {
                         return <div>
-                            <h3>Welcome{this.state.user.firstName != "null" ? " " + this.state.user.firstName : "!"}</h3>
+                            <h3>Welcome{this.state.user.firstName !== "null" ? " " + this.state.user.firstName : "!"}</h3>
                             <div className="row">
                                 <div className="col-6">
                                     <div className="container-fluid mt-1">
