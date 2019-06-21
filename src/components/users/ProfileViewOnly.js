@@ -2,9 +2,11 @@ import React from 'react';
 import Alert from 'react-bootstrap/Alert'
 
 import UserService from '../../services/UserService';
+import UserJobService from '../../services/UserJobsService'
 import {Link} from "react-router-dom";
 
 const userService = UserService.getInstance();
+const userJobsService = UserJobService.getInstance();
 
 export default class ProfileViewOnly extends React.Component {
 
@@ -18,13 +20,79 @@ export default class ProfileViewOnly extends React.Component {
             username: "",
             firstName: "",
             lastName: "",
+            id: null,
+            LookedForJobs: false,
+            internalJobs: [],
+            externalJobs: []
         }
     }
 
     //=============================================================================
 
-    renderJobList() {
-        return this.state.jobList
+
+    getInternalJobs() {
+
+        this.setState({
+            LookedForJobs: true
+        });
+
+        if (this.state.id !== null) {
+            userJobsService.getInternalJobsById(this.state.id).then((jobsArr) => {
+                this.setState({internalJobs: jobsArr})
+            })
+        }
+    }
+
+    //--------------------------------------------------------------------------------
+
+    getExternalJobs() {
+
+        this.setState({
+            LookedForJobs: true
+        });
+
+        if (this.state.id !== null) {
+            userJobsService.getExternalJobsById(this.state.id).then((jobsArr) => {
+                this.setState({externalJobs: jobsArr})
+            })
+        }
+    }
+
+    //-------------------------------------------------------------------------------
+
+    getUser() {
+        userService.findOtherProfile(this.state.profileId).then(response => {
+                this.setState({
+                    username: response.username,
+                    firstName: response.firstName,
+                    lastName: response.lastName,
+                    id: response.id
+                });
+            }
+        )
+    }
+
+    //=============================================================================
+
+    renderExternalJobList() {
+        return this.state.externalJobs
+            .map(function (item, index) {
+                return <tr className="d-flex"
+                           key={index}>
+                    <td className="col-6">
+                        <Link to={`/details/${item.id}`}
+                              style={{color: 'black'}}>{item.title}</Link></td>
+                    <td className="col-6">
+                        {item.company}
+                    </td>
+                </tr>;
+            });
+    }
+
+    //-------------------------------------------------------------------------------
+
+    renderInternalJobList() {
+        return this.state.internalJobs
             .map(function (item, index) {
                 return <tr className="d-flex"
                            key={index}>
@@ -43,14 +111,10 @@ export default class ProfileViewOnly extends React.Component {
     render() {
 
         if (this.state.username === "") {
-            userService.findOtherProfile(this.state.profileId).then(response => {
-                    this.setState({
-                        username: response.username,
-                        firstName: response.firstName,
-                        lastName: response.lastName
-                    });
-                }
-            )
+            this.getUser();
+        } else if (this.state.id !== null && !this.state.LookedForJobs) {
+            this.getExternalJobs();
+            this.getInternalJobs();
         }
 
         return (
@@ -112,12 +176,25 @@ export default class ProfileViewOnly extends React.Component {
                     </div>
                     <table>
                         <thead>
-                            <tr className="d-flex">
-                                <th className="col-6">Title</th>
-                                <th className="col-6">Company Name</th>
-                            </tr>
+                        <tr className="d-flex">
+                            <th className="col-6">Title</th>
+                            <th className="col-6">Company Name</th>
+                        </tr>
                         </thead>
                         <tbody>
+                        {this.state.externalJobs && this.renderExternalJobList()}
+                        </tbody>
+                    </table>
+
+                    <table>
+                        <thead>
+                        <tr className="d-flex">
+                            <th className="col-6">Title Internal</th>
+                            <th className="col-6">Company Name</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {this.state.internalJobs && this.renderInternalJobList()}
                         </tbody>
                     </table>
                 </div>
