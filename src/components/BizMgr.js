@@ -428,7 +428,7 @@ export default class BizMgr extends React.Component {
           <BountyMgr/>
         </div>
         }
-        {this.state.viewingChat && <ChatClient msgs={this.props.biz.msgs}/>}
+        {this.state.viewingChat && <ChatClient bizId={this.props.biz.id} msgs={this.props.biz.msgs}/>}
       </div>
     );
   }
