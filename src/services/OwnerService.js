@@ -28,4 +28,13 @@ export default class BusinessService {
       fetch(`${fetchHost}/api/businesses/${bizId}/owners/`)
         .then(response => response.json());
 
+    updateOwnerForBiz = (bizId, ownerIndex, newOwner) =>
+      fetch(`${fetchHost}/api/businesses/${bizId}/owners/${ownerIndex}`, {
+        method: 'PUT',
+        body: JSON.stringify(newOwner),
+        headers: {
+          'content-type': 'application/json'
+        }
+      }).then(response => response.json());
+
 }

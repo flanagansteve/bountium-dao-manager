@@ -27,7 +27,8 @@ export default class BizMgr extends React.Component {
       currentOwner : this.props.biz.owners.filter(owner => owner.username === this.props.user.username)[0],
       selectedProduct : -1,
       update : false,
-      products : this.props.biz.products
+      products : this.props.biz.products,
+      owners : this.props.biz.owners
     }
     this.viewProducts = this.viewProducts.bind(this);
     this.viewOrg = this.viewOrg.bind(this);
@@ -139,7 +140,7 @@ export default class BizMgr extends React.Component {
   // Owner stuff:
   transfer() {
     var amt = Number(document.getElementById("transfer-shares-amt-input").value);
-    var currentOwners = this.props.biz.owners;
+    var currentOwners = this.state.owners;
     var transferringOwner = currentOwners.filter(owner => this.state.currentOwner.username === owner.username)[0];
     if (transferringOwner.shares < amt) {
       // TODO dont let them transfer, notify them of the mistake
@@ -165,7 +166,7 @@ export default class BizMgr extends React.Component {
 
   giveUnallocated() {
     var amt = Number(document.getElementById("give-shares-amt-input").value);
-    var currentOwners = this.props.biz.owners;
+    var currentOwners = this.state.owners;
     var takenShares = currentOwners.reduce((sharesAddedSoFar, nextOwner) => sharesAddedSoFar + nextOwner.shares);
     if ((this.props.totalShares - takenShares) < amt || !this.state.currentOwner.dilute) {
       // TODO dont let them dilute, notify them of the mistake
@@ -175,7 +176,7 @@ export default class BizMgr extends React.Component {
   }
 
   giveShares(recipient, amt) {
-    var currentOwners = this.props.biz.owners;
+    var currentOwners = this.state.owners;
     var searchCurrentOwners = currentOwners.filter(owner => owner.username === recipient);
     if (searchCurrentOwners.length > 0) {
       // Give shares to one of the current owners
@@ -196,7 +197,7 @@ export default class BizMgr extends React.Component {
   givePermission() {
     var recipient = document.getElementById("give-permission-addr-input").value;
     var role = document.getElementById("give-permission-value-input").value;
-    var currentOwners = this.props.biz.owners;
+    var currentOwners = this.state.owners;
     var bestowee = currentOwners.filter(owner => owner.username === recipient)[0];
     switch(role) {
       // TODO does mutating bestowee actually change the currentOwner
@@ -227,12 +228,12 @@ export default class BizMgr extends React.Component {
   // (TODO these should all use the service to send a new biz object to the backend)
   updateOwners(newOwnersArr) {
     // TODO use the service to send this change somewhere, testing for now:
-    this.props.biz.owners = newOwnersArr;
     for (let i = 0; i < newOwnersArr.length; i++) {
-      ownerService.createOwnerForBiz(newOwnersArr[i], this.props.biz.id)
+      ownerService.updateOwnerForBiz(this.props.biz.id, i, newOwnersArr[i]).then((newOwners) => {
+        this.setState({owners : newOwners})
+        this.setState({currentOwner : newOwners.filter(owner => owner.username === this.props.user.username)[0]})
+      })
     }
-    // changing meaningless state var to force re render:
-    this.setState({update : !this.state.update})
   }
 
   updateName(newName) {
@@ -267,7 +268,7 @@ export default class BizMgr extends React.Component {
   // TODO get and render the jobs this business has posted below the bountyMgr
 
   render() {
-    if (this.props.biz.owners.filter(owner => owner.username === this.props.user.username).length == 0 ) {
+    if (this.state.owners.filter(owner => owner.username === this.props.user.username).length == 0 ) {
       return (<div>
         <h2>{this.props.biz.name}</h2>
         <div>
@@ -340,7 +341,7 @@ export default class BizMgr extends React.Component {
                       + ((this.state.currentOwner.shares / this.props.biz.totalShares) * 100) + "%"
                   }</p>
                   <p>Owners:</p>
-                  {this.props.biz.owners.map(this.mapOwners)}
+                  {this.state.owners.map(this.mapOwners)}
                   <div className="form">
                     <legend>Transfer your shares</legend>
                     <div className="form-group">
