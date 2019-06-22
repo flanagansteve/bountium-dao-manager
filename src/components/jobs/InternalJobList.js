@@ -56,6 +56,14 @@ export default class InternalJobList extends React.Component {
         }
     }
 
+    //-----------------------------------------------------------------------------------------
+
+    getInternalJobsByTag() {
+        internalJobsService.getInternalJobsByTag(
+            document.getElementById('tagInput').value)
+            .then(res => this.setState({jobList: res}))
+    }
+
     //====================================================================================
 
     saveJob(e) {
@@ -145,13 +153,13 @@ export default class InternalJobList extends React.Component {
                 <h3> Search Jobs by Tag:</h3>
                 <div className="form">
                     <div className="form-group">
-
-                    <input className="form-control col-4"/>
-                    <button className="btn btn-primary">Search</button>
+                    <input id="tagInput" className="form-control col-4"/>
+                    <button className="btn btn-primary"
+                            onClick={() => this.getInternalJobsByTag()}>Search</button>
                     </div>
                 </div>
 
-                <h3> All Internal Jobs </h3>
+                <h3> Internal Jobs </h3>
 
                 {this.state.MustLoginAlert &&
                 <Alert variant='warning' onClose={() => this.handleDismiss()} dismissible>

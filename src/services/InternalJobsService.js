@@ -45,6 +45,10 @@ export default class InternalJobsService {
 
     //--------------------------------------------------------------------------
 
+    getInternalJobsByTag = (keyword) =>
+        fetch(`${fetchHost}/api/injobs/tag/${keyword}`)
+        .then(response => response.json())
+
     // Adds a User many to many relationship with an internal job
     addUserToInJob = (jobId, userId) =>
         fetch(`${fetchHost}/api/injobs/${jobId}/users/${userId}`)
