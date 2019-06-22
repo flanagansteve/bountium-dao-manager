@@ -1,9 +1,10 @@
-var fetchHost = "http://localhost:8080";
+let fetchHost = "http://localhost:8080";
 
 if (window.location.href.includes("heroku")) {
-  fetchHost = "https://guarded-tundra-80923.herokuapp.com";
+  fetchHost = "https://bountium-user-server.herokuapp.com";
 }
 
+// Services for managing businesses on the website
 export default class BusinessService {
 
     static myInstance = null;
@@ -14,6 +15,8 @@ export default class BusinessService {
       return this.myInstance;
     }
 
+    //==============================================================================
+
     // Sends a biz object with all requisite fields to create a new one
     createBiz = (biz) =>
       fetch(`${fetchHost}/api/businesses/`, {
@@ -23,6 +26,8 @@ export default class BusinessService {
           'content-type': 'application/json'
         }
       }).then(response => response.json());
+
+    //----------------------------------------------------------------------------
 
     // Send a new biz object with updated fields
     // TODO one day this should only be callable by a permissioned owner
@@ -35,13 +40,18 @@ export default class BusinessService {
         }
       }).then(response => response.json());
 
+    //--------------------------------------------------------------------------
+
     // Retrieve a business object
     // TODO one day this should only return most info if the user is a co owner
     getBiz = (bizId) =>
       fetch(`${fetchHost}/api/businesses/${bizId}`)
         .then(response => response.json());
 
-    getAllBusinesses = (bizId) =>
+    //-------------------------------------------------------------------------
+
+    // Gets all businesses in the database
+    getAllBusinesses = () =>
       fetch(`${fetchHost}/api/businesses/`)
         .then(response => response.json());
 

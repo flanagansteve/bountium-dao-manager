@@ -1,12 +1,14 @@
 import React from 'react';
 import {Link} from "react-router-dom";
-import UserJobsService from '../services/UserJobsService';
-import HTTPService from '../services/HTTPService'
-import BountyMgr from './BountyMgr'
 import Alert from "react-bootstrap/Alert";
+import BountyMgr from '../businesses/BountyMgr'
+import HTTPService from '../../services/HTTPService'
+import InternalJobsService from '../../services/InternalJobsService'
 
-const userJobsService = UserJobsService.getInstance();
 const httpService = HTTPService.getInstance();
+const internalJobsService = InternalJobsService.getInstance();
+
+
 
 export default class InternalJobList extends React.Component {
 
@@ -32,7 +34,7 @@ export default class InternalJobList extends React.Component {
     //======================================================================================
 
     getAllInternalJobs() {
-        userJobsService.getAllInternalJobs().then(
+        internalJobsService.getAllInternalJobs().then(
             res =>
                 this.setState({
                     jobList: res
@@ -48,7 +50,7 @@ export default class InternalJobList extends React.Component {
         });
 
         if (this.state.userId !== null) {
-            userJobsService.getInternalJobsById(this.state.userId).then((jobsArr) => {
+            internalJobsService.getInternalJobsById(this.state.userId).then((jobsArr) => {
                 this.setState({savedJobs: jobsArr})
             })
         }
@@ -59,7 +61,7 @@ export default class InternalJobList extends React.Component {
     saveJob(e) {
 
         if (this.state.loggedIn) {
-            userJobsService.addUserToInJob(e.target.id, this.state.userId);
+            internalJobsService.addUserToInJob(e.target.id, this.state.userId);
             var sj = this.state.savedJobsIds;
             sj.push(e.target.id);
             this.setState({savedJobsIds: sj})

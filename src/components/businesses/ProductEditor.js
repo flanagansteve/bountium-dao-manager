@@ -1,20 +1,20 @@
 import React from 'react'
-import ProductService from '../services/ProductService'
+import ProductService from '../../services/ProductService'
 const productService = ProductService.getInstance();
 
 export default class ProductEditor extends React.Component {
 constructor(props) {
     super(props)
-    this.service = ProductService.getInstance()
-    this.id = props.id
+    this.service = ProductService.getInstance();
+    this.id = props.id;
     this.state = {
       versions: [],
       alert: ""
-    }
-    this.addVersion = this.addVersion.bind(this)
-    this.renderExistingVersion = this.renderExistingVersion.bind(this)
-    this.deleteVersion = this.deleteVersion.bind(this)
-    this.updateProduct = this.updateProduct.bind(this)
+    };
+    this.addVersion = this.addVersion.bind(this);
+    this.renderExistingVersion = this.renderExistingVersion.bind(this);
+    this.deleteVersion = this.deleteVersion.bind(this);
+    this.updateProduct = this.updateProduct.bind(this);
   }
 
   cancel() {
@@ -24,7 +24,7 @@ constructor(props) {
   addVersion() {
     let versions = this.state.versions;
     versions.push(document.getElementById("version-input").value);
-    this.setState({versions: versions})
+    this.setState({versions: versions});
     document.getElementById("versions-input").value = "";
   }
 
@@ -46,31 +46,31 @@ constructor(props) {
     if (product.name === "") {
       this.setState({
         alert: <div className="alert alert-danger">Product must have a name</div>
-      })
+      });
       return false
     }
     else if (product.price === "") {
       this.setState({
         alert: <div className="alert alert-danger">Product must have a price</div>
-      })
+      });
       return false
     }
-    this.setState({alert: ""})
+    this.setState({alert: ""});
     return true
   }
 
   updateProduct() {
-    let name = document.getElementById("productName").value
-    let description = document.getElementById("productDescription").value
-    let price = document.getElementById("productPrice").value
-    let url = document.getElementById("imageurl").value
+    let name = document.getElementById("productName").value;
+    let description = document.getElementById("productDescription").value;
+    let price = document.getElementById("productPrice").value;
+    let url = document.getElementById("imageurl").value;
     let product = {
       name: name,
       description: description,
       price: price,
       imageurl: url,
       versions: this.state.versions.join()
-    }
+    };
     if (this.checkFields(product)) {
       console.log(product);
       productService.updateProduct(this.props.bizId, this.props.productIndex, product).then(

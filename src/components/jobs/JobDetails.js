@@ -1,13 +1,11 @@
 import React from 'react'
-import ExternalJobSearchService from '../services/ExternalJobSearchService'
-import HTTPService from '../services/HTTPService'
-import UserJobsService from '../services/UserJobsService'
-import Alert from "react-bootstrap/Alert";
 import {Link} from "react-router-dom";
+import HTTPService from '../../services/HTTPService'
+import InternalJobsService from '../../services/InternalJobsService'
+import Alert from "react-bootstrap/Alert";
 
-const internalJobService = UserJobsService.getInstance();
-const jobService = ExternalJobSearchService.getInstance();
 const httpService = HTTPService.getInstance();
+const internalJobsService = InternalJobsService.getInstance();
 
 // TODO why are bootstrap classes not working?
 
@@ -108,7 +106,7 @@ export default class ExternalJobDetails extends React.Component {
 
     saveJobForUser() {
         if (this.state.loggedIn) {
-            jobService.addUserToJob(this.state.jobObj.id, this.state.userId)
+            internalJobsService.addUserToJob(this.state.jobObj.id, this.state.userId)
         } else {
             this.setState({
                 MustLoginAlert: true

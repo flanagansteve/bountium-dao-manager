@@ -1,3 +1,10 @@
+let fetchHost = "http://localhost:8080";
+
+if (window.location.href.includes("heroku")) {
+    fetchHost = "https://bountium-user-server.herokuapp.com";
+}
+
+// Services for HTTP management and creating new Users.
 export default class HTTPService {
 
     static myInstance = null;
@@ -10,17 +17,10 @@ export default class HTTPService {
         return this.myInstance;
     }
 
-    //--------------------------------------------------------------------
+    // ==================================================================
 
+    // Register a new user with the HTTP and also creates a new User.
     registerUser = (user) => {
-        let pathSplit = window.location.href.split("/");
-        let host = pathSplit[2];
-        let fetchHost;
-        if (host === "localhost:3000") {
-            fetchHost = "http://localhost:8080"
-        } else {
-            fetchHost = "https://wbdv-server-as4.herokuapp.com"
-        }
 
         return fetch(`${fetchHost}/api/register`, {
             credentials: 'include',
@@ -33,17 +33,10 @@ export default class HTTPService {
             .then(response => response.json());
     };
 
-    //--------------------------------------------------------------------
+    // --------------------------------------------------------------------
 
+    // Logs in a user to the HTTP for the website
     loginUser = (user) => {
-        let pathSplit = window.location.href.split("/");
-        let host = pathSplit[2];
-        let fetchHost;
-        if (host === "localhost:3000") {
-            fetchHost = "http://localhost:8080"
-        } else {
-            fetchHost = "https://wbdv-server-as4.herokuapp.com"
-        }
 
         return fetch(`${fetchHost}/api/login`, {
             credentials: 'include',
@@ -56,38 +49,24 @@ export default class HTTPService {
             .then(response => response.json());
     };
 
-        //-------------------------------------------------------------------
+    //-------------------------------------------------------------------
 
+    // Gets the current session user for profile activities
     receiveSessionProfile = () => {
-        let pathSplit = window.location.href.split("/");
-        let host = pathSplit[2];
-        let fetchHost;
-        if (host === "localhost:3000") {
-            fetchHost = "http://localhost:8080"
-        } else {
-            fetchHost = "https://wbdv-server-as4.herokuapp.com"
-        }
 
         return fetch(`${fetchHost}/api/profile`, {
-            credentials: 'include'
-        }
-    )
+                credentials: 'include'
+            }
+        )
             .then(response => response.json());
     };
 
     //--------------------------------------------------------------------
 
+    // Logs out the current HTTP user session
     logOutUser = () => {
-        let pathSplit = window.location.href.split("/");
-        let host = pathSplit[2];
-        let fetchHost;
-        if (host === "localhost:3000") {
-            fetchHost = "http://localhost:8080"
-        } else {
-            fetchHost = "https://wbdv-server-as4.herokuapp.com"
-        }
 
-        fetch(`${fetchHost}/api/logout`, {
+        return fetch(`${fetchHost}/api/logout`, {
                 credentials: 'include'
             }
         )

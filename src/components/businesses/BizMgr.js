@@ -4,9 +4,9 @@ import BizDetails from './BizDetails';
 import BountyMgr from './BountyMgr'
 import ProductEditor from './ProductEditor';
 import {Link} from 'react-router-dom'
-import BusinessService from '../services/BusinessService';
-import OwnerService from '../services/OwnerService';
-import ProductService from '../services/ProductService';
+import BusinessService from '../../services/BusinessService';
+import OwnerService from '../../services/OwnerService';
+import ProductService from '../../services/ProductService';
 const bizService = BusinessService.getInstance();
 const ownerService = OwnerService.getInstance();
 const productService = ProductService.getInstance();
@@ -29,7 +29,7 @@ export default class BizMgr extends React.Component {
       update : false,
       products : this.props.biz.products,
       owners : this.props.biz.owners
-    }
+    };
     this.viewProducts = this.viewProducts.bind(this);
     this.viewOrg = this.viewOrg.bind(this);
     this.viewOps = this.viewOps.bind(this);
@@ -50,31 +50,31 @@ export default class BizMgr extends React.Component {
   }
 
   viewProducts() {
-    this.setState({viewingProducts : true})
-    this.setState({viewingOrg : false})
-    this.setState({viewingOps : false})
-    this.setState({viewingChat : false})
+    this.setState({viewingProducts : true});
+    this.setState({viewingOrg : false});
+    this.setState({viewingOps : false});
+    this.setState({viewingChat : false});
   }
 
   viewOrg() {
-    this.setState({viewingProducts : false})
-    this.setState({viewingOrg : true})
-    this.setState({viewingOps : false})
-    this.setState({viewingChat : false})
+    this.setState({viewingProducts : false});
+    this.setState({viewingOrg : true});
+    this.setState({viewingOps : false});
+    this.setState({viewingChat : false});
   }
 
   viewOps() {
-    this.setState({viewingProducts : false})
-    this.setState({viewingOrg : false})
-    this.setState({viewingOps : true})
-    this.setState({viewingChat : false})
+    this.setState({viewingProducts : false});
+    this.setState({viewingOrg : false});
+    this.setState({viewingOps : true});
+    this.setState({viewingChat : false});
   }
 
   viewChat() {
-    this.setState({viewingProducts : false})
-    this.setState({viewingOrg : false})
-    this.setState({viewingOps : false})
-    this.setState({viewingChat : true})
+    this.setState({viewingProducts : false});
+    this.setState({viewingOrg : false});
+    this.setState({viewingOps : false});
+    this.setState({viewingChat : true});
   }
 
   selectProduct(e) {
@@ -108,7 +108,7 @@ export default class BizMgr extends React.Component {
   deleteProduct(e) {
     productService.deleteProduct(this.props.biz.id, Number(e.target.id)).then((newProducts) =>
       this.setState({products : newProducts})
-    )
+    );
     // changing meaningless state var to force re render:
     this.setState({update : !this.state.update})
   }
@@ -139,9 +139,9 @@ export default class BizMgr extends React.Component {
 
   // Owner stuff:
   transfer() {
-    var amt = Number(document.getElementById("transfer-shares-amt-input").value);
-    var currentOwners = this.state.owners;
-    var transferringOwner = currentOwners.filter(owner => this.state.currentOwner.username === owner.username)[0];
+    let amt = Number(document.getElementById("transfer-shares-amt-input").value);
+    let currentOwners = this.state.owners;
+    let transferringOwner = currentOwners.filter(owner => this.state.currentOwner.username === owner.username)[0];
     if (transferringOwner.shares < amt) {
       // TODO dont let them transfer, notify them of the mistake
       return;
@@ -151,7 +151,7 @@ export default class BizMgr extends React.Component {
   }
 
   dilute() {
-    var amt = Number(document.getElementById("dilute-shares-amt-input").value);
+    let amt = Number(document.getElementById("dilute-shares-amt-input").value);
     if (!this.state.currentOwner.dilute) {
       // TODO dont let them transfer, notify them of the mistake
       return;
@@ -165,9 +165,9 @@ export default class BizMgr extends React.Component {
   }
 
   giveUnallocated() {
-    var amt = Number(document.getElementById("give-shares-amt-input").value);
-    var currentOwners = this.state.owners;
-    var takenShares = currentOwners.reduce((sharesAddedSoFar, nextOwner) => sharesAddedSoFar + nextOwner.shares);
+    let amt = Number(document.getElementById("give-shares-amt-input").value);
+    let currentOwners = this.state.owners;
+    let takenShares = currentOwners.reduce((sharesAddedSoFar, nextOwner) => sharesAddedSoFar + nextOwner.shares);
     if ((this.props.totalShares - takenShares) < amt || !this.state.currentOwner.dilute) {
       // TODO dont let them dilute, notify them of the mistake
       return;
@@ -176,8 +176,8 @@ export default class BizMgr extends React.Component {
   }
 
   giveShares(recipient, amt) {
-    var currentOwners = this.state.owners;
-    var searchCurrentOwners = currentOwners.filter(owner => owner.username === recipient);
+    let currentOwners = this.state.owners;
+    let searchCurrentOwners = currentOwners.filter(owner => owner.username === recipient);
     if (searchCurrentOwners.length > 0) {
       // Give shares to one of the current owners
       // TODO does mutating this specific variable actually change the currentOwner
@@ -195,10 +195,10 @@ export default class BizMgr extends React.Component {
 
   // TODO this don't work
   givePermission() {
-    var recipient = document.getElementById("give-permission-addr-input").value;
-    var role = document.getElementById("give-permission-value-input").value;
-    var currentOwners = this.state.owners;
-    var bestowee = currentOwners.filter(owner => owner.username === recipient)[0];
+    let recipient = document.getElementById("give-permission-addr-input").value;
+    let role = document.getElementById("give-permission-value-input").value;
+    let currentOwners = this.state.owners;
+    let bestowee = currentOwners.filter(owner => owner.username === recipient)[0];
     switch(role) {
       // TODO does mutating bestowee actually change the currentOwner
       // var or do we need to do currentOwners[x] = mutated?

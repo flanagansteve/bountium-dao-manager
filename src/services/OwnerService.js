@@ -1,7 +1,7 @@
-var fetchHost = "http://localhost:8080";
+let fetchHost = "http://localhost:8080";
 
 if (window.location.href.includes("heroku")) {
-  fetchHost = "https://guarded-tundra-80923.herokuapp.com";
+  fetchHost = "https://bountium-user-server.herokuapp.com";
 }
 
 export default class BusinessService {
@@ -14,6 +14,8 @@ export default class BusinessService {
       return this.myInstance;
     }
 
+    // ================================================================================
+
     // Sends a biz object with all requisite fields to create a new one
     createOwnerForBiz = (owner, bizId) =>
       fetch(`${fetchHost}/api/businesses/${bizId}/owners`, {
@@ -24,10 +26,16 @@ export default class BusinessService {
         }
       }).then(response => response.json());
 
+    //-------------------------------------------------------------------------------
+
+    // Fetches the owners of a corresponding business
     getOwnersForBiz = (bizId) =>
       fetch(`${fetchHost}/api/businesses/${bizId}/owners/`)
         .then(response => response.json());
 
+    //------------------------------------------------------------------------------
+
+    // Updates an owner to now be part of a business.
     updateOwnerForBiz = (bizId, ownerIndex, newOwner) =>
       fetch(`${fetchHost}/api/businesses/${bizId}/owners/${ownerIndex}`, {
         method: 'PUT',

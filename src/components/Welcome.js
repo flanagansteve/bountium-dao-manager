@@ -1,24 +1,27 @@
 import React from 'react'
 import {BrowserRouter as Router, Switch, Route, Link} from "react-router-dom";
-import JobSearchList from './JobSearchList'
-import Navbar from './Navbar'
-import NewBusinessWorkflow from './NewBusinessWorkflow'
-import MigratingBusinessWorkflow from './MigratingBusinessWorkflow'
-import Login from './users/Login'
-import Register from './users/Register'
-import Profile from './users/Profile'
-import BizMgr from './BizMgr'
+import BizMgr from './businesses/BizMgr'
+import BountyMgr from './businesses/BountyMgr';
+import InternalJobList from "./jobs/InternalJobList";
+import JobDetails from "./jobs/JobDetails";
+import JobSearchList from './jobs/JobSearchList';
+import Login from './users/Login';
+import MigratingBusinessWorkflow from './businesses/MigratingBusinessWorkflow';
+import Navbar from './Navbar';
+import NewBusinessWorkflow from './businesses/NewBusinessWorkflow';
+import Profile from './users/Profile';
 import ProfileViewOnly from "./users/ProfileViewOnly";
-import JobDetails from "./JobDetails";
-import BountyMgr from './BountyMgr';
+import Register from './users/Register';
+
 import BusinessService from '../services/BusinessService';
-import UserJobsService from '../services/UserJobsService';
 import HTTPService from '../services/HTTPService';
-import InternalJobList from "./InternalJobList";
+import InternalJobsService from '../services/InternalJobsService';
+import ExternalJobSearchService from '../services/ExternalJobsSearchService';
 
 const bizService = BusinessService.getInstance();
 const httpService = HTTPService.getInstance();
-const userJobsService = UserJobsService.getInstance();
+const internalJobsService = InternalJobsService.getInstance();
+const externalJobsService = ExternalJobSearchService.getInstance();
 
 
 export default class Welcome extends React.Component {
@@ -94,7 +97,7 @@ export default class Welcome extends React.Component {
 
     getInternalJobs(userId) {
         if (userId !== null) {
-            userJobsService.getInternalJobsById(userId).then((jobsArr) => {
+            internalJobsService.getInternalJobsById(userId).then((jobsArr) => {
                 this.setState({internalJobs: jobsArr})
             })
         }
@@ -104,7 +107,7 @@ export default class Welcome extends React.Component {
 
     getExternalJobs(userId) {
         if (userId !== null) {
-            userJobsService.getExternalJobsById(userId).then((jobsArr) => {
+            externalJobsService.getJobsForUser(userId).then((jobsArr) => {
                 this.setState({externalJobs: jobsArr})
             })
         }

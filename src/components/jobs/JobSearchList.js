@@ -1,12 +1,11 @@
 import React from 'react';
-import {Link} from "react-router-dom";
-import UserJobsService from '../services/UserJobsService';
-import ExternalJobSearchService from '../services/ExternalJobSearchService'
-import HTTPService from '../services/HTTPService'
-import BountyMgr from './BountyMgr'
 import Alert from "react-bootstrap/Alert";
-const userJobsService = UserJobsService.getInstance();
-const jobService = ExternalJobSearchService.getInstance();
+import {Link} from "react-router-dom";
+import BountyMgr from '../businesses/BountyMgr'
+import ExternalJobsSearchService from '../../services/ExternalJobsSearchService'
+import HTTPService from '../../services/HTTPService'
+
+const externalJobsService = ExternalJobsSearchService.getInstance();
 const httpService = HTTPService.getInstance();
 
 export default class JobSearchList extends React.Component {
@@ -37,7 +36,7 @@ export default class JobSearchList extends React.Component {
 
     addJobsToDatabase() {
         for(let i = 0; i < this.state.jobList.length; i++){
-            jobService.addJobToDatabase(this.state.jobList[i])
+            externalJobsService.addJobToDatabase(this.state.jobList[i])
         }
     }
 
@@ -72,7 +71,7 @@ export default class JobSearchList extends React.Component {
         });
 
         if (this.state.userId !== null) {
-            userJobsService.getExternalJobsById(this.state.userId).then((jobsArr) => {
+            externalJobsService.getJobsForUser(this.state.userId).then((jobsArr) => {
                 this.setState({savedJobs: jobsArr})
             })
         }
@@ -84,8 +83,8 @@ export default class JobSearchList extends React.Component {
 
         if(this.state.loggedIn) {
             console.log("Hello");
-            userJobsService.addUserToExJob(e.target.id, this.state.userId);
-            var sj = this.state.savedJobsIds;
+            externalJobsService.addUserToJob(e.target.id, this.state.userId);
+            let sj = this.state.savedJobsIds;
             sj.push(e.target.id);
             this.setState({savedJobsIds: sj})
         } else {
