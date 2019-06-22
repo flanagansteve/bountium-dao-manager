@@ -142,6 +142,14 @@ export default class InternalJobList extends React.Component {
         }
         return (
             <div className="container-fluid">
+                <h3> Search Jobs by Tag:</h3>
+                <div className="form">
+                    <div className="form-group">
+
+                    <input className="form-control col-4"/>
+                    <button className="btn btn-primary">Search</button>
+                    </div>
+                </div>
 
                 <h3> All Internal Jobs </h3>
 
