@@ -63,9 +63,7 @@ export default class Login extends React.Component {
 
         httpService.loginUser(loginUser).then(response => {
                 if (response.username === "null") {
-                    this.setState({
-                        IncorrectLogin: true
-                    });
+                    this.handleShow(); 
                 } else {
                     window.location.href = ("/profile");
                 }

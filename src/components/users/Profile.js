@@ -1,12 +1,15 @@
 import React from 'react';
 import Alert from 'react-bootstrap/Alert'
 
+import ExternalJobService from '../../services/ExternalJobsSearchService';
+import InternalJobsService from '../../services/InternalJobsService';
 import UserService from '../../services/UserService';
-import UserJobsService from '../../services/UserJobsService'
 import {Link} from "react-router-dom";
 
+const externalJobsService = ExternalJobService.getInstance();
+const internalJobsService = InternalJobsService.getInstance();
 const userService = UserService.getInstance();
-const userJobsService = UserJobsService.getInstance();
+
 
 export default class Profile extends React.Component {
 
@@ -182,7 +185,7 @@ export default class Profile extends React.Component {
         });
 
         if (this.state.id !== null) {
-            userJobsService.getInternalJobsById(this.state.id).then((jobsArr) => {
+            internalJobsService.getInternalJobsById(this.state.id).then((jobsArr) => {
                 this.setState({internalJobs: jobsArr})
             })
         }
@@ -197,7 +200,7 @@ export default class Profile extends React.Component {
         });
 
         if (this.state.id !== null) {
-            userJobsService.getExternalJobsById(this.state.id).then((jobsArr) => {
+            externalJobsService.getJobsForUser(this.state.id).then((jobsArr) => {
                 this.setState({externalJobs: jobsArr})
             })
         }

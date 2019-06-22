@@ -1,5 +1,5 @@
 import React from 'react'
-import MessageService from '../services/MessageService';
+import MessageService from '../../services/MessageService';
 
 const msgService = MessageService.getInstance();
 
@@ -9,7 +9,7 @@ export default class ChatClient extends React.Component {
     super(props);
     this.state = {
       msgs : this.props.msgs
-    }
+    };
     this.fetchMsgs = this.fetchMsgs.bind(this);
     this.sendMsg = this.sendMsg.bind(this);
   }
@@ -21,7 +21,7 @@ export default class ChatClient extends React.Component {
 
   fetchMsgs() {
     // TODO make this ask the api for the messages field of the business
-    msgService.getMessages(this.props.bizId)
+    msgService.getMessagesForBusiness(this.props.bizId)
     .then(response => this.setState({msgs : response}))
     //this.setState({msgs:msgService.getMessages(this.props.bizId)})
     //this.setState({msgs:this.props.msgs})

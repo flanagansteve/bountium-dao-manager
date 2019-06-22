@@ -1,13 +1,13 @@
 import React from 'react'
 import {Link} from "react-router-dom";
-import UserJobsService from '../services/UserJobsService';
-const userJobsService = UserJobsService.getInstance();
+import InternalJobsService from '../../services/InternalJobsService';
+const internalJobsService = InternalJobsService.getInstance();
 
 export default class BountyMgr extends React.Component {
 
   constructor(props) {
       super(props);
-      this.state = {value: "PYTHON", postedJobId: "none"}
+      this.state = {value: "PYTHON", postedJobId: "none"};
       this.postInternalJob = this.postInternalJob.bind(this);
   }
 
@@ -16,7 +16,7 @@ export default class BountyMgr extends React.Component {
   }
 
   postInternalJob() {
-    userJobsService.postInternalJob(
+    internalJobsService.postInternalJob(
       {title : document.getElementById("bounty-title").value,
       description : document.getElementById("bounty-description").value}).then(
       postedJob => this.setState({postedJobId : postedJob.id})

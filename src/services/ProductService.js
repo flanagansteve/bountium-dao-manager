@@ -1,7 +1,7 @@
-var fetchHost = "http://localhost:8080";
+let fetchHost = "http://localhost:8080";
 
 if (window.location.href.includes("heroku")) {
-  fetchHost = "https://guarded-tundra-80923.herokuapp.com";
+  fetchHost = "https://bountium-user-server.herokuapp.com";
 }
 
 export default class ProductService {
@@ -17,6 +17,8 @@ export default class ProductService {
         return this.myInstance;
     }
 
+    // ======================================================================
+
     // Sends a biz object with all requisite fields to create a new one
     createProductForBiz = (product, bizId) =>
       fetch(`${fetchHost}/api/businesses/${bizId}/products`, {
@@ -27,15 +29,24 @@ export default class ProductService {
         }
       }).then(response => response.json());
 
+    // --------------------------------------------------------------------
+
+    // Gets the Products of a specific business of the given id
     getProductsForBiz = (bizId) =>
       fetch(`${fetchHost}/api/businesses/${bizId}/products/`)
         .then(response => response.json());
 
+    // --------------------------------------------------------------------
+
+    // Deletes a given product of a certain business using the index of the product from the biz's array
     deleteProduct = (bizId, productIndex) =>
       fetch(`${fetchHost}/api/businesses/${bizId}/products/${productIndex}`, {
         method: 'DELETE'
       }).then(response => response.json());
 
+    // ---------------------------------------------------------------------
+
+    // Updates the information of a given product of a business.
     updateProduct = (bizId, productIndex, newProduct) =>
       fetch(`${fetchHost}/api/businesses/${bizId}/products/${productIndex}`, {
         method: 'PUT',

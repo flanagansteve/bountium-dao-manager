@@ -10,7 +10,7 @@ export default class BizDetails extends React.Component {
         name : this.props.biz.name,
         description : this.props.biz.description
       }
-    }
+    };
     this.modifyBizDetails = this.modifyBizDetails.bind(this);
     this.saveBizDetails = this.saveBizDetails.bind(this);
     this.updateName = this.updateName.bind(this);

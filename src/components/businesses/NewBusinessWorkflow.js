@@ -1,7 +1,7 @@
 import React from 'react';
 import {Link} from 'react-router-dom'
-import BusinessService from '../services/BusinessService';
-import OwnerService from '../services/OwnerService';
+import BusinessService from '../../services/BusinessService';
+import OwnerService from '../../services/OwnerService';
 const bizService = BusinessService.getInstance();
 const ownerService = OwnerService.getInstance();
 
@@ -15,7 +15,7 @@ export default class NewBusinessWorkflow extends React.Component {
   }
 
   newBiz() {
-    var bizId;
+    let bizId;
     bizService.createBiz(
       {
         name : document.getElementById("bizname").value,
