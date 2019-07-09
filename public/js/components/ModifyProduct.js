@@ -236,13 +236,21 @@ var ModifyProduct = React.createClass({
       React.createElement("input", {type:"text", className:"form-control", placeholder:"Upload it to a host like imgur or IPFS", id:"add-image-url-input"}),
       React.createElement("button", {className:"btn btn-primary mt-2 float-right", onClick:this.addImageUrl}, "Update image url")
     );
-    var listDelist = React.createElement("button", {className:"btn btn-primary mt-2", onClick:this.list}, "List product");
+    var listDelist = React.createElement("button", {className:"btn btn-primary", onClick:this.list}, "List product");
     if (this.props.forSale)
-      listDelist = React.createElement("button", {className:"btn btn-primary mt-2", onClick:this.delist}, "Delist product");
+      listDelist = React.createElement("button", {className:"btn btn-primary", onClick:this.delist}, "Delist product");
     return React.createElement("div", {className:"container-fluid row"},
       React.createElement("div", {className:"col-md-4"},
         React.createElement("img", {className:"img", alt:this.props.product.name, src:this.props.product.imageUrl}),
-        listDelist
+        React.createElement("div", {className:"col"},
+          React.createElement("div", {className:"row mt-2"}, listDelist),
+          React.createElement("div", {className:"row mt-2"},
+            React.createElement("button", {className:"btn btn-info", onClick:() => this.sendMods(this.props.id)}, "Save Changes")
+          ),
+          React.createElement("div", {className:"row mt-2"},
+            React.createElement("button", {className:"btn btn-secondary", onClick : this.props.cancel}, "Cancel")
+          )
+        )
       ),
       React.createElement("div", {className:"col-md-8 mt-2 mt-md-0 pt-2"},
         React.createElement("h5", {}, this.props.product.name),
@@ -279,10 +287,6 @@ var ModifyProduct = React.createClass({
           changePriceForm,
           changeDescriptForm,
           changeImageUrlForm
-        ),
-        React.createElement("div", {className:"mt-5"},
-          React.createElement("button", {className:"btn btn-secondary float-right", onClick : this.props.cancel}, "Cancel"),
-          React.createElement("button", {className:"btn btn-primary float-right", onClick:() => this.sendMods(this.props.id)}, "Save Changes")
         )
       )
     );
