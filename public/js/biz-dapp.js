@@ -246,10 +246,10 @@ var CatalogueOverview = React.createClass({
             {
               product:this.state.catalogue[this.state.selectedProduct],
               autobiz:autobiz,
-              id:this.state.selectedProduct
+              id:this.state.selectedProduct,
+              cancel:() => this.showProductOverview(-1)
             }
-          ),
-          React.createElement("button", {className:"btn btn-info", onClick : () => this.showProductOverview(-1)}, "Done")
+          )
         )
       );
     if (this.state.catalogue.length != 0)

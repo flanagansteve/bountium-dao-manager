@@ -1,6 +1,8 @@
 // TODO on all product state mods, call updateCatalogue() in catalogue react obj
 // TODO check for success on each state mod, rather than blindly assuring user
 
+// TODO hard code main/test market addrs and use them in addSupplyStep
+
 var ModifyProduct = React.createClass({
 
   // TODO show users info abt assesor contracts in the supply chain
@@ -199,67 +201,56 @@ var ModifyProduct = React.createClass({
   },
 
   render : function() {
-    var br = React.createElement("br", {})
-    var header = React.createElement("h3", {}, this.props.children);
     var currentProductDetails = React.createElement("div", {className:"current-product-details"},
-      React.createElement("img", {src:this.props.imageUrl}),
-      React.createElement("p", {}, "Price: " + this.props.price),
-      React.createElement("p", {}, "Orders Received: " + this.props.ordersReceived),
-      React.createElement("p", {}, "For Sale: " + this.props.forSale),
-      React.createElement("p", {}, "Description: " + this.props.description)
+      React.createElement("p", {}, "Orders Received: " + this.props.product.ordersReceived),
+      React.createElement("p", {}, "For Sale: " + this.props.product.forSale),
+      React.createElement("p", {}, "Description: " + this.props.product.description)
     );
     var nextStepButton = React.createElement("p", {className:"all-x-displayed", id:"all-steps-received-note"}, "All steps displayed");
     if (this.props.supplyChainLength - this.state.supplyChain.length > 0)
       nextStepButton = React.createElement("button", {className:"btn btn-primary", onClick:this.anotherStep}, "Get next step in the supply chain");
     var nextOrderBtn = React.createElement("p", {className:"all-x-displayed", id:"all-orders-received-note"}, "All orders displayed");
     if (this.props.ordersReceived - this.state.orders.length > 0)
-      nextOrderBtn = React.createElement("button", {className:"btn btn-primary",onClick:this.anotherOrder}, "Get next order from contract");
+      nextOrderBtn = React.createElement("button", {className:"btn btn-primary float-right", onClick:this.anotherOrder}, "Get next order from contract");
     // TODO only show these ones if user.canModifyCatalogue
-    var newSupplyStepForm = React.createElement("div", {className:"product-actions-form", id:"add-supply-step-product-actions-form"},
+    var newSupplyStepForm = React.createElement("div", {className:"form mb-3", id:"add-supply-step-product-actions-form"},
       React.createElement("h6", {}, "Add a supply step to this product's supply chain"),
-      React.createElement("a", {href:"#", id:"incentiviser-guide-click", onClick:this.guideIncentivisers}, "(Help me pick an incentiviser!)"),
-      React.createElement("label", {for:"new-supply-step-addr-input"}, "Address of incentiviser for this supply step"),
-      React.createElement("input", {type:"text", id:"new-supply-step-addr-input", placeholder:"0x123..."}),
-      br,
-      React.createElement("label", {for:"change-price-input"}, "Fee your business will pay for this step"),
-      React.createElement("input", {type:"number", id:"new-supply-step-fee-input"}),
-      br,
-      React.createElement("button", {className:"btn btn-primary",onClick:this.addSupplyStep, className:"product-mod-btn"}, "Add supply step")
+      React.createElement("label", {for:"new-supply-step-instr-input"}, "Instructions for this supply step"),
+      React.createElement("input", {type:"text", id:"new-supply-step-addr-input", className:"form-control", placeholder:"What do you need done when an order is received?"}),
+      React.createElement("label", {for:"change-price-input"}, "Fee you will pay for this step (in wei)"),
+      React.createElement("input", {type:"number", id:"new-supply-step-fee-input", className:"form-control"}),
+      React.createElement("button", {className:"btn btn-primary mt-2 mb-2 float-right", onClick:this.addSupplyStep}, "Add supply step")
     );
-    var changePriceForm = React.createElement("div", {className:"product-actions-form"},
+    var changePriceForm = React.createElement("div", {className:"form mb-3"},
       React.createElement("label", {for:"change-price-input"}, "Change the price of this product"),
-      React.createElement("input", {type:"number", id:"change-price-input"}),
-      br,
-      React.createElement("button", {className:"btn btn-primary",onClick:this.changePrice, className:"product-mod-btn"}, "Change price")
+      React.createElement("input", {type:"number", id:"change-price-input", className:"form-control"}),
+      React.createElement("button", {className:"btn btn-primary mt-2 float-right", onClick:this.changePrice}, "Change price")
     );
-    var changeDescriptForm = React.createElement("div", {className:"product-actions-form"},
+    var changeDescriptForm = React.createElement("div", {className:"form mb-3"},
       React.createElement("label", {for:"add-description-input"}, "Update the description of this product"),
-      React.createElement("input", {type:"text", placeholder:"Product details and assurances go here!", id:"add-description-input"}),
-      br,
-      React.createElement("button", {className:"btn btn-primary",onClick:this.addDescription, className:"product-mod-btn"}, "Update description")
+      React.createElement("input", {type:"text", className:"form-control", placeholder:"Product details and assurances go here!", id:"add-description-input"}),
+      React.createElement("button", {className:"btn btn-primary mt-2 float-right", onClick:this.addDescription}, "Update description")
     );
-    var changeImageUrlForm = React.createElement("div", {className:"product-actions-form"},
+    var changeImageUrlForm = React.createElement("div", {className:"form mb-3"},
       React.createElement("label", {for:"add-image-url-input"}, "Update the image of this product"),
-      React.createElement("input", {type:"text", placeholder:"Upload it to a host like imgur or IPFS", id:"add-image-url-input"}),
-      br,
-      React.createElement("button", {className:"btn btn-primary",onClick:this.addImageUrl, className:"product-mod-btn"}, "Update image url")
+      React.createElement("input", {type:"text", className:"form-control", placeholder:"Upload it to a host like imgur or IPFS", id:"add-image-url-input"}),
+      React.createElement("button", {className:"btn btn-primary mt-2 float-right", onClick:this.addImageUrl}, "Update image url")
     );
-    var listDelist = React.createElement("button", {className:"btn btn-primary",onClick:this.list, className:"product-mod-btn"}, "List product");
+    var listDelist = React.createElement("button", {className:"btn btn-primary mt-2", onClick:this.list}, "List product");
     if (this.props.forSale)
-      listDelist = React.createElement("button", {className:"btn btn-primary",onClick:this.delist, className:"product-mod-btn"}, "Delist product");
+      listDelist = React.createElement("button", {className:"btn btn-primary mt-2", onClick:this.delist}, "Delist product");
     return React.createElement("div", {className:"container-fluid row"},
-      React.createElement("img", {className:"img col-md-4", alt:this.props.product.name, src:this.props.product.imageUrl}),
-      React.createElement("div", {className:"col-md-8 border mt-2 mt-md-0 pt-2"},
+      React.createElement("div", {className:"col-md-4"},
+        React.createElement("img", {className:"img", alt:this.props.product.name, src:this.props.product.imageUrl}),
+        listDelist
+      ),
+      React.createElement("div", {className:"col-md-8 mt-2 mt-md-0 pt-2"},
         React.createElement("h5", {}, this.props.product.name),
-        React.createElement("p", {}, this.props.product.description),
         React.createElement("p", {}, "Price: " + web3.fromWei(this.props.product.price, "ether") + " ETH"),
-        (this.props.product.orderOptions.length > 0 && React.createElement("div", {},
-          Object.keys(JSON.parse(this.props.product.orderOptions)).map(this.optionSetRadioForms)
-        )),
         React.createElement("div", {className:"popup-product-ov"},
-          header, currentProductDetails,
+          currentProductDetails,
           React.createElement("h3", {}, "Supply chain steps:"),
-          React.createElement("table", {className:"new-product-supply-steps"},
+          React.createElement("table", {className:"table"},
             React.createElement("tbody", {},
               React.createElement("tr", {},
                 React.createElement("th", {}, "Step #"),
@@ -272,7 +263,7 @@ var ModifyProduct = React.createClass({
           ),
           nextStepButton,
           React.createElement("h3", {}, "Orders received:"),
-          React.createElement("table", {className:"new-product-supply-steps"},
+          React.createElement("table", {className:"table"},
             React.createElement("tbody", {},
               React.createElement("tr", {},
                 React.createElement("th", {}, "Order ID"),
@@ -284,13 +275,15 @@ var ModifyProduct = React.createClass({
             )
           ),
           nextOrderBtn,
-          newSupplyStepForm, br,
-          changePriceForm, br,
-          changeDescriptForm, br,
-          changeImageUrlForm, br,
-          listDelist
+          newSupplyStepForm,
+          changePriceForm,
+          changeDescriptForm,
+          changeImageUrlForm
         ),
-        React.createElement("button", {className:"btn btn-primary mb-1", onClick:() => this.sendMods(this.props.id)}, "Save Changes")
+        React.createElement("div", {className:"mt-5"},
+          React.createElement("button", {className:"btn btn-secondary float-right", onClick : this.props.cancel}, "Cancel"),
+          React.createElement("button", {className:"btn btn-primary float-right", onClick:() => this.sendMods(this.props.id)}, "Save Changes")
+        )
       )
     );
   }
