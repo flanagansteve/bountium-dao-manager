@@ -19,7 +19,7 @@ window.addEventListener('load', async () => {
           )
         ),
         React.createElement("a", {href:"./biz/", className:"link-unstyled col-sm-6"},
-          React.createElement("div", {className:"card bg-secondary text-white"},
+          React.createElement("div", {className:"card bg-success text-white"},
             React.createElement("div", {className:"card-body"},
               React.createElement("h5", {className:"card-title"}, "Returning?"),
               React.createElement("p", {className:"card-text"}, "Log in and manage your Bountium-powered DAO")
