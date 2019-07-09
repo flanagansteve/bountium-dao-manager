@@ -76,7 +76,7 @@ var ModifyProduct = React.createClass({
 
   addSupplyStep : function() {
     autobiz.addSupplyStep(
-      this.props.productID,
+      this.props.id,
       document.getElementById("new-supply-step-addr-input").value,
       document.getElementById("new-supply-step-fee-input").value,
       (err, res) => {
@@ -98,7 +98,7 @@ var ModifyProduct = React.createClass({
   },
 
   list : function() {
-    autobiz.listProduct(this.props.productID, (err, res) => {
+    autobiz.listProduct(this.props.id, (err, res) => {
       if (err)
         console.error(err)
       else {
@@ -116,7 +116,7 @@ var ModifyProduct = React.createClass({
   },
 
   delist : function() {
-    autobiz.delistProduct(this.props.productID, (err, res) => {
+    autobiz.delistProduct(this.props.id, (err, res) => {
       if (err)
         console.error(err)
       else {
@@ -134,7 +134,7 @@ var ModifyProduct = React.createClass({
   },
 
   changePrice : function() {
-    autobiz.changePrice(this.props.productID, document.getElementById("change-price-input").value, (err, res) => {
+    autobiz.changePrice(this.props.id, document.getElementById("change-price-input").value, (err, res) => {
       if (err)
         console.error(err)
       else {
@@ -152,7 +152,7 @@ var ModifyProduct = React.createClass({
   },
 
   addDescription : function() {
-    autobiz.addDescription(this.props.productID, document.getElementById("add-description-input").value, (err, res) => {
+    autobiz.addDescription(this.props.id, document.getElementById("add-description-input").value, (err, res) => {
       if (err)
         console.error(err)
       else {
@@ -171,7 +171,7 @@ var ModifyProduct = React.createClass({
 
   addImageUrl : function() {
     // TODO check that the provided url is indeed an img, perhaps look at file type?
-    autobiz.addImageUrl(this.props.productID, document.getElementById("add-image-url-input").value, (err, res) => {
+    autobiz.addImageUrl(this.props.id, document.getElementById("add-image-url-input").value, (err, res) => {
       if (err)
         console.error(err)
       else {
@@ -237,11 +237,11 @@ var ModifyProduct = React.createClass({
       React.createElement("button", {className:"btn btn-primary mt-2 float-right", onClick:this.addImageUrl}, "Update image url")
     );
     var listDelist = React.createElement("button", {className:"btn btn-primary", onClick:this.list}, "List product");
-    if (this.props.forSale)
-      listDelist = React.createElement("button", {className:"btn btn-primary", onClick:this.delist}, "Delist product");
+    if (this.props.product.forSale)
+      listDelist = React.createElement("button", {className:"btn btn-danger", onClick:this.delist}, "Delist product");
     return React.createElement("div", {className:"container-fluid row"},
       React.createElement("div", {className:"col-md-4"},
-        React.createElement("img", {className:"img", alt:this.props.product.name, src:this.props.product.imageUrl}),
+        React.createElement("img", {className:"img-thumbnail", alt:this.props.product.name, src:this.props.product.imageUrl}),
         React.createElement("div", {className:"col"},
           React.createElement("div", {className:"row mt-2"}, listDelist),
           React.createElement("div", {className:"row mt-2"},
