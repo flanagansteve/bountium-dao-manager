@@ -6,3 +6,7 @@
   color: inherit;
   text-decoration: inherit;
 }
+
+.custom-card-form-text {
+  font-size: 15px;
+}

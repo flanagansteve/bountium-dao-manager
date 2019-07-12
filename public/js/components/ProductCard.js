@@ -13,6 +13,8 @@ var ProductCard = React.createClass({
           React.createElement("h5", {className:"card-title"}, React.createElement("p", {className:"card-link"}, this.props.product.name)),
           React.createElement("small", {className:"card-text"}, "Price: " + web3.fromWei(this.props.product.price, "ether") + " ETH"),
           React.createElement("br", {}),
+          React.createElement("small", {className:"card-text"}, "Listed for sale: " + this.props.product.forSale),
+          React.createElement("br", {}),
           React.createElement("small", {className:"card-text"}, this.props.product.ordersReceived + " orders received"),
           React.createElement("br", {}),
           React.createElement("button", {className:"btn btn-info mb-1 mt-2", onClick:this.renderProduct}, "Manage")

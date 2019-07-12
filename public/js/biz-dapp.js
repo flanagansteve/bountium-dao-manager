@@ -260,15 +260,15 @@ var CatalogueOverview = React.createClass({
             this.state.catalogue.map(this.mapCatalogue),
             React.createElement("div", {className:"card"},
               React.createElement("div", {className:"card-body"},
-                React.createElement("h5", {}, "New Product"),
+                React.createElement("h5", {}, "Release a New Product"),
                 React.createElement("div", {className:"form"},
-                  React.createElement("label", {for:"new-product-name"}, "Name your product"),
+                  React.createElement("label", {for:"new-product-name", className:"custom-card-form-text"}, "Name your product"),
                   React.createElement("input", {type:"text", className:"form-control", id:"new-product-name"}),
-                  React.createElement("label", {for:"new-product-price"}, "Price your product (in ETH)"),
+                  React.createElement("label", {for:"new-product-price", className:"custom-card-form-text"}, "Price your product (in ETH)"),
                   React.createElement("input", {type:"number", className:"form-control", id:"new-product-price"}),
                   React.createElement("button", {className:"btn btn-primary mt-2", onClick:this.releaseProduct}, "Deploy"),
                   React.createElement("br", {}),
-                  React.createElement("small", {className:"text-muted"}, "You can add other details once you deploy the product to your business's contract")
+                  React.createElement("small", {className:"text-muted custom-card-form-text"}, "You can add other details once you deploy the product to your business's contract")
                 )
               )
             )
@@ -282,7 +282,7 @@ var CatalogueOverview = React.createClass({
         (this.state.noMore && React.createElement("div", {className:"col-12 mt-3 card-columns"},
           React.createElement("div", {className:"card"},
             React.createElement("div", {className:"card-body"},
-              React.createElement("h5", {}, "Release your first Product"),
+              React.createElement("h5", {}, "Release your First Product"),
               React.createElement("div", {className:"form"},
                 React.createElement("label", {for:"new-product-name"}, "Name your product"),
                 React.createElement("input", {type:"text", className:"form-control", id:"new-product-name"}),
