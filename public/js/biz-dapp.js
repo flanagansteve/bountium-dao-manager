@@ -171,7 +171,7 @@ var Dashboard = React.createClass({
             React.createElement("h4", {className:"text-center"}, "Operations")
           ),
           React.createElement("li", {className:"nav-item display-4 col-3" + (this.state.viewingChat ? " border-bottom" : ""), onClick:this.viewChat},
-            React.createElement("h4", {className:"text-center"}, "Chat")
+            React.createElement("h4", {className:"text-center"}, "Collaboration")
           )
         )
       )

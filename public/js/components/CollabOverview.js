@@ -1,7 +1,6 @@
 // TODO put lines 1-21 in separate message service, in exportable manner
 
-let fetchHost = "http://localhost:8080";
-// TODO: let fetchHost = "https://bountium-user-server.herokuapp.com";
+let fetchHost = "https://shielded-mesa-96501.herokuapp.com";
 
 sendMessage = (message, bizId) =>
   fetch(`${fetchHost}/api/businesses/${bizId}/messages`, {

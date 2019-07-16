@@ -146,7 +146,6 @@ var OrgOverview = React.createClass({
     // if total shares is 0 then we haven't gotten org info
     if (this.state.totalShares == 0)
       return React.createElement("div", {className:"container-fluid"},
-        React.createElement("h5", null, "Your Organisation"),
         React.createElement("img", {className:"img-sm", src:"/img/loading.gif"})
       );
     var ownership = React.createElement("div", {className:"jumbotron"},

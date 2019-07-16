@@ -4,8 +4,7 @@ autobizData = '0x608060405260a060405190810160405280606e81526020017f68747470733a2
 
 // TODO put lines 5-19 in separate business service, in exportable manner
 
-let fetchHost = "http://localhost:8080";
-// TODO: let fetchHost = "https://bountium-user-server.herokuapp.com";
+let fetchHost = "https://shielded-mesa-96501.herokuapp.com";
 
 // Sends a biz object with all requisite fields to create a new one
 createBiz = (biz) =>
