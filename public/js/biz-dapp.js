@@ -30,7 +30,7 @@ autobiz = null;
 
 window.addEventListener('load', async () => {
 
-  document.getElementById("dashboard").innerHTML = "<h1>Bountium is a dapp built on the Ethereum blockchain. You need an Ethereum wallet to use it - we recommend metamask, which you can install <a href = \'https://metamask.io\'>here</a></h1>";
+  document.getElementById("dashboard").innerHTML = "<div class=\"container-fluid\"><h1>Bountium is a dapp built on the Ethereum blockchain. You need an Ethereum wallet to use it - we recommend metamask, which you can install <a href = \'https://metamask.io\'>here</a></h1></div>";
   ReactDOM.render(
     React.createElement(Navbar, {}),
     document.getElementById("navbar")
