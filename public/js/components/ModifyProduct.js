@@ -1,7 +1,9 @@
 // TODO on all product state mods, call updateCatalogue() in catalogue react obj
 // TODO check for success on each state mod, rather than blindly assuring user
 
-// TODO hard code main/test market addrs and use them in addSupplyStep
+// For adding supply steps:
+liveMarketAddr = "0xfce2e8c52578026ddaa24899921586591bb73fca";
+testMarketAddr = "0xe748d6628cb4f0e87c48509b227b82f831411733";
 
 var ModifyProduct = React.createClass({
 
@@ -77,8 +79,9 @@ var ModifyProduct = React.createClass({
   addSupplyStep : function() {
     autobiz.addSupplyStep(
       this.props.id,
-      document.getElementById("new-supply-step-addr-input").value,
+      liveMarketAddr,
       document.getElementById("new-supply-step-fee-input").value,
+      document.getElementById("new-supply-step-instructions-input").value,
       (err, res) => {
         if (err)
           console.error(err)
@@ -216,7 +219,7 @@ var ModifyProduct = React.createClass({
     var newSupplyStepForm = React.createElement("div", {className:"form mb-3", id:"add-supply-step-product-actions-form"},
       React.createElement("h6", {}, "Add a supply step to this product's supply chain"),
       React.createElement("label", {for:"new-supply-step-instr-input"}, "Instructions for this supply step"),
-      React.createElement("input", {type:"text", id:"new-supply-step-addr-input", className:"form-control", placeholder:"What do you need done when an order is received?"}),
+      React.createElement("input", {type:"text", id:"new-supply-step-instructions-input", className:"form-control", placeholder:"What do you need done when an order is received?"}),
       React.createElement("label", {for:"change-price-input"}, "Fee you will pay for this step (in wei)"),
       React.createElement("input", {type:"number", id:"new-supply-step-fee-input", className:"form-control"}),
       React.createElement("button", {className:"btn btn-primary mt-2 mb-2 float-right", onClick:this.addSupplyStep}, "Add supply step")
