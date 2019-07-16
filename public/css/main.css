@@ -10,3 +10,7 @@
 .custom-card-form-text {
   font-size: 15px;
 }
+
+.grey-msg {
+  background-color: grey;
+}

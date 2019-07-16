@@ -184,7 +184,7 @@ var Dashboard = React.createClass({
       this.state.viewingOrg && React.createElement(OrgOverview, {autobiz:autobiz}),
       this.state.viewingProducts && React.createElement(CatalogueOverview, {autobiz:autobiz}),
       this.state.viewingOps && React.createElement(OpsOveriew, {autobiz:autobiz}),
-      this.state.viewingChat && React.createElement(CollabOverview, {autobiz:autobiz})
+      this.state.viewingChat && React.createElement(CollabOverview, {autobiz:autobiz, userAccount : userAccount})
     );
   }
 
