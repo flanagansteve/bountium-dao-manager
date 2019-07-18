@@ -11,6 +11,6 @@
   font-size: 15px;
 }
 
-.grey-msg {
-  background-color: grey;
+.overflow-auto {
+  overflow-x: hidden !important;
 }

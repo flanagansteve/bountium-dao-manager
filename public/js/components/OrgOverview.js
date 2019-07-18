@@ -5,6 +5,7 @@ var OrgOverview = React.createClass({
       if (res) {
         // TODO this presumes other owners won't modify the org while this user is online
         alert("Ownership changes confirmed.");
+        this.setState({owners : []})
         this.getOrgInfo();
       }
     })

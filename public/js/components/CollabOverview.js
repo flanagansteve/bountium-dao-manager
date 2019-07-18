@@ -1,6 +1,6 @@
 // TODO put lines 1-21 in separate message service, in exportable manner
-
-let fetchHost = "https://shielded-mesa-96501.herokuapp.com";
+let fetchHost = "http://localhost:8080"
+// let fetchHost = "https://shielded-mesa-96501.herokuapp.com";
 
 sendMessage = (message, bizId) =>
   fetch(`${fetchHost}/api/businesses/${bizId}/messages`, {
@@ -10,7 +10,6 @@ sendMessage = (message, bizId) =>
         'content-type': 'application/json'
       }
   })
-  //.then(res => console.log(res))
   .then(response => response.json());
 
 // ------------------------------------------------------------------------------------
@@ -23,7 +22,8 @@ var CollabOverview = React.createClass({
 
   getInitialState : function() {
     return {
-      msgs : []
+      msgs : [],
+      err : false
     }
   },
 
@@ -33,7 +33,15 @@ var CollabOverview = React.createClass({
 
   fetchMsgs : function() {
     getMessagesForBusiness(this.props.autobiz.address)
-      .then(response => this.setState({msgs : response}))
+      .then(response => {
+        if (Array.isArray(response)) {
+          this.setState({err : false})
+          this.setState({msgs : response})
+        } else {
+          this.setState({err : true})
+        }
+      }
+    )
   },
 
   sendMsg : function() {
@@ -47,7 +55,15 @@ var CollabOverview = React.createClass({
       sender : this.props.userAccount
     };
     sendMessage(msg, this.props.autobiz.address)
-      .then(response => this.setState({msgs : response}));
+      .then(response => {
+        if (Array.isArray(response)) {
+          this.setState({msgs : response})
+          this.setState({err : false})
+        } else {
+          this.setState({err : true})
+        }
+      }
+    );
     document.getElementById("new-message").value = "";
   },
 
@@ -60,14 +76,16 @@ var CollabOverview = React.createClass({
   },
 
   render : function() {
-    console.log(this.state.msgs)
     return React.createElement("div", {className:"container-fluid"},
-      React.createElement("h4", {}, "Chat"),
-      React.createElement("div", {className:"messages"}, this.state.msgs.map(this.renderMessages)),
-      React.createElement("div", {className:"form-group"},
-        React.createElement("input", {id:"new-message", placeholder:"Type a new message...", type:"text", className:"form-control mb-1"}),
-        React.createElement("button", {onClick:this.sendMsg, className:"btn btn-primary"}, "Send"),
-        React.createElement("button", {onClick:this.fetchMsgs, className:"btn btn-primary float-right"}, "Refresh")
+      React.createElement("div", {className:"mh-100 overflow-auto"},
+        React.createElement("h4", {}, "Chat"),
+        !this.state.err && React.createElement("div", {className:"messages"}, this.state.msgs.map(this.renderMessages)),
+        this.state.err && React.createElement("div", {className:""}, "Error fetching messages from the server - try again later"),
+        React.createElement("div", {className:"form-group"},
+          React.createElement("input", {id:"new-message", placeholder:"Type a new message...", type:"text", className:"form-control mb-1"}),
+          React.createElement("button", {onClick:this.sendMsg, className:"btn btn-primary"}, "Send"),
+          React.createElement("button", {onClick:this.fetchMsgs, className:"btn btn-primary float-right"}, "Refresh")
+        )
       )
     );
   }

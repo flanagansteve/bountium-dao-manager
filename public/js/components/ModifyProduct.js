@@ -79,8 +79,8 @@ var ModifyProduct = React.createClass({
   addSupplyStep : function() {
     autobiz.addSupplyStep(
       this.props.id,
-      liveMarketAddr,
-      document.getElementById("new-supply-step-fee-input").value,
+      testMarketAddr,
+      Number(web3.toWei(document.getElementById("new-supply-step-fee-input").value, 'ether')),
       document.getElementById("new-supply-step-instructions-input").value,
       (err, res) => {
         if (err)
@@ -93,7 +93,6 @@ var ModifyProduct = React.createClass({
             else
               alert("Successfully added supply step");
               this.props.refreshCatalogue();
-              this.x();
           });
         }
       }
@@ -112,7 +111,6 @@ var ModifyProduct = React.createClass({
           else
             alert("Successfully listed this product");
             this.props.refreshCatalogue();
-            this.x();
         })
       }
     });
@@ -130,28 +128,30 @@ var ModifyProduct = React.createClass({
           else
             alert("Successfully delisted this product");
             this.props.refreshCatalogue();
-            this.x();
         })
       }
     });
   },
 
   changePrice : function() {
-    autobiz.changePrice(this.props.id, document.getElementById("change-price-input").value, (err, res) => {
-      if (err)
-        console.error(err)
-      else {
-        alert("Request to change price is on its way!");
-        var confirmMod = autobiz.ProductModified((err, res) => {
-          if (err)
-            console.error(err);
-          else
-            alert("Successfully changed price");
-            this.props.refreshCatalogue();
-            this.x();
-        })
+    autobiz.changePrice(
+      this.props.id,
+      Number(web3.toWei(document.getElementById("change-price-input").value, 'ether')),
+      (err, res) => {
+        if (err)
+          console.error(err)
+        else {
+          alert("Request to change price is on its way!");
+          var confirmMod = autobiz.ProductModified((err, res) => {
+            if (err)
+              console.error(err);
+            else
+              alert("Successfully changed price");
+              this.props.refreshCatalogue();
+          })
+        }
       }
-    });
+    );
   },
 
   addDescription : function() {
@@ -166,7 +166,6 @@ var ModifyProduct = React.createClass({
           else
             alert("Successfully updated description");
             this.props.refreshCatalogue();
-            this.x();
         })
       }
     });
@@ -185,7 +184,6 @@ var ModifyProduct = React.createClass({
           else
             alert("Successfully updated image url");
             this.props.refreshCatalogue();
-            this.x();
         })
       }
     });
@@ -204,49 +202,22 @@ var ModifyProduct = React.createClass({
   },
 
   render : function() {
-    var currentProductDetails = React.createElement("div", {className:"current-product-details"},
-      React.createElement("p", {}, "Orders Received: " + this.props.product.ordersReceived),
-      React.createElement("p", {}, "For Sale: " + this.props.product.forSale),
-      React.createElement("p", {}, "Description: " + this.props.product.description)
-    );
+    // TODO only show several of these forms if user.canModifyCatalogue
     var nextStepButton = React.createElement("p", {className:"all-x-displayed", id:"all-steps-received-note"}, "All steps displayed");
     if (this.props.supplyChainLength - this.state.supplyChain.length > 0)
       nextStepButton = React.createElement("button", {className:"btn btn-primary", onClick:this.anotherStep}, "Get next step in the supply chain");
     var nextOrderBtn = React.createElement("p", {className:"all-x-displayed", id:"all-orders-received-note"}, "All orders displayed");
     if (this.props.ordersReceived - this.state.orders.length > 0)
       nextOrderBtn = React.createElement("button", {className:"btn btn-primary float-right", onClick:this.anotherOrder}, "Get next order from contract");
-    // TODO only show these ones if user.canModifyCatalogue
-    var newSupplyStepForm = React.createElement("div", {className:"form mb-3", id:"add-supply-step-product-actions-form"},
-      React.createElement("h6", {}, "Add a supply step to this product's supply chain"),
-      React.createElement("label", {for:"new-supply-step-instr-input"}, "Instructions for this supply step"),
-      React.createElement("input", {type:"text", id:"new-supply-step-instructions-input", className:"form-control", placeholder:"What do you need done when an order is received?"}),
-      React.createElement("label", {for:"change-price-input"}, "Fee you will pay for this step (in wei)"),
-      React.createElement("input", {type:"number", id:"new-supply-step-fee-input", className:"form-control"}),
-      React.createElement("button", {className:"btn btn-primary mt-2 mb-2 float-right", onClick:this.addSupplyStep}, "Add supply step")
-    );
-    var changePriceForm = React.createElement("div", {className:"form mb-3"},
-      React.createElement("label", {for:"change-price-input"}, "Change the price of this product"),
-      React.createElement("input", {type:"number", id:"change-price-input", className:"form-control"}),
-      React.createElement("button", {className:"btn btn-primary mt-2 float-right", onClick:this.changePrice}, "Change price")
-    );
-    var changeDescriptForm = React.createElement("div", {className:"form mb-3"},
-      React.createElement("label", {for:"add-description-input"}, "Update the description of this product"),
-      React.createElement("input", {type:"text", className:"form-control", placeholder:"Product details and assurances go here!", id:"add-description-input"}),
-      React.createElement("button", {className:"btn btn-primary mt-2 float-right", onClick:this.addDescription}, "Update description")
-    );
-    var changeImageUrlForm = React.createElement("div", {className:"form mb-3"},
-      React.createElement("label", {for:"add-image-url-input"}, "Update the image of this product"),
-      React.createElement("input", {type:"text", className:"form-control", placeholder:"Upload it to a host like imgur or IPFS", id:"add-image-url-input"}),
-      React.createElement("button", {className:"btn btn-primary mt-2 float-right", onClick:this.addImageUrl}, "Update image url")
-    );
-    var listDelist = React.createElement("button", {className:"btn btn-primary", onClick:this.list}, "List product");
-    if (this.props.product.forSale)
-      listDelist = React.createElement("button", {className:"btn btn-danger", onClick:this.delist}, "Delist product");
     return React.createElement("div", {className:"container-fluid row"},
       React.createElement("div", {className:"col-md-4"},
         React.createElement("img", {className:"img-thumbnail", alt:this.props.product.name, src:this.props.product.imageUrl}),
+        React.createElement("div", {className:"form mb-3"},
+          React.createElement("label", {for:"add-image-url-input"}, "Update the image of this product"),
+          React.createElement("input", {type:"text", className:"form-control", placeholder:"Upload it to a host like imgur or IPFS", id:"add-image-url-input"}),
+          React.createElement("button", {className:"btn btn-primary mt-2", onClick:this.addImageUrl}, "Update image url")
+        ),
         React.createElement("div", {className:"col"},
-          React.createElement("div", {className:"row mt-2"}, listDelist),
           React.createElement("div", {className:"row mt-2"},
             React.createElement("button", {className:"btn btn-info", onClick:() => this.sendMods(this.props.id)}, "Save Changes")
           ),
@@ -257,9 +228,31 @@ var ModifyProduct = React.createClass({
       ),
       React.createElement("div", {className:"col-md-8 mt-2 mt-md-0 pt-2"},
         React.createElement("h5", {}, this.props.product.name),
-        React.createElement("p", {}, "Price: " + web3.fromWei(this.props.product.price, "ether") + " ETH"),
+        React.createElement("div", {className:"row"},
+          React.createElement("p", {className:"col-6"}, "Price: " + web3.fromWei(this.props.product.price, "ether") + " ETH"),
+          React.createElement("p", {}, "Orders Received: " + this.props.product.ordersReceived)
+        ),
+        React.createElement("div", {className:"form row col-12 mb-3"},
+        React.createElement("label", {for:"change-price-input"}, "Update the price of this product (in ETH)"),
+        React.createElement("input", {type:"number", className:"form-control", id:"change-price-input"}),
+          React.createElement("button", {className:"btn btn-primary mt-2 float-right", onClick:this.changePrice}, "Change price")
+        ),
         React.createElement("div", {className:"popup-product-ov"},
-          currentProductDetails,
+          React.createElement("div", {className:"current-product-details"},
+            React.createElement("div", {className:"row"},
+              React.createElement("p", {className:"col-6"}, "For Sale: " + (this.props.product.forSale ? "Yes" : "No")),
+              (this.props.product.forSale ?
+                React.createElement("button", {className:"btn btn-danger ml-2 mt-n2", onClick:this.delist}, "Delist")
+                : React.createElement("button", {className:"btn btn-primary ml-2 mt-n2", onClick:this.list}, "List")
+              )
+            ),
+            React.createElement("p", {}, "Description: " + this.props.product.description),
+            React.createElement("div", {className:"form row col-12 mb-3"},
+              React.createElement("label", {for:"add-description-input"}, "Update the description of this product"),
+              React.createElement("textarea", {className:"form-control", placeholder:"Product details and assurances go here!", id:"add-description-input"}),
+              React.createElement("button", {className:"btn btn-primary mt-2 float-right", onClick:this.addDescription}, "Update description")
+            )
+          ),
           React.createElement("h3", {}, "Supply chain steps:"),
           React.createElement("table", {className:"table"},
             React.createElement("tbody", {},
@@ -273,6 +266,13 @@ var ModifyProduct = React.createClass({
             )
           ),
           nextStepButton,
+          React.createElement("div", {className:"form row col-12 mb-3"},
+            React.createElement("h6", {}, "Add a supply step to this product's supply chain"),
+            React.createElement("input", {type:"text", id:"new-supply-step-instructions-input", className:"form-control", placeholder:"What do you need done when an order is received?"}),
+            React.createElement("label", {for:"change-price-input"}, "Fee you will pay for this step (in ETH)"),
+            React.createElement("input", {type:"number", id:"new-supply-step-fee-input", className:"form-control"}),
+            React.createElement("button", {className:"btn btn-primary mt-2 mb-2 float-right", onClick:this.addSupplyStep}, "Add supply step")
+          ),
           React.createElement("h3", {}, "Orders received:"),
           React.createElement("table", {className:"table"},
             React.createElement("tbody", {},
@@ -285,11 +285,7 @@ var ModifyProduct = React.createClass({
               this.state.orders.map(this.mapOrders)
             )
           ),
-          nextOrderBtn,
-          newSupplyStepForm,
-          changePriceForm,
-          changeDescriptForm,
-          changeImageUrlForm
+          nextOrderBtn
         )
       )
     );
