@@ -16,7 +16,6 @@ var OrgOverview = React.createClass({
       dilute : false,
       bestow : false,
       modifyCatalogue : false,
-      board : false,
       owners : [],
       orgFunds : 0
     }
@@ -49,7 +48,6 @@ var OrgOverview = React.createClass({
         this.setState({dilute : res[2]});
         this.setState({bestow : res[3]});
         this.setState({modifyCatalogue : res[4]});
-        this.setState({board : res[5]});
       }
     });
     this.props.autobiz.totalShares( (err, res) => {
@@ -195,7 +193,6 @@ var OrgOverview = React.createClass({
               React.createElement("option", {value:2}, "Can dilute shares"),
               React.createElement("option", {value:3}, "Can give permissions to other owners"),
               React.createElement("option", {value:4}, "Can modify and create products"),
-              React.createElement("option", {value:5}, "Is a board member")
             ),
             React.createElement("button", {className:"btn btn-primary mt-2",onClick:this.givePermission}, "Give permission")
           )

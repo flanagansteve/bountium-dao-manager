@@ -11,25 +11,54 @@ var ModifyProduct = React.createClass({
   getInitialState : function() {
     return {
       orders:[],
-      supplyChain:[]
+      supplyChain:[],
+      noMoreSteps:false,
+      noMoreOrders:false
     }
   },
 
+  componentDidMount : function() {
+    this.fetchBatchOfOrders();
+    this.fetchSupplySteps();
+  },
+
+  fetchBatchOfOrders : function() {
+    // Doing batches of 10 for now
+    for (let i = 0; i < 10; i++) {
+      if (this.state.supplyChain.length < this.props.product.ordersReceived - 1) {
+        this.anotherOrder(i)
+      } else {
+        this.setState({noMoreOrders:true});
+        return;
+      }
+    }
+  },
+
+  fetchSupplySteps : function() {
+    // If anyone has a supply chain of over 15, they're crazy
+    for (let i = 0; i < 15; i++)
+      this.anotherStep(i)
+    this.setState({noMoreSteps:true})
+  },
+
   // fetch orders in order of recency, ie, descending order
-  anotherOrder : function() {
+  anotherOrder : function(orderNum) {
+    console.log('grabbing order ' + orderNum)
     // TODO why do we have to click this twice
     var ordersArr = this.state.orders;
-    autobiz.orders(this.props.id, this.props.ordersReceived - ordersArr.length - 1, (err, res) => {
-      if (res)
+    autobiz.orders(this.props.id, orderNum, (err, res) => {
+      if (res) {
         ordersArr.push({
-          id : this.props.ordersReceived - ordersArr.length - 1,
+          id : orderNum,
           status : res[0],
           paidOut : res[1],
           customerData : res[2]
           // TODO how to represent the array of supply bounties here? a link to it maybe?
         })
+        this.setState({orders:ordersArr});
+        this.setState({noMoreOrders:this.state.orders.length >= this.props.product.ordersReceived});
+      }
     })
-    this.setState({orders:ordersArr});
   },
 
   mapOrders : function(order, key) {
@@ -53,18 +82,19 @@ var ModifyProduct = React.createClass({
   },
 
   // fetch supply step in increasing order
-  anotherStep : function() {
+  anotherStep : function(stepnum) {
     // TODO why do we have to click this twice
     var supplyChainArr = this.state.supplyChain;
-    autobiz.supplyChains(this.props.id, supplyChainArr.length, (err, res) => {
-      if (res)
+    autobiz.supplyChains(this.props.id, stepnum, (err, res) => {
+      if (res) {
         supplyChainArr.push({
-          description : "Description: " + res[0],
+          description : "" + res[0],
           incentAddress : res[1],
           fee : res[2]
         })
+        this.setState({supplyChain:supplyChainArr});
+      }
     })
-    this.setState({supplyChain:supplyChainArr});
   },
 
   mapSteps : function(step, key) {
@@ -202,14 +232,9 @@ var ModifyProduct = React.createClass({
   },
 
   render : function() {
+    // TODO let an owner see & set the configurable fields of a product
     // TODO only show several of these forms if user.canModifyCatalogue
-    var nextStepButton = React.createElement("p", {className:"all-x-displayed", id:"all-steps-received-note"}, "All steps displayed");
-    if (this.props.supplyChainLength - this.state.supplyChain.length > 0)
-      nextStepButton = React.createElement("button", {className:"btn btn-primary", onClick:this.anotherStep}, "Get next step in the supply chain");
-    var nextOrderBtn = React.createElement("p", {className:"all-x-displayed", id:"all-orders-received-note"}, "All orders displayed");
-    if (this.props.ordersReceived - this.state.orders.length > 0)
-      nextOrderBtn = React.createElement("button", {className:"btn btn-primary float-right", onClick:this.anotherOrder}, "Get next order from contract");
-    return React.createElement("div", {className:"container-fluid row"},
+    return React.createElement("div", {className:"container-fluid row", onMouseOver:(this.state.noMoreOrders ? this.fetchBatchOfOrders : null)},
       React.createElement("div", {className:"col-md-4"},
         React.createElement("img", {className:"img-thumbnail", alt:this.props.product.name, src:this.props.product.imageUrl}),
         React.createElement("div", {className:"form mb-3"},
@@ -254,27 +279,32 @@ var ModifyProduct = React.createClass({
             )
           ),
           React.createElement("h3", {}, "Supply chain steps:"),
-          React.createElement("table", {className:"table"},
+          (!this.state.noMoreSteps &&
+            React.createElement("img", {src:"/img/loading.gif"})),
+          ((this.state.noMoreSteps && this.state.supplyChain.length > 0) && React.createElement("table", {className:"table"},
             React.createElement("tbody", {},
               React.createElement("tr", {},
                 React.createElement("th", {}, "Step #"),
-                React.createElement("th", {}, "Description"),
+                React.createElement("th", {}, "Instructions"),
                 React.createElement("th", {}, "Incentiviser Address"),
                 React.createElement("th", {}, "Fee")
               ),
               this.state.supplyChain.map(this.mapSteps)
             )
-          ),
-          nextStepButton,
+          )),
+          ((this.state.noMoreSteps && this.state.supplyChain.length == 0) && React.createElement("table", {className:"table"},
+            React.createElement("p", {}, "No steps set for this product - add one via the form below")
+          )),
           React.createElement("div", {className:"form row col-12 mb-3"},
             React.createElement("h6", {}, "Add a supply step to this product's supply chain"),
-            React.createElement("input", {type:"text", id:"new-supply-step-instructions-input", className:"form-control", placeholder:"What do you need done when an order is received?"}),
+            React.createElement("label", {for:"new-supply-step-instructions-input"}, "Instructions for this step"),
+            React.createElement("textarea", {id:"new-supply-step-instructions-input", className:"form-control", placeholder:"What do you need done when an order is received? Be sure to include how a supplier should use order-specific information if necessary."}),
             React.createElement("label", {for:"change-price-input"}, "Fee you will pay for this step (in ETH)"),
             React.createElement("input", {type:"number", id:"new-supply-step-fee-input", className:"form-control"}),
             React.createElement("button", {className:"btn btn-primary mt-2 mb-2 float-right", onClick:this.addSupplyStep}, "Add supply step")
           ),
           React.createElement("h3", {}, "Orders received:"),
-          React.createElement("table", {className:"table"},
+          ((this.state.noMoreOrders && this.props.product.ordersReceived > 0) && React.createElement("table", {className:"table"},
             React.createElement("tbody", {},
               React.createElement("tr", {},
                 React.createElement("th", {}, "Order ID"),
@@ -283,9 +313,13 @@ var ModifyProduct = React.createClass({
                 React.createElement("th", {}, "Pay Suppliers")
               ),
               this.state.orders.map(this.mapOrders)
-            )
+            ))
           ),
-          nextOrderBtn
+          ((!this.state.noMoreOrders && this.props.product.ordersReceived > 0) &&
+            React.createElement("img", {src:"/img/loading.gif"})),
+          (this.props.product.ordersReceived == 0 && React.createElement("table", {className:"table"},
+            React.createElement("p", {}, "No orders received yet!")
+          ))
         )
       )
     );
