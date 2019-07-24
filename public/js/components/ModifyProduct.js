@@ -238,8 +238,8 @@ var ModifyProduct = React.createClass({
         )
       ),
       Object.keys(configObj).map((key) =>
-        React.createElement("div", {className:"row"},
-          React.createElement("div", {className:"col-6"},
+        React.createElement("div", {className:"row border"},
+          React.createElement("div", {className:"col-6 border-right"},
             React.createElement("p", {}, key),
           ),
           // Each value in the config obj should be an array of strings
