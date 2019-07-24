@@ -112,8 +112,14 @@ var CatalogueOverview = React.createClass({
   },
 
   refreshCatalogue : function() {
+    this.setState({selectedProduct : -1});
     this.setState({catalogue : []});
     this.fetchProducts();
+    this.setState({newProduct : {
+      creating : false,
+      name : "",
+      price : 0
+    }})
   },
 
   render : function() {
