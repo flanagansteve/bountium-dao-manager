@@ -12,7 +12,12 @@ var CatalogueOverview = React.createClass({
       catalogue : [],
       productsStillToFetch : productsStillToFetch,
       noMore : false,
-      selectedProduct : -1
+      selectedProduct : -1,
+      newProduct : {
+        creating : false,
+        name : "",
+        price : 0
+      }
     }
   },
 
@@ -39,8 +44,7 @@ var CatalogueOverview = React.createClass({
             forSale : res[3],
             price : res[4],
             ordersReceived : res[5],
-            supplyChainLength : res[6],
-            orderOptions : res[7]
+            orderOptions : res[6]
           });
           this.setState({catalogue:catalogue});
         }
@@ -61,6 +65,10 @@ var CatalogueOverview = React.createClass({
 
   showProductOverview : function(productId) {
     this.setState({selectedProduct : productId})
+    if (productId == -1)
+      this.setState({newProduct : {
+        creating:false
+      }})
   },
 
   mapCatalogue : function(product, key) {
@@ -84,8 +92,7 @@ var CatalogueOverview = React.createClass({
             // if tx was confirmed:
             if (res) {
               alert("Success! View your new product in the catalogue");
-              this.setState({catalogue : []})
-              this.fetchProducts()
+              this.refreshCatalogue();
             } else {
               console.error(err);
               alert("Something went wrong when trying to release your product")
@@ -96,16 +103,45 @@ var CatalogueOverview = React.createClass({
     )
   },
 
+  modNewProduct : function() {
+    this.setState({newProduct : {
+      creating : true,
+      name : document.getElementById("new-product-name").value,
+      price : Number(web3.toWei(document.getElementById("new-product-price").value, 'ether'))
+    }})
+  },
+
+  refreshCatalogue : function() {
+    this.setState({catalogue : []});
+    this.fetchProducts();
+  },
+
   render : function() {
+    if (this.state.newProduct.creating)
+      return React.createElement("div", {className:"container-fluid"},
+        React.createElement("div", {className:"jumbotron bg-light"},
+          React.createElement("h3", null, "Products and Sales"),
+          React.createElement(ModifyProduct,
+            {
+              product : this.state.newProduct,
+              autobiz : this.props.autobiz,
+              id : -1,
+              refreshCatalogue : this.refreshCatalogue,
+              cancel:() => this.showProductOverview(-1)
+            }
+          )
+        )
+      );
     if (this.state.selectedProduct != -1)
       return React.createElement("div", {className:"container-fluid"},
         React.createElement("div", {className:"jumbotron bg-light"},
           React.createElement("h3", null, "Products and Sales"),
           React.createElement(ModifyProduct,
             {
-              product:this.state.catalogue[this.state.selectedProduct],
-              autobiz:this.props.autobiz,
-              id:this.state.selectedProduct,
+              product : this.state.catalogue[this.state.selectedProduct],
+              autobiz : this.props.autobiz,
+              id : this.state.selectedProduct,
+              refreshCatalogue : this.refreshCatalogue,
               cancel:() => this.showProductOverview(-1)
             }
           )
@@ -126,6 +162,7 @@ var CatalogueOverview = React.createClass({
                   React.createElement("label", {for:"new-product-price", className:"custom-card-form-text"}, "Price your product (in ETH)"),
                   React.createElement("input", {type:"number", className:"form-control", id:"new-product-price"}),
                   React.createElement("button", {className:"btn btn-primary mt-2", onClick:this.releaseProduct}, "Deploy"),
+                  React.createElement("button", {className:"btn btn-info mt-2 ml-1", onClick:this.modNewProduct}, "Add more details"),
                   React.createElement("br", {}),
                   React.createElement("small", {className:"text-muted custom-card-form-text"}, "You can add other details once you deploy the product to your business's contract")
                 )
@@ -148,6 +185,7 @@ var CatalogueOverview = React.createClass({
                 React.createElement("label", {for:"new-product-price"}, "Price your product (in ETH)"),
                 React.createElement("input", {type:"number", className:"form-control", id:"new-product-price"}),
                 React.createElement("button", {className:"btn btn-primary mt-2", onClick:this.releaseProduct}, "Deploy"),
+                React.createElement("button", {className:"btn btn-info mt-2 ml-1", onClick:this.modNewProduct}, "Add more details"),
                 React.createElement("br", {}),
                 React.createElement("small", {className:"text-muted"}, "You can add other details once you deploy the product to your business's contract")
               )

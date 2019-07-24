@@ -9,11 +9,17 @@ var ModifyProduct = React.createClass({
 
   // TODO show users info abt assesor contracts in the supply chain
   getInitialState : function() {
+    var co = {notset:true};
+    if (this.props.product.orderOptions && this.props.product.orderOptions !== "")
+      co = JSON.parse(this.props.product.orderOptions)
     return {
-      orders:[],
-      supplyChain:[],
-      noMoreSteps:false,
-      noMoreOrders:false
+      orders : [],
+      supplyChain : [],
+      noMoreSteps : false,
+      noMoreOrders : false,
+      newConfigName : "",
+      newConfigFields : [],
+      configurableOptions : co
     }
   },
 
@@ -219,33 +225,133 @@ var ModifyProduct = React.createClass({
     });
   },
 
-  guideIncentivisers : function() {
-    // TODO make this one day suggest popular incentivsiers and let people discover
-    // some by keyword
-    alert("An incentiviser is the contract to which your business will place bounties for steps in its supply chain. The incentiviser contract is what ensures the supply chain is completed properly - so it is very important to choose carefully! If you'd like an example incentiviser contract, try this one: 0x54a93a193babd89c46ef4f12f7f550a0e1cdc95d. It will reward any response given to it :)");
+  renderConfigOptions : function(configObj) {
+    if (configObj.notset)
+      return React.createElement("p", {}, "No customisable options set yet!")
+    return React.createElement("div", {},
+      React.createElement("div", {className:"row"},
+        React.createElement("div", {className:"col-6"},
+          React.createElement("b", {}, "Option name"),
+        ),
+        React.createElement("div", {className:"col-6"},
+          React.createElement("b", {}, "Choices"),
+        )
+      ),
+      Object.keys(configObj).map((key) =>
+        React.createElement("div", {className:"row"},
+          React.createElement("div", {className:"col-6"},
+            React.createElement("p", {}, key),
+          ),
+          // Each value in the config obj should be an array of strings
+          // that represent the chooseable options
+          React.createElement("div", {className:"col-6"},
+            configObj[key].map((val) => React.createElement("p", {}, val))
+          )
+        )
+      )
+    )
   },
 
-  // TODO let a business owner configure the selectable custom options on the product
+  updateNewConfigName : function(e) {
+    this.setState({newConfigName:e.target.value})
+  },
+
+  renderNewConfigFields : function(field, key) {
+    return React.createElement("p", {key:key}, "Option ", key, ": ", field)
+  },
+
+  addNewConfigOption : function() {
+    var configFields = this.state.newConfigFields;
+    configFields.push(document.getElementById("new-config-option-input").value)
+    this.setState({newConfigFields:configFields})
+    document.getElementById("new-config-option-input").value = ""
+  },
+
+  sendNewConfig : function() {
+    var configsToSend = this.state.configurableOptions;
+    configsToSend[this.state.newConfigName] = this.state.newConfigFields;
+    autobiz.addOptions(this.props.id, JSON.stringify(configObj), (err, res) => {
+      if (err)
+        console.error(err)
+      else {
+        alert("Request to update product options is on its way");
+        var confirmMod = autobiz.ProductModified((err, res) => {
+          if (err)
+            console.error(err);
+          else
+            alert("Successfully updated product options");
+            this.props.refreshCatalogue();
+        })
+      }
+    })
+  },
 
   sendMods : function(productID) {
-    // TODO
+    /*uint product,
+      string memory name,
+      string memory description,
+      string memory imageURL,
+      bool list,
+      uint price,
+      string memory orderOptions*/
+    autobiz.setProduct(productID,
+
+    )
+  },
+
+  releaseDetailedProduct() {
+    /*string memory name,
+      string memory description,
+      string memory imageURL,
+      bool list,
+      uint price,
+      string memory orderOptions*/
+    var configObj = {};
+    configObj[this.state.newConfigName] = this.state.newConfigFields;
+    autobiz.releaseProduct(
+      this.props.product.name,
+      document.getElementById("add-description-input").value,
+      document.getElementById("add-image-url-input").value,
+      document.getElementById("immediate-listing-input").value,
+      this.props.product.price,
+      JSON.stringify(configObj),
+      (err, res) => {
+        if (err)
+          console.error(err)
+        else {
+          alert("Your product and its details are on its way to your business's smart contract! Stand by if you'd like to wait for confirmation");
+          var confirmMod = autobiz.ProductModified((err, res) => {
+            if (err)
+              console.error(err);
+            else
+              alert("Successfully released product");
+              this.props.refreshCatalogue();
+          })
+        }
+      }
+    )
   },
 
   render : function() {
+    var updateOrSet = this.props.id !== -1 ? "Update" : "Set"
     // TODO let an owner see & set the configurable fields of a product
     // TODO only show several of these forms if user.canModifyCatalogue
     return React.createElement("div", {className:"container-fluid row", onMouseOver:(this.state.noMoreOrders ? this.fetchBatchOfOrders : null)},
       React.createElement("div", {className:"col-md-4"},
-        React.createElement("img", {className:"img-thumbnail", alt:this.props.product.name, src:this.props.product.imageUrl}),
+        React.createElement("img", {className:"img-thumbnail", alt:(this.props.id !== -1 ? this.props.product.name : "No image set"), src:this.props.product.imageUrl}),
         React.createElement("div", {className:"form mb-3"},
-          React.createElement("label", {for:"add-image-url-input"}, "Update the image of this product"),
+          React.createElement("label", {for:"add-image-url-input"}, updateOrSet, " the image of this product"),
           React.createElement("input", {type:"text", className:"form-control", placeholder:"Upload it to a host like imgur or IPFS", id:"add-image-url-input"}),
-          React.createElement("button", {className:"btn btn-primary mt-2", onClick:this.addImageUrl}, "Update image url")
+          (this.props.id !== -1 &&
+          React.createElement("button", {className:"btn btn-primary mt-2", onClick:this.addImageUrl}, "Update image url"))
         ),
         React.createElement("div", {className:"col"},
-          React.createElement("div", {className:"row mt-2"},
+          (this.props.id !== -1 && React.createElement("div", {className:"row mt-2"},
             React.createElement("button", {className:"btn btn-info", onClick:() => this.sendMods(this.props.id)}, "Save Changes")
-          ),
+          )),
+          (this.props.id === -1 && React.createElement("div", {className:"row mt-2"},
+            React.createElement("button", {className:"btn btn-primary", onClick:() => this.releaseDetailedProduct()}, "Release Product")
+          )),
           React.createElement("div", {className:"row mt-2"},
             React.createElement("button", {className:"btn btn-secondary", onClick : this.props.cancel}, "Cancel")
           )
@@ -255,71 +361,114 @@ var ModifyProduct = React.createClass({
         React.createElement("h5", {}, this.props.product.name),
         React.createElement("div", {className:"row"},
           React.createElement("p", {className:"col-6"}, "Price: " + web3.fromWei(this.props.product.price, "ether") + " ETH"),
-          React.createElement("p", {}, "Orders Received: " + this.props.product.ordersReceived)
+          (this.props.id !== -1 && React.createElement("p", {}, "Orders Received: " + this.props.product.ordersReceived))
         ),
-        React.createElement("div", {className:"form row col-12 mb-3"},
-        React.createElement("label", {for:"change-price-input"}, "Update the price of this product (in ETH)"),
-        React.createElement("input", {type:"number", className:"form-control", id:"change-price-input"}),
+        (this.props.id !== -1 && React.createElement("div", {className:"form row col-12 mb-3"},
+          React.createElement("label", {for:"change-price-input"}, "Update the price of this product (in ETH)"),
+          React.createElement("input", {type:"number", className:"form-control", id:"change-price-input"}),
           React.createElement("button", {className:"btn btn-primary mt-2 float-right", onClick:this.changePrice}, "Change price")
-        ),
+        )),
         React.createElement("div", {className:"popup-product-ov"},
           React.createElement("div", {className:"current-product-details"},
-            React.createElement("div", {className:"row"},
+            (this.props.id !== -1 && React.createElement("div", {className:"row"},
               React.createElement("p", {className:"col-6"}, "For Sale: " + (this.props.product.forSale ? "Yes" : "No")),
               (this.props.product.forSale ?
                 React.createElement("button", {className:"btn btn-danger ml-2 mt-n2", onClick:this.delist}, "Delist")
                 : React.createElement("button", {className:"btn btn-primary ml-2 mt-n2", onClick:this.list}, "List")
               )
-            ),
-            React.createElement("p", {}, "Description: " + this.props.product.description),
+            )),
+            (this.props.id === -1 && React.createElement("div", {className:"row"},
+              React.createElement("div", {className:"form-group col-12"},
+                React.createElement("label", {htmlFor:"immediate-listing-input", className:""},
+                  React.createElement("input", {type:"checkbox", className:"mr-3", id:"immediate-listing-input"}),
+                  "List immediately?"
+                )
+              )
+            )),
+            (this.props.id !== -1 && React.createElement("p", {}, "Description: " + this.props.product.description)),
             React.createElement("div", {className:"form row col-12 mb-3"},
-              React.createElement("label", {for:"add-description-input"}, "Update the description of this product"),
+              React.createElement("label", {for:"add-description-input"}, updateOrSet, " the description of this product"),
               React.createElement("textarea", {className:"form-control", placeholder:"Product details and assurances go here!", id:"add-description-input"}),
-              React.createElement("button", {className:"btn btn-primary mt-2 float-right", onClick:this.addDescription}, "Update description")
+              (this.props.id !== -1 &&
+              React.createElement("button", {className:"btn btn-primary mt-2 float-right", onClick:this.addDescription}, "Update description"))
             )
           ),
-          React.createElement("h3", {}, "Supply chain steps:"),
-          (!this.state.noMoreSteps &&
-            React.createElement("img", {src:"/img/loading.gif"})),
-          ((this.state.noMoreSteps && this.state.supplyChain.length > 0) && React.createElement("table", {className:"table"},
-            React.createElement("tbody", {},
-              React.createElement("tr", {},
-                React.createElement("th", {}, "Step #"),
-                React.createElement("th", {}, "Instructions"),
-                React.createElement("th", {}, "Incentiviser Address"),
-                React.createElement("th", {}, "Fee")
-              ),
-              this.state.supplyChain.map(this.mapSteps)
-            )
-          )),
-          ((this.state.noMoreSteps && this.state.supplyChain.length == 0) && React.createElement("table", {className:"table"},
-            React.createElement("p", {}, "No steps set for this product - add one via the form below")
-          )),
-          React.createElement("div", {className:"form row col-12 mb-3"},
-            React.createElement("h6", {}, "Add a supply step to this product's supply chain"),
-            React.createElement("label", {for:"new-supply-step-instructions-input"}, "Instructions for this step"),
-            React.createElement("textarea", {id:"new-supply-step-instructions-input", className:"form-control", placeholder:"What do you need done when an order is received? Be sure to include how a supplier should use order-specific information if necessary."}),
-            React.createElement("label", {for:"change-price-input"}, "Fee you will pay for this step (in ETH)"),
-            React.createElement("input", {type:"number", id:"new-supply-step-fee-input", className:"form-control"}),
-            React.createElement("button", {className:"btn btn-primary mt-2 mb-2 float-right", onClick:this.addSupplyStep}, "Add supply step")
-          ),
-          React.createElement("h3", {}, "Orders received:"),
-          ((this.state.noMoreOrders && this.props.product.ordersReceived > 0) && React.createElement("table", {className:"table"},
-            React.createElement("tbody", {},
-              React.createElement("tr", {},
-                React.createElement("th", {}, "Order ID"),
-                React.createElement("th", {}, "Customer Data"),
-                React.createElement("th", {}, "Completed?"),
-                React.createElement("th", {}, "Pay Suppliers")
-              ),
-              this.state.orders.map(this.mapOrders)
+          React.createElement("div", {className:"col-12 mb-3"},
+            React.createElement("h3", {className:"row"}, "Customer Inputs"),
+            (this.props.id !== -1 && React.createElement("div", {},
+              React.createElement("small", {className:"text-muted row"}, "The options a customer can select to customise their order, such as size"),
+              this.renderConfigOptions(this.state.configurableOptions))),
+            (this.props.id === -1 && React.createElement("div", {},
+              React.createElement("small", {className:"text-muted row"}, "Give customers an option they can select to customise their order, such as size"),
+              React.createElement("small", {className:"text-muted row"}, "You can add other ones once you release the product")
             ))
           ),
-          ((!this.state.noMoreOrders && this.props.product.ordersReceived > 0) &&
-            React.createElement("img", {src:"/img/loading.gif"})),
-          (this.props.product.ordersReceived == 0 && React.createElement("table", {className:"table"},
-            React.createElement("p", {}, "No orders received yet!")
-          ))
+          React.createElement("div", {className:"mb-3"},
+            React.createElement("h6", {className:""}, "Add a configurable option"),
+            React.createElement("div", {className:"form-group"},
+              React.createElement("label", {for:"new-config-name"}, "Name of the option"),
+              React.createElement("input", {type:"text", id:"new-config-name", placeholder:"E.g. size", className:"form-control", value:this.state.newConfigName, onChange:this.updateNewConfigName}),
+            ),
+            React.createElement("div", {className:"", id:"key-val-input"},
+              (this.state.newConfigFields.length > 0 && this.state.newConfigFields.map(this.renderNewConfigFields)),
+              (this.state.newConfigFields.length == 0 && React.createElement("label", {}, "Add the available options below")),
+              React.createElement("div", {className:"form-group"},
+                React.createElement("input", {type:"text", id:"new-config-option-input", className:"form-control", placeholder:"E.g. Women's Small"}),
+                React.createElement("button", {onClick:this.addNewConfigOption, className:"btn btn-info mt-2"}, "Add Option")
+              )
+      			),
+            (this.props.id !== -1 &&
+            React.createElement("button", {onClick:this.sendNewConfig, className:"btn btn-primary"}, "Send Configuration")),
+          ),
+          (this.props.id !== -1 && React.createElement("div", {},
+            React.createElement("h3", {}, "Supply chain steps"),
+            (!this.state.noMoreSteps &&
+              React.createElement("img", {src:"/img/loading.gif"})),
+            ((this.state.noMoreSteps && this.state.supplyChain.length > 0) && React.createElement("table", {className:"table"},
+              React.createElement("tbody", {},
+                React.createElement("tr", {},
+                  React.createElement("th", {}, "Step #"),
+                  React.createElement("th", {}, "Instructions"),
+                  React.createElement("th", {}, "Incentiviser Address"),
+                  React.createElement("th", {}, "Fee")
+                ),
+                this.state.supplyChain.map(this.mapSteps)
+              )
+            )),
+            ((this.state.noMoreSteps && this.state.supplyChain.length == 0) && React.createElement("table", {className:"table"},
+              React.createElement("tbody", {},
+                React.createElement("p", {}, "No steps set for this product - add one via the form below")
+              )
+            )),
+            React.createElement("div", {className:"mb-3"},
+              React.createElement("h6", {}, "Add a supply step to this product's supply chain"),
+              React.createElement("label", {for:"new-supply-step-instructions-input"}, "Instructions for this step"),
+              React.createElement("textarea", {id:"new-supply-step-instructions-input", className:"form-control", placeholder:"What do you need done when an order is received? Be sure to include how a supplier should use order-specific information if necessary."}),
+              React.createElement("label", {for:"change-price-input"}, "Fee you will pay for this step (in ETH)"),
+              React.createElement("input", {type:"number", id:"new-supply-step-fee-input", className:"form-control"}),
+              React.createElement("button", {className:"btn btn-primary mt-2 mb-2 float-right", onClick:this.addSupplyStep}, "Add supply step")
+            ),
+            React.createElement("h3", {}, "Orders received"),
+            ((this.state.noMoreOrders && this.props.product.ordersReceived > 0) && React.createElement("table", {className:"table"},
+              React.createElement("tbody", {},
+                React.createElement("tr", {},
+                  React.createElement("th", {}, "Order ID"),
+                  React.createElement("th", {}, "Customer Data"),
+                  React.createElement("th", {}, "Completed?"),
+                  React.createElement("th", {}, "Pay Suppliers")
+                ),
+                this.state.orders.map(this.mapOrders)
+              ))
+            ),
+            ((!this.state.noMoreOrders && this.props.product.ordersReceived > 0) &&
+              React.createElement("img", {src:"/img/loading.gif"})),
+            (this.props.product.ordersReceived == 0 && React.createElement("table", {className:"table"},
+              React.createElement("tbody", {},
+                React.createElement("p", {}, "No orders received yet!")
+              )
+            ))
+          )),
+          (this.props.id === -1 && React.createElement("p", {}, "Once your product is released, you'll be able to see details like orders received and supply chain configurations here"))
         )
       )
     );
