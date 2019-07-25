@@ -49,8 +49,6 @@ var ModifyProduct = React.createClass({
 
   // fetch orders in order of recency, ie, descending order
   anotherOrder : function(orderNum) {
-    console.log('grabbing order ' + orderNum)
-    // TODO why do we have to click this twice
     var ordersArr = this.state.orders;
     autobiz.orders(this.props.id, orderNum, (err, res) => {
       if (res) {

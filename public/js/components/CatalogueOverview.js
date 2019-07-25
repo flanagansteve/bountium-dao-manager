@@ -80,7 +80,11 @@ var CatalogueOverview = React.createClass({
   releaseProduct : function() {
     this.props.autobiz.releaseProduct(
       document.getElementById("new-product-name").value,
+      "No description set",
+      "https://www.digitalcitizen.life/sites/default/files/styles/lst_small/public/featured/2016-08/photo_gallery.jpg",
+      false,
       Number(web3.toWei(document.getElementById("new-product-price").value, 'ether')),
+      "",
       (err, res) => {
         if (err)
           console.error(err)
