@@ -159,18 +159,21 @@ var Dashboard = React.createClass({
   render : function() {
     var managerNavbar = React.createElement("div", {},
         React.createElement("ul", {className:"nav navbar"},
-          React.createElement("li", {className:"nav-item display-4 col-3" + (this.state.viewingOrg ? " border-bottom" : ""), onClick:this.viewOrg},
+          React.createElement("li", {className:"nav-item display-4 col-4" + (this.state.viewingOrg ? " border-bottom" : ""), onClick:this.viewOrg},
             React.createElement("h4", {className:"text-center"}, "Organisation")
           ),
-          React.createElement("li", {className:"nav-item display-4 col-3" + (this.state.viewingProducts ? " border-bottom" : ""), onClick:this.viewProducts},
+          React.createElement("li", {className:"nav-item display-4 col-4" + (this.state.viewingProducts ? " border-bottom" : ""), onClick:this.viewProducts},
             React.createElement("h4", {className:"text-center"}, "Products")
           ),
-          React.createElement("li", {className:"nav-item display-4 col-3" + (this.state.viewingOps ? " border-bottom" : ""), onClick:this.viewOps},
+          React.createElement("li", {className:"nav-item display-4 col-4" + (this.state.viewingOps ? " border-bottom" : ""), onClick:this.viewOps},
             React.createElement("h4", {className:"text-center"}, "Operations")
-          ),
+          )
+          /* Deprecating collaboration tab:
+          ,
           React.createElement("li", {className:"nav-item display-4 col-3" + (this.state.viewingChat ? " border-bottom" : ""), onClick:this.viewChat},
             React.createElement("h4", {className:"text-center"}, "Collaboration")
           )
+          */
         )
       )
     return React.createElement("div", {className:"container-fluid"},
