@@ -217,4 +217,7 @@ window.alert = function(text) {
     ),
     document.getElementById("workflow-container")
   );
+  setTimeout(function(){
+    document.getElementById("to-dismiss").remove()
+  }, 5000)
 }
