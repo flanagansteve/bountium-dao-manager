@@ -201,7 +201,11 @@ function renderNotOwnerError() {
 // Override alert function to use _B_ootstrap
 window.alert = function(text) {
   ReactDOM.render(
-    React.createElement("div", {className:"alert alert-warning alert-dismissible fixed-top zindex-popover", role:"alert", id:"to-dismiss"},
+    React.createElement("div", {
+      className:"alert alert-warning alert-dismissible fixed-top zindex-popover",
+      role:"alert",
+      id:"to-dismiss",
+      onClick:function() { document.getElementById("to-dismiss").remove() }},
       text,
       React.createElement("button", {
         type:"button",
