@@ -1,12 +1,13 @@
-image: alpine:latest
+image: node:10
 
 pages:
   stage: deploy
   script:
-  - echo 'Nothing to do...'
+  - npm install
+  - npm run generate
+  - mv ./dist public
   artifacts:
     paths:
     - public
   only:
   - master
-
