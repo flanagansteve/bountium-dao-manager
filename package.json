@@ -1,0 +1,46 @@
+{
+  "name": "bountium-admin",
+  "version": "1.0.0",
+  "description": "My first-class Nuxt.js project",
+  "author": "Kincaid O&#39;Neil",
+  "private": true,
+  "scripts": {
+    "lint": "eslint --ext .js,.vue --ignore-path .gitignore .",
+    "dev": "nuxt",
+    "build": "nuxt build",
+    "start": "nuxt start",
+    "generate": "nuxt generate"
+  },
+  "lint-staged": {
+    "*.{js,vue}": "npm run lint"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "dependencies": {
+    "@ethersproject/address": "^5.0.0-beta.127",
+    "@ethersproject/contracts": "^5.0.0-beta.136",
+    "@ethersproject/providers": "^5.0.0-beta.138",
+    "@ethersproject/units": "^5.0.0-beta.126",
+    "ant-design-vue": "^1.1.10",
+    "axios": "^0.19.0",
+    "nuxt": "^2.0.0"
+  },
+  "devDependencies": {
+    "@nuxtjs/eslint-config": "^1.0.1",
+    "@nuxtjs/eslint-module": "^0.2.1",
+    "babel-eslint": "^10.0.1",
+    "eslint": "^5.15.1",
+    "eslint-config-prettier": "^4.1.0",
+    "eslint-plugin-nuxt": ">=0.4.2",
+    "eslint-plugin-prettier": "^3.0.1",
+    "husky": "^2.6.0",
+    "less": "^3.9.0",
+    "less-loader": "^5.0.0",
+    "lint-staged": "^8.2.1",
+    "nodemon": "^1.18.9",
+    "prettier": "^1.16.4"
+  }
+}
