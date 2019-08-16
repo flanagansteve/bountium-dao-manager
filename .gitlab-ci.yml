@@ -1,16 +1,11 @@
 image: node:10
 
-before_script:
-  - npm install
-
-cache:
-  paths:
-    - node_modules/
-
 pages:
   stage: deploy
   script:
+  - npm install
   - npm run generate
+  - mv ./dist public
   artifacts:
     paths:
     - public
