@@ -1,0 +1,16 @@
+.navbar-img {
+  max-height: 50px;
+}
+
+.link-unstyled, .link-unstyled:link, .link-unstyled:hover {
+  color: inherit;
+  text-decoration: inherit;
+}
+
+.custom-card-form-text {
+  font-size: 15px;
+}
+
+.overflow-auto {
+  overflow-x: hidden !important;
+}
