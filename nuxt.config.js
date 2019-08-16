@@ -1,7 +1,14 @@
+const { CI_PAGES_URL } = process.env
+const base = CI_PAGES_URL && new URL(CI_PAGES_URL).pathname
+
 export default {
   mode: 'spa',
   router: {
-    middleware: 'rate'
+    middleware: 'rate',
+    base
+  },
+  generate: {
+    dir: 'public'
   },
   /*
    ** Headers of the page
