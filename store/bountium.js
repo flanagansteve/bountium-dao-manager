@@ -30,15 +30,17 @@ export const mutations = {
       location.reload()
     })
 
+    const provider = new Web3Provider(window.ethereum)
+
     /**
      * Without Object.freeze, throws a "Maximum callstack size exceeded" error (!?)
      * Possibly to do with Vue's change detection adding the deep getters/setters to window.ethereum (!?)
      */
-    state.account = Object.freeze({
-      ethersProvider: new Web3Provider(window.ethereum),
+    state.account = {
+      ethersProvider: () => provider,
       ethereumAddress: window.ethereum.selectedAddress,
       chainId
-    })
+    }
   },
   SET_BUSINESS_CONTRACT(state, { contract, name, privileges }) {
     state.business = Object.freeze({
@@ -86,7 +88,7 @@ export const actions = {
       return receipt
     } catch (err) {
       commit('REMOVE_PENDING_TRANSACTION')
-      throw new Error('Transaction failed')
+      throw err
     }
   },
   async fetchExchangeRate({ commit }) {

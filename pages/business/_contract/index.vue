@@ -179,12 +179,7 @@ export default {
           return {
             ownerAddress,
             percentOwner:
-              Math.floor(
-                stakeholder.stake
-                  .div(totalShares)
-                  .mul(100)
-                  .toNumber()
-              ) + '%',
+              ((+stakeholder.stake / +totalShares) * 100).toFixed(2) + '%',
             callsDividend: stakeholder.callsDividend,
             canDilute: stakeholder.canDilute,
             canBestow: stakeholder.canBestow,

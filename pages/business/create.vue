@@ -35,7 +35,9 @@ export default {
   },
   methods: {
     async createBusiness() {
-      const signer = this.$store.state.bountium.account.ethersProvider.getSigner()
+      const signer = this.$store.state.bountium.account
+        .ethersProvider()
+        .getSigner()
       const factory = new ContractFactory(AutoBiz.abi, AutoBiz.bytecode, signer)
 
       try {

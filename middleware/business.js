@@ -11,11 +11,13 @@ export default async function({ route, store, redirect }) {
     return redirect(302, '/business/lookup')
   }
 
-  const signer = store.state.bountium.account.ethersProvider.getUncheckedSigner()
+  const signer = store.state.bountium.account
+    .ethersProvider()
+    .getUncheckedSigner()
   const contract = new Contract(
     contractAddress,
     AutoBiz.abi,
-    store.state.bountium.account.ethersProvider
+    store.state.bountium.account.ethersProvider()
   )
   const contractWithSigner = contract.connect(signer)
 
