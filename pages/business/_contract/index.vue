@@ -33,6 +33,7 @@
                   <a-icon type="edit" />
                 </a-tooltip>
               </nuxt-link>
+              <!-- TODO this -->
               <!-- <nuxt-link to="supply" append> -->
               <a-tooltip>
                 <template slot="title">
@@ -55,38 +56,6 @@
         :data-source="stakeholders"
         :pagination="false"
       />
-      <!-- <a-divider /> -->
-      <!-- TODO All of this permissions should be conditionally shown based on the privileges of the user -->
-      <!-- <h2>Operations</h2>
-      <nuxt-link to="transfer" append>
-        <a-button size="large" type="primary" class="cta__lookup-button">
-          <a-icon type="swap" />Transfer shares
-        </a-button>
-      </nuxt-link>
-      <a-divider type="vertical" />
-      <nuxt-link to="dilute" append>
-        <a-button size="large" type="primary" class="cta__lookup-button">
-          <a-icon type="pie-chart" />Dilute shares
-        </a-button>
-      </nuxt-link>
-      <a-divider type="vertical" />
-      <nuxt-link to="privileges" append>
-        <a-button size="large" type="primary" class="cta__lookup-button">
-          <a-icon type="team" />Set privileges
-        </a-button>
-      </nuxt-link>
-      <a-divider type="vertical" />
-      <nuxt-link to="dividends" append>
-        <a-button size="large" type="primary" class="cta__lookup-button">
-          <a-icon type="stock" />Distribute dividends
-        </a-button>
-      </nuxt-link>
-      <a-divider type="vertical" />
-      <nuxt-link to="fund" append>
-        <a-button size="large" type="primary" class="cta__lookup-button">
-          <a-icon type="login" />Fund business
-        </a-button>
-      </nuxt-link> -->
     </section>
     <a-spin v-else size="large" />
   </main-content>
@@ -239,8 +208,6 @@ export default {
 .image-preview {
   width: 100%;
   height: 100%;
-  // background-image: url('http://placehold.jp/120x120.png');
-  // overflow: hidden;
   background: lightgray;
 
   &:before {
