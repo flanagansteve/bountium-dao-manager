@@ -92,9 +92,7 @@ export default {
           customRender: (ethereumAddress) => (
             <span>
               <ethereum-address address={ethereumAddress} concat={true} />
-              {isLocalAddress(ethereumAddress) && (
-                <span>&ensp;(logged in)</span>
-              )}
+              {isLocalAddress(ethereumAddress) && <span>&ensp;(you)</span>}
             </span>
           )
         },
