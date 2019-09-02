@@ -1,83 +1,89 @@
 <template>
-  <section style="max-width: 500px">
-    <label>Name of product</label>
-    <a-input v-model="product.name" class="field" placeholder="White T-Shirt" />
-    <label>Price in ETH</label>
-    <div>
-      <!-- TODO Move "styles" to actual styles -->
-      <a-input-number
-        v-model="price"
+  <main class="product">
+    <section class="product__details">
+      <label>Name of product</label>
+      <a-input
+        v-model="product.name"
         class="field"
-        style="width: 200px"
-        placeholder="0.12"
+        placeholder="White T-Shirt"
       />
-      <span v-if="priceUsd" style="margin-left: 10px">${{ priceUsd }}</span>
-    </div>
-    <label>Description</label>
-    <a-textarea
-      v-model="product.description"
-      :rows="2"
-      class="field"
-      style="resize: none"
-      placeholder="Stretch cotton. Lightweight feel."
-    />
-    <label>Image URL</label>
-    <a-input
-      v-model="product.imageUrl"
-      type="url"
-      placeholder="http://placehold.jp/150x150.png"
-      class="field"
-    />
-    <!-- TODO Add image preview -->
-    <!-- <img :src="imageUrl" class="image-preview" /> -->
-    <label>For sale</label>
-    <div>
-      <a-switch v-model="product.forSale" class="field" />
-    </div>
-    <label>Options</label>
-    <p style="font-size: 9pt; margin: 0">
-      Format using key-value pairs, such as "size: small".
-    </p>
-    <div class="field">
-      <template v-for="tag in tags">
-        <a-tooltip v-if="tag.length > 20" :key="tag" :title="tag">
+      <label>Price in ETH</label>
+      <div>
+        <!-- TODO Move "styles" to actual styles -->
+        <a-input-number
+          v-model="price"
+          class="field"
+          style="width: 200px"
+          placeholder="0.12"
+        />
+        <span v-if="priceUsd" style="margin-left: 10px">${{ priceUsd }}</span>
+      </div>
+      <label>Description</label>
+      <a-textarea
+        v-model="product.description"
+        :rows="2"
+        class="field"
+        style="resize: none"
+        placeholder="Stretch cotton. Lightweight feel."
+      />
+      <label>Image URL</label>
+      <a-input
+        v-model="product.imageUrl"
+        type="url"
+        placeholder="http://placehold.jp/150x150.png"
+        class="field"
+      />
+      <!-- TODO Add image preview -->
+      <!-- <img :src="imageUrl" class="image-preview" /> -->
+      <label>For sale</label>
+      <div>
+        <a-switch v-model="product.forSale" class="field" />
+      </div>
+      <label>Options</label>
+      <div class="field">
+        <template v-for="tag in tags">
+          <a-tooltip v-if="tag.length > 20" :key="tag" :title="tag">
+            <a-tag
+              :key="tag"
+              :closable="true"
+              :after-close="() => removeTag(tag)"
+            >
+              {{ `${tag.slice(0, 20)}...` }}
+            </a-tag>
+          </a-tooltip>
           <a-tag
+            v-else
             :key="tag"
             :closable="true"
             :after-close="() => removeTag(tag)"
           >
-            {{ `${tag.slice(0, 20)}...` }}
+            {{ tag }}
           </a-tag>
-        </a-tooltip>
+        </template>
+        <a-input
+          v-if="tagInput.visible"
+          ref="input"
+          type="text"
+          size="small"
+          :style="{ width: '78px' }"
+          :value="tagInput.value"
+          @change="updateTagInput"
+          @blur="addNewTag"
+          @keyup.enter="addNewTag"
+        />
         <a-tag
           v-else
-          :key="tag"
-          :closable="true"
-          :after-close="() => removeTag(tag)"
+          style="background: #fff; borderStyle: dashed;"
+          @click="showTagInput"
         >
-          {{ tag }}
+          <a-icon type="plus" /> New SKU
         </a-tag>
-      </template>
-      <a-input
-        v-if="tagInput.visible"
-        ref="input"
-        type="text"
-        size="small"
-        :style="{ width: '78px' }"
-        :value="tagInput.value"
-        @change="updateTagInput"
-        @blur="addNewTag"
-        @keyup.enter="addNewTag"
-      />
-      <a-tag
-        v-else
-        style="background: #fff; borderStyle: dashed;"
-        @click="showTagInput"
-      >
-        <a-icon type="plus" /> New SKU
-      </a-tag>
-    </div>
-  </section>
+      </div>
+    </section>
+    <section class="product__image-thumbnail">
+      <img :src="product.imageUrl" class="product__image-thumbnail__img" />
+    </section>
+  </main>
 </template>
 
 <script>
@@ -210,15 +216,32 @@ export default {
   margin: 5px 0 15px 0;
 }
 
-.image-preview {
-  width: 120px;
-  height: 120px;
-  background-image: url('http://placehold.jp/120x120.png');
-  overflow: hidden;
+.product {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: flex-start;
+  align-items: flex-start;
 
-  &:before {
-    content: ' ';
-    font-size: 1000px;
+  &__image-thumbnail {
+    width: 160px;
+    height: 160px;
+    margin-left: 40px;
+    flex: 0 1;
+
+    &__img {
+      height: 100%;
+      overflow: hidden;
+
+      &:before {
+        content: ' ';
+        font-size: 1000px;
+      }
+    }
+  }
+
+  &__details {
+    max-width: 500px;
+    flex: 1 0;
   }
 }
 </style>
