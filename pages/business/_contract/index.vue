@@ -23,25 +23,6 @@
               :src="product.imageUrl"
               class="image-preview"
             />
-            <template slot="actions" class="ant-card-actions">
-              <nuxt-link :to="`products/${product.productId}`" append>
-                <a-tooltip>
-                  <template slot="title">
-                    Edit product
-                  </template>
-                  <a-icon type="edit" />
-                </a-tooltip>
-              </nuxt-link>
-              <!-- TODO this -->
-              <!-- <nuxt-link to="supply" append> -->
-              <a-tooltip>
-                <template slot="title">
-                  Add supply steps
-                </template>
-                <a-icon type="global" />
-              </a-tooltip>
-              <!-- </nuxt-link> -->
-            </template>
             <a-card-meta :title="product.name" :description="product.price" />
           </a-card>
         </nuxt-link>
