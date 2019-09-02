@@ -7,7 +7,6 @@
           <a-icon type="plus-circle" />Add Product
         </a-button>
       </nuxt-link>
-      <!-- TODO Add new product card -->
       <section class="product-container">
         <nuxt-link
           v-for="product in products"

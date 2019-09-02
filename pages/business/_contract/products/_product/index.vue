@@ -3,7 +3,12 @@
        conditionally display metamask info if there's an account & business? -->
   <main-content :title="$store.state.bountium.business.name">
     <section v-if="product && orders && supplySteps">
-      <h2>Manage prdouct</h2>
+      <h2>Manage product</h2>
+      <a :href="twitterLink" target="_blank">
+        <a-button icon="twitter">
+          Share Product
+        </a-button>
+      </a>
       <a-divider />
       <h3>Product details</h3>
       <edit-product :product="product" />
@@ -98,6 +103,15 @@ export default {
           dataIndex: 'fee'
         }
       ]
+    }
+  },
+  computed: {
+    twitterLink() {
+      const storefrontUrl = `https://shop.bountium.org/?${this.$store.state.bountium.business.contract.address}/`
+      const tweetContent = `Check out our new product, ${this.product.name}! ${storefrontUrl} @bountium`
+      return `https://twitter.com/intent/tweet?text=${encodeURIComponent(
+        tweetContent
+      )}`
     }
   },
   async created() {
