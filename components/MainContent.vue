@@ -58,7 +58,7 @@ export default {
     },
     storefrontUrl() {
       const contract = this.$store.state.bountium.business.contract
-      return contract ? `https://shop.bountium.org/${contract.address}` : null
+      return contract ? `https://shop.bountium.org/?${contract.address}` : null
     }
   }
 }
