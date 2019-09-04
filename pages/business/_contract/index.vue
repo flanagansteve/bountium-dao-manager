@@ -1,6 +1,6 @@
 <template>
   <main-content :title="$store.state.bountium.business.name">
-    <section v-if="stakeholders">
+    <section v-if="stakeholders && orders && products">
       <h2>Products</h2>
       <nuxt-link to="products/new" append>
         <a-button size="large" type="primary" style="margin: 0 0 20px 0">
@@ -27,7 +27,36 @@
           </a-card>
         </nuxt-link>
       </section>
-      <!-- TODO List all products card -->
+      <section class="orders-container">
+        <h2>Orders</h2>
+        <a-table
+          bordered
+          :columns="orderColumns"
+          :row-key="(record) => record.id"
+          :data-source="orders"
+          :pagination="false"
+          class="orders-table"
+        >
+          <template slot="product-link" slot-scope="productId">
+            <nuxt-link
+              :to="{
+                path: `products/${productId}`,
+                append: true
+              }"
+              >{{
+                products.find((details) => details.productId === productId).name
+              }}</nuxt-link
+            >
+          </template>
+          <template slot="order-info" slot-scope="orderInfo">
+            <ul>
+              <li v-for="(val, key) in orderInfo" :key="key">
+                {{ key }}: {{ val }}
+              </li>
+            </ul>
+          </template>
+        </a-table>
+      </section>
       <h2>Stakeholders</h2>
       <a-table
         bordered
@@ -105,18 +134,59 @@ export default {
             }
           ]
         }
+      ],
+      orders: null,
+      orderColumns: [
+        {
+          title: 'Product',
+          dataIndex: 'productId',
+          scopedSlots: {
+            customRender: 'product-link'
+          }
+        },
+        {
+          title: 'Order ID',
+          dataIndex: 'index'
+        },
+        {
+          title: 'Order info',
+          dataIndex: 'orderInfo',
+          scopedSlots: {
+            customRender: 'order-info'
+          }
+        },
+        {
+          title: 'Completed',
+          dataIndex: 'complete',
+          customRender: renderBool
+        },
+        {
+          title: 'Paid suppliers',
+          dataIndex: 'suppliersPaid',
+          customRender: renderBool
+        }
       ]
     }
   },
   async created() {
-    await Promise.all([this.fetchStakeholders(), this.fetchProducts()])
+    const products = this.fetchProducts()
+    const stakeholders = this.fetchStakeholders()
+
+    this.products = await products
+    this.stakeholders = await stakeholders
+
+    /**
+     * Must wait until products are loaded first, list length cannot
+     * be determined unless contract exposes getter function
+     */
+    this.orders = await this.fetchOrders()
   },
   methods: {
     async fetchStakeholders() {
       const totalShares = await this.$store.state.bountium.business.contract.functions.totalShares()
 
       const ownerAddresses = await this.fetchNextOwner()
-      const stakeholders = await Promise.all(
+      return Promise.all(
         ownerAddresses.map(async (ownerAddress) => {
           const stakeholder = await this.$store.state.bountium.business.contract.functions.owners(
             ownerAddress
@@ -134,11 +204,21 @@ export default {
           }
         })
       )
-
-      this.stakeholders = stakeholders
     },
-    async fetchProducts() {
-      this.products = await this.fetchNextProduct().then((products) =>
+    fetchNextOwner(n = 0) {
+      return this.$store.state.bountium.business.contract.functions
+        .ownersRegistered(n)
+        .then(async (ownerAddress) => [
+          ownerAddress,
+          ...(await this.fetchNextOwner(n + 1))
+        ])
+        .catch((err) => {
+          console.log('Reached end of list:', err)
+          return []
+        })
+    },
+    fetchProducts() {
+      return this.fetchNextProduct().then((products) =>
         products.map((product, index) => {
           const price = +formatEther(product.price)
           const rate = this.$store.state.bountium.exchangeRate
@@ -153,19 +233,6 @@ export default {
         })
       )
     },
-    // TODO Abstrac these functions?
-    fetchNextOwner(n = 0) {
-      return this.$store.state.bountium.business.contract.functions
-        .ownersRegistered(n)
-        .then(async (ownerAddress) => [
-          ownerAddress,
-          ...(await this.fetchNextOwner(n + 1))
-        ])
-        .catch((err) => {
-          console.log('Reached end of list:', err)
-          return []
-        })
-    },
     fetchNextProduct(n = 0) {
       return this.$store.state.bountium.business.contract.functions
         .catalogue(n)
@@ -177,6 +244,35 @@ export default {
           console.log('Reached end of list:', err)
           return []
         })
+    },
+    async fetchOrders() {
+      const orders = await Promise.all(
+        this.products.map((product) => this.fetchNextOrder(product.productId))
+      )
+
+      return orders.flat() // Flatten the nested arrays
+    },
+    fetchNextOrder(productId, n = 0) {
+      return this.$store.state.bountium.business.contract.functions
+        .orders(productId, n)
+        .then(async (order) => [
+          {
+            id: this.generateOrderId(productId, n), // Unique ID for lists
+            productId,
+            index: n,
+            complete: order.complete, // boolean
+            suppliersPaid: order.suppliersPaid, // boolean
+            orderInfo: JSON.parse(order.orderInfo) // Stringified JSON as key-value pairs
+          },
+          ...(await this.fetchNextOrder(productId, n + 1))
+        ])
+        .catch((err) => {
+          console.log('Loading orders, reached end of list:', err)
+          return []
+        })
+    },
+    generateOrderId(productId, index) {
+      return `productId:${productId}:orderIndex${index}`
     }
   }
 }
@@ -202,5 +298,9 @@ export default {
 
 .product {
   margin: 0 30px 30px 0;
+}
+
+.orders-container {
+  margin: 0 0 30px 0;
 }
 </style>
