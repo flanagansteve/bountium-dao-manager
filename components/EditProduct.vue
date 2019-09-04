@@ -33,15 +33,39 @@
         placeholder="http://placehold.jp/150x150.png"
         class="field"
       />
-      <!-- TODO Add image preview -->
-      <!-- <img :src="imageUrl" class="image-preview" /> -->
       <label>For sale</label>
       <div>
         <a-switch v-model="product.forSale" class="field" />
       </div>
+      <!-- TODO This is not currently working -->
       <label>Options</label>
       <div class="field">
-        <template v-for="tag in tags">
+        <div v-for="(options, tagName) in tags" :key="tagName">
+          {{ tagName }}
+          <a-tag
+            v-for="option in options"
+            :key="option"
+            :closable="true"
+            :after-close="() => removeTag(tag)"
+            >{{ option }}</a-tag
+          >
+          <a-tag
+            style="background: #fff; borderStyle: dashed;"
+            @click="showTagInput"
+          >
+            <a-icon type="plus" /> New SKU
+          </a-tag>
+        </div>
+        <!-- <a-table
+          :columns="optionsColumns"
+          :row-key="(tag) => tag.option"
+          :data-source="tags"
+          :pagination="false"
+          bordered
+        > -->
+        <!-- <template slot-scope="values" name="tags"> </template> -->
+        <!-- </a-table> -->
+        <!-- <template v-for="tag in tags">
           <a-tooltip v-if="tag.length > 20" :key="tag" :title="tag">
             <a-tag
               :key="tag"
@@ -77,7 +101,7 @@
           @click="showTagInput"
         >
           <a-icon type="plus" /> New SKU
-        </a-tag>
+        </a-tag> -->
       </div>
     </section>
     <section class="product__image-thumbnail">
@@ -109,7 +133,7 @@ export default {
   data() {
     return {
       price: null, // Price in ETH
-      tags: [],
+      tags: {},
       tagInput: {
         visible: false,
         value: ''
@@ -135,34 +159,15 @@ export default {
       }
     },
     tags() {
-      const options = this.tags
-        // Create array of tuples for each key-value pair
-        .map((tag) => tag.split(': '))
-        // Create object { key1: [val1, val2, ...], ... }
-        .reduce(
-          (obj, [key, val]) => ({
-            ...obj,
-            [key]: obj[key] ? [...obj[key], val] : [val]
-          }),
-          {}
-        )
-
-      this.product.options = JSON.stringify(options)
+      this.product.options = JSON.stringify(this.tags)
     }
   },
   created() {
-    const tags = []
     try {
-      const options = JSON.parse(this.product.options)
-      for (const key in options) {
-        for (const val of options[key]) {
-          tags.push(`${key}: ${val}`)
-        }
-      }
+      this.tags = JSON.parse(this.product.options)
     } catch (err) {
       console.error('Error parsing product options:', err)
     }
-    this.tags = tags
 
     this.price = this.product.priceWei
       ? formatEther(this.product.priceWei)
