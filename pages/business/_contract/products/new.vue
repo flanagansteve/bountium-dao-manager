@@ -62,7 +62,7 @@ export default {
         )
 
         this.$notification.success({
-          message: 'Successfully released new product'
+          message: 'Released new product 🎉 Next, add a supply step!'
         })
 
         const productId = receipt.events
