@@ -2,6 +2,10 @@
   <!-- TODO Should this 'main-content' component be in the default layout, and just
        conditionally display metamask info if there's an account & business? -->
   <main-content :title="$store.state.bountium.business.name">
+    <add-supply-step
+      :visible="showAddSupplyStep"
+      @hide-supply-step="showAddSupplyStep = false"
+    />
     <section v-if="product && orders && supplySteps">
       <h2>Manage product</h2>
       <a :href="twitterLink" target="_blank">
@@ -23,14 +27,24 @@
         :row-key="(record) => record.index"
         :data-source="orders"
         :pagination="false"
-      />
+      >
+        <template slot="order-info" slot-scope="orderInfo">
+          <ul>
+            <li v-for="(val, key) in orderInfo" :key="key">
+              {{ key }}: {{ val }}
+            </li>
+          </ul>
+        </template>
+      </a-table>
       <a-divider />
       <h3>Supply steps</h3>
-      <nuxt-link to="supply-step" append>
-        <a-button type="primary" style="margin: 0 0 20px 0">
-          <a-icon type="plus-circle" />Add Supply Step
-        </a-button>
-      </nuxt-link>
+      <a-button
+        type="primary"
+        style="margin: 0 0 20px 0"
+        @click="prepareSupplyStep"
+      >
+        <a-icon type="plus-circle" />Add Supply Step
+      </a-button>
       <a-table
         bordered
         :columns="supplyStepsColumns"
@@ -47,11 +61,13 @@
 import { formatEther } from '@ethersproject/units'
 import MainContent from '@/components/MainContent.vue'
 import EditProduct from '@/components/EditProduct.vue'
+import AddSupplyStep from '@/components/AddSupplyStep.vue'
 
 export default {
   components: {
     MainContent,
-    EditProduct
+    EditProduct,
+    AddSupplyStep
   },
   middleware: [
     'metamask',
@@ -70,12 +86,20 @@ export default {
     )
 
     return {
+      showAddSupplyStep: false,
       product: null,
       orders: null,
       orderColumns: [
         {
+          title: 'Order ID',
+          dataIndex: 'index'
+        },
+        {
           title: 'Order info',
-          dataIndex: 'orderInfo'
+          dataIndex: 'orderInfo',
+          scopedSlots: {
+            customRender: 'order-info'
+          }
         },
         {
           title: 'Completed',
@@ -149,6 +173,9 @@ export default {
     this.supplySteps = supplySteps
   },
   methods: {
+    prepareSupplyStep() {
+      this.showAddSupplyStep = true
+    },
     fetchNextOrder(productId, n = 0) {
       return this.$store.state.bountium.business.contract.functions
         .orders(productId, n)
@@ -157,7 +184,7 @@ export default {
             index: n,
             complete: order.complete, // boolean
             suppliersPaid: order.suppliersPaid, // boolean
-            orderInfo: order.orderInfo // string
+            orderInfo: JSON.parse(order.orderInfo) // Stringified JSON of key-value pairs
           },
           ...(await this.fetchNextOrder(productId, n + 1))
         ])
@@ -182,9 +209,6 @@ export default {
           console.log('Loading supply steps, reached end of list:', err)
           return []
         })
-    },
-    async addSupplyStep() {
-      // TODO Requires productId (given), evaluator (contract address?) (given); fee + instructions
     },
     async listProduct() {
       try {

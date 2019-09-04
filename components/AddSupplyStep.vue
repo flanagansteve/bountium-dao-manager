@@ -1,7 +1,10 @@
 <template>
-  <main-content :title="$store.state.bountium.business.name">
-    <section style="max-width: 500px">
-      <h2>Add supply step</h2>
+  <a-modal
+    v-model="visible"
+    title="Add Supply Step"
+    @cancel="$emit('hide-supply-step')"
+  >
+    <section>
       <label>Fee in ETH</label>
       <!-- TODO Abstract this out into an "amount" component -->
       <div>
@@ -14,6 +17,13 @@
         />
         <span v-if="amountUsd" style="margin-left: 10px">${{ amountUsd }}</span>
       </div>
+      <a-alert
+        message="What do you need done when an order is received?"
+        description="Direct a supplier on how to use customer information and correctly fulfill the order."
+        type="info"
+        show-icon
+        class="field"
+      />
       <label>Instructions</label>
       <a-textarea
         v-model="instructions"
@@ -21,20 +31,25 @@
         class="field"
         style="resize: none"
       />
+    </section>
+    <template slot="footer">
+      <a-button key="cancel" @click="handleCancel">Cancel</a-button>
       <a-button type="primary" @click="addSupplyStep">
         Add Supply Step
       </a-button>
-    </section>
-  </main-content>
+    </template>
+  </a-modal>
 </template>
 
 <script>
 import { parseEther } from '@ethersproject/units'
-import MainContent from '@/components/MainContent.vue'
 
 export default {
-  components: {
-    MainContent
+  props: {
+    visible: {
+      require: true,
+      type: Boolean
+    }
   },
   middleware: [
     'metamask',
@@ -61,13 +76,18 @@ export default {
     }
   },
   methods: {
+    handleCancel() {
+      this.$emit('hide-supply-step')
+    },
     async addSupplyStep() {
+      this.$emit('hide-supply-step')
+
       try {
         const fee = parseEther(this.amount.toString())
         const evaluator =
           this.$store.state.bountium.account.chainId === 1
-            ? '0xfce2e8c52578026ddaa24899921586591bb73fca'
-            : '0xe748d6628cb4f0e87c48509b227b82f831411733'
+            ? '0xfce2e8c52578026ddaa24899921586591bb73fca' // Mainnet
+            : '0xe748d6628cb4f0e87c48509b227b82f831411733' // Ropsten
 
         const task = () =>
           this.$store.state.bountium.business.contract.functions.addSupplyStep(
