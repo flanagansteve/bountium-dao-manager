@@ -14,9 +14,11 @@
           class="field"
           style="width: 200px"
           placeholder="0.12"
+          :max="contractBalance"
         />
         <span v-if="amountUsd" style="margin-left: 10px">${{ amountUsd }}</span>
       </div>
+      <p v-show="ethPerShare">{{ ethPerShare }} ETH per share</p>
       <a-button type="primary" @click="payDividend">
         Pay dividend
       </a-button>
@@ -45,7 +47,8 @@ export default {
   data() {
     return {
       amount: null,
-      contractBalance: null
+      contractBalance: null,
+      totalShares: null
     }
   },
   computed: {
@@ -55,6 +58,18 @@ export default {
 
       // Allows prevents against NaN errors
       return amount > 0 ? amount.toFixed(2) : null
+    },
+    weiPerShare() {
+      try {
+        return this.amount && this.totalShares
+          ? parseEther(this.amount.toString()).div(this.totalShares)
+          : null
+      } catch (err) {
+        return null
+      }
+    },
+    ethPerShare() {
+      return this.weiPerShare && formatEther(this.weiPerShare)
     }
   },
   async created() {
@@ -62,18 +77,15 @@ export default {
       .ethersProvider()
       .getBalance(this.$store.state.bountium.business.contract.address)
     this.contractBalance = formatEther(contractBalance)
+
+    this.totalShares = await this.$store.state.bountium.business.contract.functions.totalShares()
   },
   methods: {
     async payDividend() {
       try {
-        const totalShares = await this.$store.state.bountium.business.contract.functions.totalShares()
-        const amountPerShare = parseEther(this.amount.toString()).div(
-          totalShares
-        )
-
         const task = () =>
           this.$store.state.bountium.business.contract.functions.payDividend(
-            amountPerShare
+            this.weiPerShare
           )
 
         await this.$store.dispatch('bountium/submitTransaction', {
