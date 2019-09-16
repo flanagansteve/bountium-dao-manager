@@ -1,6 +1,6 @@
 <template>
   <a-layout-content class="content">
-    <main class="content--island">
+    <main class="content__island">
       <slot />
     </main>
   </a-layout-content>
@@ -11,7 +11,7 @@
   background: white;
   margin: 24px;
 
-  &--island {
+  &__island {
     padding: 24px;
   }
 }

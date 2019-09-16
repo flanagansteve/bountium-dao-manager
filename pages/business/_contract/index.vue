@@ -2,11 +2,6 @@
   <main-content :title="$store.state.bountium.business.name">
     <section v-if="stakeholders && orders && products">
       <h2>Products</h2>
-      <nuxt-link to="products/new" append>
-        <a-button size="large" type="primary" style="margin: 0 0 20px 0">
-          <a-icon type="plus-circle" />Add Product
-        </a-button>
-      </nuxt-link>
       <section class="product-container">
         <nuxt-link
           v-for="product in products"
@@ -19,11 +14,20 @@
           <a-card hoverable style="width: 220px">
             <img
               slot="cover"
-              alt=""
               :src="product.imageUrl"
+              alt=""
               class="image-preview"
             />
             <a-card-meta :title="product.name" :description="product.price" />
+          </a-card>
+        </nuxt-link>
+        <nuxt-link to="products/new" tag="div" append>
+          <a-card class="add-product-card" hoverable>
+            <a-icon
+              type="plus-circle"
+              size="large"
+              class="add-product-card__icon"
+            />Add Product
           </a-card>
         </nuxt-link>
       </section>
@@ -298,6 +302,22 @@ export default {
 
 .product {
   margin: 0 30px 30px 0;
+}
+
+.add-product-card {
+  width: 220px;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 500;
+  font-size: 16px;
+  color: rgba(0, 0, 0, 0.85);
+  border: 1px dashed #e8e8e8;
+
+  .add-product-card__icon {
+    margin-right: 6px;
+  }
 }
 
 .orders-container {
