@@ -6,7 +6,9 @@
           {{ title }}
         </h1>
         <a v-if="storefrontUrl" :href="storefrontUrl" target="_blank">
-          <a-button><a-icon type="shopping" />View storefront</a-button>
+          <a-button type="primary"
+            ><a-icon type="shopping" />View storefront</a-button
+          >
         </a>
         <div class="spacer" />
         <div v-if="$store.state.bountium.account" class="metamask">
